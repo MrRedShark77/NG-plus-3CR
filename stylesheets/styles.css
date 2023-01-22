@@ -15,8 +15,16 @@
     outline: none;
 }
 
+* {
+    font-family: Typewriter;
+}
+
 button {
     padding: 1px 6px;
+}
+
+#options > table button {
+    font-size: 15px !important;
 }
 
 #game {
@@ -29,8 +37,20 @@ button {
     text-align: left
 }
 
-#TTbuttons {
-    font-family: Typewriter;
+#normal_parent > tr:nth-child(even) {
+    background-color: #f442;
+}
+
+#inf_parent > tbody > tr:nth-child(even) {
+    background-color: #f822;
+}
+
+#time_parent > tbody > tr:nth-child(even) {
+    background-color: #8082;
+}
+
+#meta_parent > tr:nth-child(even) {
+    background-color: #88f2;
 }
 
 #news {
@@ -97,7 +117,7 @@ button {
     font-family: Typewriter;
     border: 2px solid black;
     border-radius: 10px;
-    font-size: 80%;
+    font-size: 10px;
     transition-duration: 0.2s;
     padding: 2px;
     margin: 3px 8px;
@@ -116,7 +136,7 @@ button {
     font-family: Typewriter;
     border: 2px solid black;
     border-radius: 10px;
-    font-size: 80%;
+    font-size: 10px;
     transition-duration: 0.2s;
     padding: 2px;
     margin: 3px 8px;
@@ -135,7 +155,7 @@ button {
     font-family: Typewriter;
     border: 3px solid #b341e0;
     border-radius: 10px;
-    font-size: 80%;
+    font-size: 10px;
     transition-duration: 0.2s;
     padding: 2px;
     margin: 3px 8px;
@@ -595,7 +615,7 @@ button {
     width:230px;
     height:155px;
     text-align:center;
-    font-size:100%;
+    font-size:12px;
     padding:10px;
     display: none;
     border-radius: 4px;
@@ -1061,7 +1081,7 @@ button {
     z-index: -999;
 }
 
-#studytable {
+.studytable {
     display: flex !important;
     justify-content: center;
 }
@@ -1338,9 +1358,9 @@ button {
     bottom: 100%;
     left: 50%;
     margin-bottom: 5px;
-    margin-left: -80px;
+    margin-left: -160px;
     padding: 7px;
-    width: 160px;
+    width: 320px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
@@ -1598,6 +1618,10 @@ br {
     margin: 0;
     margin-top: 20px;
     pointer-events:none;
+}
+
+#TTbuttons {
+    font-family: Typewriter;
 }
 
 #TTbuttons br {

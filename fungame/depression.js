@@ -1,9 +1,9 @@
 
 let game = {
-  costs: [new Decimal(1)],
-  amounts: [new Decimal(0)],
-  depression: new Decimal(1),
-  prestige: [new Decimal(1)]
+  costs: [E(1)],
+  amounts: [E(0)],
+  depression: E(1),
+  prestige: [E(1)]
 }
 
 
@@ -52,7 +52,7 @@ function buyStuff(id) {
     insertAfter(br, elem)
     insertAfter(btn, br)
     game.costs.push(game.costs[i].times(100))
-    game.amounts.push(new Decimal(0))
+    game.amounts.push(E(0))
     if (game.prestige[id] === undefined) game.prestige[id] = 1
     
     if (id > 5) {
@@ -77,9 +77,9 @@ function buyStuff(id) {
 
 function hardreset() {
   game = {
-    costs: [new Decimal(1)],
-    amounts: [new Decimal(0)],
-    depression: new Decimal(1),
+    costs: [E(1)],
+    amounts: [E(0)],
+    depression: E(1),
     prestige: [1]
   }
 }
@@ -97,9 +97,9 @@ function prestige(id) {
   const brs = document.getElementsByTagName("br")
   while(brs[0]) brs[0].parentNode.removeChild(brs[0])
   game = {
-    costs: [new Decimal(1)],
-    amounts: [new Decimal(0)],
-    depression: new Decimal(1),
+    costs: [E(1)],
+    amounts: [E(0)],
+    depression: E(1),
     prestige: game.prestige
   }
   for (var i=1; i<game.costs.length-5; i++) document.getElementById(i+"prestige").innerHTML = "Reset to increase bonus to "+Math.max(game.costs.length-id-5, game.prestige[id-1])+"x boost."
@@ -134,12 +134,12 @@ function load() {
     pbtn.onclick = function() {prestige(parseInt(this.id));}
     insertAfter(pbtn, otherbtn)
   }
-  game.depression = new Decimal(game.depression)
+  game.depression = E(game.depression)
   for (var i=0; i<Object.keys(game.amounts).length; i++) {
-    game.amounts[i] = new Decimal(game.amounts[i])
+    game.amounts[i] = E(game.amounts[i])
   }
   for (var i=0; i<Object.keys(game.costs).length; i++) {
-    game.costs[i] = new Decimal(game.costs[i])
+    game.costs[i] = E(game.costs[i])
   }
 }
 

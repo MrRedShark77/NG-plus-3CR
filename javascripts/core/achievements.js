@@ -103,6 +103,7 @@ const allAchievements = {
   r136 : "I told you already, time is relative",
   r137 : "Now you're thinking with dilation!",
   r138 : "This is what I have to do to get rid of you.",
+
   s11 : "The first one's always free",
   s12 : "Just in case",
   s13 : "It pays to have respect",
@@ -127,6 +128,17 @@ const allAchievements = {
   s36 : "While you were away... Nothing happened.",
   s37 : "You followed the instructions",
   s38 : "Professional bodybuilder",
+
+  r141 : "Antimatter is made in Meta",
+  r142 : "No Nine? Not nice...",
+  r143 : "It got a Reality reference yet?",
+  //
+  r145 : "Super Booster!",
+  r146 : "Anti-Immortal",
+  //
+  //
+
+  s41 : "That dimension doesn’t exist",
 };
 const secretAchievementTooltips = {
     s11 : "Click on this achievement.",
@@ -153,6 +165,8 @@ const secretAchievementTooltips = {
     s36 : "Have nothing happen while you were away.",
     s37 : "Follow instructions.",
     s38 : "Get all your dimension bulk buyers to 1e100.",
+
+    s41 : "Try to purchase the 9th dimension.",
   };
 const allAchievementNums = Object.invert(allAchievements)
 // to retrieve by value: Object.keys(allAchievements).find(key => allAchievements[key] === "L4D: Left 4 Dimensions");
@@ -180,17 +194,18 @@ function clearOldAchieves(){
     }
 }
 
-function giveAchievement(name) {
+function giveAchievement(name,id=false) {
 
-    if (player.achievements.includes(name)){ clearOldAchieves(); }
+    if (player.achievements.includes(name) && !id){ clearOldAchieves(); }
 
-    if (player.achievements.includes(allAchievementNums[name])) return false
+    if (player.achievements.includes(id?name:allAchievementNums[name])) return false
+    let k = id?allAchievements[name]:name
 
-    $.notify(name, "success");
-    player.achievements.push(allAchievementNums[name]);
-    document.getElementById(name).className = "achievementunlocked"
+    $.notify(k, "success");
+    player.achievements.push(id?name:allAchievementNums[name]);
+    document.getElementById(k).className = "achievementunlocked"
     kong.submitStats('Achievements', player.achievements.length);
-    if (name == "All your IP are belong to us" || name == "MAXIMUM OVERDRIVE") {
+    if (k == "All your IP are belong to us" || k == "MAXIMUM OVERDRIVE") {
         player.infMult = player.infMult.times(4);
         player.autoIP = player.autoIP.times(4);
         if (player.autoCrunchMode == "amount" && player.autobuyers[11].priority != undefined) player.autobuyers[11].priority = player.autobuyers[11].priority.times(4);
@@ -224,13 +239,13 @@ function updateAchievements() {
       for (var l=0; l<8; l++) {
           achNum += 1;
           var name = allAchievements["r"+achNum]
+            var domObj = el(name);
+            if (!domObj) continue
           if (player.achievements.includes("r"+achNum)) {
               n++
-              var domObj = document.getElementById(name);
               domObj.className = "achievementunlocked";
               updateAchievementAria(domObj);
           } else {
-              var domObj = document.getElementById(name);
               domObj.className = "achievementlocked";
               updateAchievementAria(domObj);
           }
@@ -248,14 +263,14 @@ function updateAchievements() {
       for (var l=0; l<8; l++) {
           achNum += 1;
           var name = allAchievements["s"+achNum]
+          var domObj = el(name)
+          if (!domObj) continue;
           if (player.achievements.includes("s"+achNum)) {
               n++
-              var domObj = document.getElementById(name);
               domObj.setAttribute('ach-tooltip', secretAchievementTooltips["s"+achNum]);
               domObj.className = "achievementunlocked";
               updateAchievementAria(domObj, true);
           } else {
-              var domObj = document.getElementById(name);
               domObj.className = "achievementhidden";
               domObj.setAttribute('ach-tooltip', (name[name.length-1] !== "?" && name[name.length-1] !== "!" && name[name.length-1] !== ".") ? name+"." : name);
               updateAchievementAria(domObj, true);
@@ -286,4 +301,9 @@ function getSecretAchAmount() {
         }
     }
     return n
+}
+
+function checkAchievements() {
+  if (player.infinityDimension1.baseAmount/10>=2e6) giveAchievement('r143',true)
+  if (player.totalTickGained >= 1e6) giveAchievement('r146',true)
 }

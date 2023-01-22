@@ -12,6 +12,17 @@
 
 }*/
 
+var E = x => new Decimal(x);
+var el = x => document.getElementById(x);
+
+var softcap = function (x, start, power, mode, dis=false) {
+  x = E(x)
+  if (!dis&&x.gte(start)) {
+      if ([0, "pow"].includes(mode)) x = x.div(start).max(1).pow(power).mul(start)
+      if ([1, "mul"].includes(mode)) x = x.sub(start).div(power).add(start)
+  }
+  return x
+}
 
 var Autobuyer = function Autobuyer(target) {
     this.target = target

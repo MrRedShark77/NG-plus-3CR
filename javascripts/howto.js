@@ -23,13 +23,13 @@ function save() {
 }
 
 function get_save(name) {
-    if (localStorage.getItem("dimensionSave") !== null) {
+    if (localStorage.getItem("dimensionSave2") !== null) {
         return JSON.parse(atob(localStorage.getItem(name), function(k, v) { return (v === Infinity) ? "Infinity" : v; }))
 	}
 }
 
 function load_game() {
-    const save_data = get_save('dimensionSave');
+    const save_data = get_save('dimensionSave2');
     if (!save_data) return;
     const save_to_use = save_data.saves[save_data.current]
     player = save_to_use;
