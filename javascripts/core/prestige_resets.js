@@ -47,7 +47,7 @@ function doGalaxyResetStuff(bulk){
 	player.tickSpeedCost = new Decimal(1000)
     player.tickspeed = E(1000)
 	completelyResetNormalDimensions()
-	if (!player.achievements.includes('r145')) player.resets = 0
+	player.resets = 0
 	player.interval = null
 	player.galaxies += bulk
 	player.sacrificed = E(0)

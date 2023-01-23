@@ -324,6 +324,7 @@ function hasInfinityMult(tier) {
             floatText(name+"D", "x" + shortenMoney(getDimensionPowerMultiplier()))
             onBuyDimension(tier)
         }
+        player[name + "Pow"] = player[name + "Pow"].mul(getDimensionPowerMultiplier())
         return true
     }
 
@@ -453,6 +454,7 @@ function hasInfinityMult(tier) {
             bought += toBuy
         }
         if (!auto) floatText(name+"D", "x" + shortenMoney(Decimal.pow(getDimensionPowerMultiplier(), bought)))
+        player[name + "Pow"] = player[name + "Pow"].mul(Decimal.pow(getDimensionPowerMultiplier(), bought))
         onBuyDimension(tier)
     }
     
