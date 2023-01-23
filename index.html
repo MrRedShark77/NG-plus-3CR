@@ -523,7 +523,7 @@
                             <button class="timestudy" id="dil13" style="font-size: 0.6rem;" onclick="buyDilationUpgrade(13)">Meta Dimensions gain a multiplier based on tickspeed. (1+log(1+log(x)))<br><span id="dil13desc"></span><br><span id="dil13cost"></span></button>
                         </td>
                         <td>
-                            <button class="timestudy" id="dil14" style="font-size: 0.6rem;" onclick="buyDilationUpgrade(14)">???.<br><span id="dil14desc"></span><br><span id="dil14cost"></span></button>
+                            <button class="timestudy" id="dil14" style="font-size: 0.56rem;" onclick="buyDilationUpgrade(14)">	Meta-dimension shifts, boosts, and per-ten upgrades are boosted by dilated time. (log(log(x))+1)<br><span id="dil14desc"></span><br><span id="dil14cost"></span></button>
                         </td>
                         <td>
                             <button class="timestudy" id="dil15" style="font-size: 0.6rem;" onclick="buyDilationUpgrade(15)">???.<br><span id="dil15desc"></span><br><span id="dil15cost"></span></button>
@@ -1014,14 +1014,10 @@
                     <td><div><button id="importbtn" class="storebtn" style="color:black; width: 200px; height: 55px; font-size: 20px">Import</button></div></td>
                 </tr>
                 <tr>
-                    <td><div><button id="challengeconfirmation" class="storebtn" style="color:black; width: 200px; height: 55px; font-size: 15px">Challenge confirmation ON</button></div></td>
+
 					<td><div><button id="save" class="storebtn" style="color:black; width: 200px; height: 55px; font-size: 20px">Save</button></div></td>
 					<td><div><button id="load" class="storebtn" style="color:black; width: 200px; height: 55px; font-size: 20px">Load</button></div></td>
-                </tr>
-                <tr id="cloudOptions">
-                    <td><div><button onclick="playFabSaveCheck()" class="storebtn" style="color:black; width: 200px; height: 55px; font-size:120%">Cloud save</button></div></td>
-                    <td><div><button onclick="playFabLoadCheck()" class="storebtn" style="color:black; width: 200px; height: 55px; font-size:120%">Cloud load</button></div></td>
-                    <td><div><button id="cloud" onclick="toggleCloud()" class="storebtn" style="color:black; width: 200px; height: 55px; font-size:120%">Toggle automatic cloud saving/loading</button></div></td>
+                    <td><div><button onclick="openConifmations()" class="storebtn" style="width: 200px; height: 55px; font-size:160%;">Confirmations</button></div></td>
                 </tr>
                 <tr>
                     <td><div><button id="hotkeys" onclick="toggleHotkeys()" class="storebtn" style="color:black; width: 200px; height: 55px; font-size:120%">Disable hotkeys</button></div></td>
@@ -1029,13 +1025,8 @@
                     <td><div><button id="commas" onclick="toggleCommas()" class="storebtn" style="color:black; width: 200px; height: 55px; font-size:120%">Commas on large exponents ON</button></div></td>
                 </tr>
                 <tr>
-					<td><div><button id="eternityconf" onclick="toggleEternityConf()" class="storebtn" style="color:black; width: 200px; height: 55px; font-size:120%; display: none">Eternity confirmation ON</button></div></td>
                     <td><div class="storebtn" style="color:black; width: 198px; height: 55px; font-size:130%; text-align: center;"><b id="updaterate">Update Rate: 50ms</b><input id="updaterateslider" style="width: 170px;" type="range" min="33" max="200" value="50" class="slider" ></div></td>
                     <td><div><button id="animationoptionsbtn" class="storebtn" style="width: 200px; height: 55px; font-size:160%;">Animations</button></div></td>
-                </tr>
-                <tr>
-
-
                 </tr>
 
 
@@ -1044,7 +1035,7 @@
             <br><div style="display: none;"><textarea id="exportOutput" style="color:black; width: 200px; height: 55px;"></textarea></div>
             <p>Hotkeys: 1-8 for buy 10 dimension, shift+1-8 for buy 1 dimension, T to buy max tickspeed, shift+T to buy one tickspeed, M for max all<br>S for sacrifice, D for dimension boost, G for galaxy, C for crunch, A for toggle autobuyers, R for replicanti galaxies, E for eternity.<br>You can hold shift while buying time studies to buy all up until that point, see each study's number, and save study trees.<br>Hotkeys do not work while holding control.</p>
             <p>
-                Antimatter Dimensions: NG+3 Classic Reloaded v1.0 - Made by MrRedShark77
+                Antimatter Dimensions: NG+3 Classic Reloaded v1.0.1 - Made by MrRedShark77
             </p>
             <div id="footercontainer">
                 <table id="footer">
@@ -1512,11 +1503,15 @@
                         </td><td>
                             <div id="It got a Reality reference yet?" class="achievement achievementlocked" style="background-image: url(images/new/ap4.png)" ach-tooltip="Purchase at least 2,000,000 first infinity dimensions."><br></div>
                         </td><td>
-                            <div  class="achievement achievementlocked" style="opacity: 0;"><br></div>
+                            <div id="'cow riding a skateboard'" class="achievement achievementlocked" style="background-image: url(images/new/ap7.png)" ach-tooltip="Get over 1.80e308 of tick reduction."><br></div>
                         </td><td>
                             <div id="Super Booster!" class="achievement achievementlocked" style="background-image: url(images/new/ap5.png)" ach-tooltip="Get 10 Meta-Dimension Boosts. Reward: Antimatter galaxy no longer resets dimension boosts."><br></div>
                         </td><td>
                             <div id="Anti-Immortal" class="achievement achievementlocked" style="background-image: url(images/new/ap6.png)" ach-tooltip="Get 1,000,000 tickspeed upgrades from time shards. Reward: Unlock the autobuyers for Time Dimension and 5x EP upgrade."><br></div>
+                        </td><td>
+                            <div class="achievement achievementlocked" style="opacity: 0;"><br></div>
+                        </td><td>
+                            <div class="achievement achievementlocked" style="opacity: 0;"><br></div>
                         </td>
                     </tr>
                 </table>
@@ -2632,6 +2627,12 @@
         <div id="updatePopup">The last test.</div>
         <button class="storebtn" style="font-size: 15px" onclick="closeToolTip()" style="display: inline">Okay</button>
     </div>
+    <div class="popup savemenu" id="confirmationmenu">
+        <button class="closebtn storebtn" onclick="closeToolTip()">&times;</button>
+        <button id="challengeconfirmation" class="storebtn" style="color:black; width: 200px; height: 55px; font-size: 15px">Challenge confirmation ON</button>
+        <button id="eternityconf" onclick="toggleEternityConf()" class="storebtn" style="color:black; width: 200px; height: 55px; font-size:120%; display: none">Eternity confirmation ON</button>
+        <button id="dilationconf" onclick="toggleDilationConf()" class="storebtn" style="color:black; width: 200px; height: 55px; font-size: 15px">Dilation confirmation ON</button>
+    </div>
     <div class="popup" id="challfail">
         <div id="failPopup">You failed the challenge, you will now exit it.</div>
         <button class="storebtn" style="font-size: 15px" onclick="closeToolTip()" style="display: inline">Okay</button>
@@ -2723,6 +2724,7 @@
 <script type="text/javascript" src="javascripts/chart.js"></script>
 <script type="text/javascript" src="javascripts/lz-string.js"></script>
 
+<script type="text/javascript" src="javascripts/core/html.js"></script>
 <script type="text/javascript" src="javascripts/core/prestige_resets.js"></script>
 
 <script type="text/javascript" src="javascripts/core/meta_dimension.js"></script>

@@ -132,7 +132,7 @@ const allAchievements = {
   r141 : "Antimatter is made in Meta",
   r142 : "No Nine? Not nice...",
   r143 : "It got a Reality reference yet?",
-  //
+  r144 : "'cow riding a skateboard'",
   r145 : "Super Booster!",
   r146 : "Anti-Immortal",
   //
@@ -305,5 +305,10 @@ function getSecretAchAmount() {
 
 function checkAchievements() {
   if (player.infinityDimension1.baseAmount/10>=2e6) giveAchievement('r143',true)
+  if (tmp.tsReduce.min(1).pow(-1).gte(Number.MAX_VALUE)) giveAchievement('r144',true)
   if (player.totalTickGained >= 1e6) giveAchievement('r146',true)
+}
+
+function updateAchievementsTooltip() {
+  el(allAchievements.r144).setAttribute('ach-tooltip',`Get over ${shortenMoney(Number.MAX_VALUE)} of tick reduction.`)
 }

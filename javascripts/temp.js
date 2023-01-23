@@ -29,6 +29,8 @@ function setupTemp() {
             effect: E(1),
             pow: 5,
 
+            mult_inc: [2,2],
+
             reset_req: 2,
         },
 

@@ -291,6 +291,7 @@ function getPlayerData() {
             theme: undefined,
             secretThemeKey: 0,
             eternityconfirm: true,
+            dilationconfirm: true,
             commas: true,
             updateRate: 50,
             chart: {
@@ -373,6 +374,22 @@ function onLoad() {
             if (p[0].includes(player.dilation.upgrades[i])) player.dilation.upgrades[i] = p[1][p[0].indexOf(player.dilation.upgrades[i])]
         }
     }
+
+    if (player.version<13.001) {
+        player.version = 13.001
+        let checkTD = false
+
+        for (let x = 1; x <= 8; x++) if (player['timeDimension'+x].cost.gte('1e4000')) {
+            checkTD = true
+            break
+        }
+
+        if (checkTD) {
+            completelyResetTimeDimensions()
+
+            $.notify('The game will resets all TDs because of TD cost new scaling!')
+        }
+    } 
 
     setTheme(player.options.theme);
 

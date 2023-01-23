@@ -8,7 +8,7 @@ function startDilatedEternity() {
         }, 250)
         return
     }
-    if (!confirm("Dilating time will start a new eternity, and all of your Dimension/Infinity Dimension/Time Dimension multiplier's exponents and tickspeed multiplier's exponent will be reduced to ^ 0.75. If you can eternity while dilated, you'll be rewarded with tachyon particles based on your antimatter and tachyon particles.")) {
+    if (player.options.dilationconfirm && !confirm("Dilating time will start a new eternity, and all of your Dimension/Infinity Dimension/Time Dimension multiplier's exponents and tickspeed multiplier's exponent will be reduced to ^ 0.75. If you can eternity while dilated, you'll be rewarded with tachyon particles based on your antimatter and tachyon particles.")) {
         setTimeout(function() {
             gameLoopIntervalId = setInterval(gameLoop, player.options.updateRate);
         }, 250)
@@ -99,7 +99,7 @@ function eterUpgDilEff() {
  const DIL_UPG_COSTS = [null, [1e5, 10], [1e6, 100], [1e7, 20], [1e8, 1e4],
                               5e6,        1e9,         5e7,      1e20,
                               2e12,        1e10,         1e11,    1e15,
-                              1e35,         1/0,         1/0,       1/0,
+                              1e35,         1e55,         1/0,       1/0,
                             ]
 
 
@@ -151,6 +151,7 @@ function updateDilationUpgradeButtons() {
     document.getElementById("dil9desc").textContent = "Currently: "+shortenMoney(player.dilation.dilatedTime.pow(1000).max(1))+"x"
     document.getElementById("dil12desc").textContent = "Currently: "+shortenMoney(getDU12Effect())+"/s"
     el('dil13desc').textContent = "Currently: "+shortenMoney(Math.log10(Math.abs(player.tickspeed.l)+10))+"x"
+    el('dil14desc').textContent = "Currently: "+shortenMoney(Math.log10(player.dilation.dilatedTime.max(1).l+10))+"x"
 }
 
 function updateDilationUpgradeCosts() {

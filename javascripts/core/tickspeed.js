@@ -42,7 +42,7 @@ function getTickSpeedMultiplier() {
 
 	  if (hasTSTier(2,31)) galaxies *= TSTierEffect(2,31)
 
-      return baseMultiplier * (Math.pow(perGalaxy, (galaxies-2)))
+      return Decimal.pow(perGalaxy, (galaxies-2)).mul(baseMultiplier)
   }
 }
 

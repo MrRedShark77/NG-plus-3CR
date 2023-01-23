@@ -41,7 +41,7 @@ function getMetaDimensionRateOfChange(tier) {
 }
 
 function getMetaDimensionDescription(tier) {
-    let description = shortenDimensions(player.meta[tier].amount);
+    let description = shortenDimensions(player.meta[tier].amount) + " (" + player.meta[tier].bought + ")";
   
     if (tier < 8) {
         description += '  (+' + formatValue(player.options.notation, getMetaDimensionRateOfChange(tier), 2, 2) + '%/s)';
@@ -131,7 +131,7 @@ function updateMetaDimensionsHTML() {
 
             if (!unl) continue;
 
-            el('MD'+x).textContent = DISPLAY_NAMES[x]+" Meta-Dimension x"+shortenMoney(tmp.meta.mult[x])
+            el('MD'+x).textContent = (player.meta[x].bought >= 110-10*x ? "Scaled " : "")+DISPLAY_NAMES[x]+" Meta-Dimension x"+shortenMoney(tmp.meta.mult[x])
             el('MDAmount'+x).textContent = getMetaDimensionDescription(x)
             el('MDCost'+x).textContent = "Cost: "+shortenCosts(tmp.meta.cost[x])+" MA"
 
@@ -147,25 +147,40 @@ function updateMetaDimensionsHTML() {
 }
 
 function getMDCost(i) {
-    let p = player.meta[i].bought
+    let p = player.meta[i].bought, q = 110 - 10*i
 
-    if (p>=100) p = (p/100)**2*100
+    if (p>=q) p = (p/q)**2*q
 
     return Decimal.pow(costMults[i],p).mul(STARTING_COST[i])
 }
 
 function getMDBulk(i) {
-    let x = player.meta.antimatter.div(STARTING_COST[i]).log(costMults[i])
+    let x = player.meta.antimatter.div(STARTING_COST[i]).log(costMults[i]), q = 110 - 10*i
 
-    if (x >= 100) x = Math.pow(x/100,1/2)*100
+    if (x >= q) x = Math.pow(x/q,1/2)*q
 
     return Math.floor(x)+1
+}
+
+function getMDMultIncrease() {
+    let x = 2 // Multiplier Increase
+
+    let y = 2 // Meta-Boost Increase
+
+    if (player.dilation.upgrades.includes(14)) {
+        let e = Math.log10(player.dilation.dilatedTime.max(1).l+10)
+
+        x *= e
+        y *= e
+    }
+
+    return [x, y]
 }
 
 function getMDMult(i) {
     let p = player.meta[i].bought
 
-    let x = Decimal.pow(2,p).mul(Decimal.pow(2,Math.max(0,player.meta.reset-i+1)))
+    let x = Decimal.pow(tmp.meta.mult_inc[0],p).mul(Decimal.pow(tmp.meta.mult_inc[1],Math.max(0,player.meta.reset-i+1)))
 
     if (player.dilation.upgrades.includes(13)) x = x.mul(Math.log10(Math.abs(player.tickspeed.l)+10))
 
@@ -183,6 +198,7 @@ function getMDEffect() {
 function updateMDTemp() {
     let mtmp = tmp.meta
 
+    mtmp.mult_inc = getMDMultIncrease()
     mtmp.effect = getMDEffect()
 
     mtmp.reset_req = Math.ceil(2+Math.max(0,player.meta.reset-4)*1.5)

@@ -150,8 +150,7 @@ function drawTreeBranch(num1, num2, tier=1) {
         }
     } else {
         if (
-            (hasTSTier(tier,name2) && !isECName)
-            || (hasTSTier(tier,name2) && (player.eternityChallUnlocked === name2 && isECName))
+            (hasTSTier(tier,name1) && hasTSTier(tier,name2) && !isECName)
         ) {
             if (isECName) ctx.strokeStyle="#490066";
             else ctx.strokeStyle="#000";

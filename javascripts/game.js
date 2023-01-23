@@ -295,7 +295,7 @@ function updateDimensions() {
 
     if (canBuyTickSpeed() || player.currentEternityChall == "eterc9") {
         var tickmult = tmp.tsReduce
-        if (tickmult < 1e-9) document.getElementById("tickLabel").textContent = "Divide the tick interval by " + shortenDimensions(1 / tickmult) + '.'
+        if (tickmult < 1e-9) document.getElementById("tickLabel").textContent = "Divide the tick interval by " + shortenDimensions(tickmult.pow(-1)) + '.'
         else {
             var places = 0
             if (tickmult < 0.2) places = Math.floor(Math.log10(Math.round(1/tickmult)))
@@ -1068,6 +1068,10 @@ function toggleEternityConf() {
     }
 }
 
+function toggleDilationConf() {
+    player.options.dilationconfirm = !player.options.dilationconfirm
+    updateConifrmationDiv()
+}
 
 function toggleReplAuto(i) {
     if (i == "chance") {
@@ -1603,6 +1607,8 @@ function setAchieveTooltip() {
     when.setAttribute('ach-tooltip', "Reach "+shortenCosts( E("1e20000"))+" replicanti. Reward: You gain replicanti 2 times faster under "+shortenMoney(Number.MAX_VALUE)+" replicanti.")
     thinking.setAttribute('ach-tooltip', "Eternity for "+shortenCosts( E("1e600"))+" EP in 1 minute or less while dilated. Reward: Gain 2x Dilated Time and Time Theorems while dilated.")
     thisis.setAttribute('ach-tooltip', "Reach "+shortenCosts(E('1e20000'))+" IP without any time studies while dilated.")
+
+    updateAchievementsTooltip()
 }
 
 document.getElementById("notation").onclick = function () {
@@ -3594,6 +3600,8 @@ function gameLoop(diff) {
     }
 
     calcMetaDimensions(diff)
+
+    setAchieveTooltip()
 
     document.getElementById("dimTabButtons").style.display = "none"
 
