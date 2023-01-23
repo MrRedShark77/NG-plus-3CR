@@ -47,7 +47,7 @@ function doGalaxyResetStuff(bulk){
 	player.tickSpeedCost = new Decimal(1000)
     player.tickspeed = E(1000)
 	completelyResetNormalDimensions()
-	player.resets = 0
+	if (!player.achievements.includes('r145')) player.resets = 0
 	player.interval = null
 	player.galaxies += bulk
 	player.sacrificed = E(0)
@@ -79,6 +79,7 @@ function doCrunchResetStuff(){
 	player.postC8Mult = new Decimal(1)
 	player.galaxies = 0
     player.postC3Reward = E(1)
+	player.tickspeed = E(1000)
 }
 
 function doEternityResetStuff(){
@@ -170,6 +171,7 @@ function doNormalChallengeResetStuff(){
 	player.postC4Tier = 1
 	player.postC8Mult = new Decimal(1)
     player.postC3Reward = E(1)
+	player.tickspeed = E(1000)
 }
 			
 function completelyResetTimeDimensions(){

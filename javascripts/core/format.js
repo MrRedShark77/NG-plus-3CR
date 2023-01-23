@@ -178,7 +178,7 @@ function formatValue(notation, value, places, placesUnder1000, noInf) {
             }
             var digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/"
             mantissa = digits[Math.floor(mantissa)].toString() + '.' + digits[Math.floor(mantissa * base) % base].toString() + digits[Math.floor(mantissa * Math.pow(base, 2)) % base].toString()
-            if (power > 100000 && !(player.options.commas === "Commas")) return mantissa + "e" + formatValue(player.options.commas, power, 3, 3)
+            if (power > 100000 && !(player.options.commas === "Commas")) return mantissa + "e" + formatValue(player.options.commas==""?player.options.notation:"Commas", power, 3, 3)
             else {
                 if (power >= Math.pow(base, 12)) return mantissa + "e" + formatValue(player.options.notation, power, 3, 3)
                 var digit = 0
@@ -254,7 +254,7 @@ function formatValue(notation, value, places, placesUnder1000, noInf) {
                 }
             } else matissa = ""
             if (power > 100000) {
-                if (player.options.commas != "Commas") return matissa + "e" + formatValue(player.options.commas, power, 3, 3)
+                if (player.options.commas != "Commas") return matissa + "e" + formatValue(player.options.commas==""?player.options.notation:"Commas", power, 3, 3)
                 if (power >= 1e9 && player.options.commas == "Commas") return matissa + "e" + formatValue("Standard", power, 3, 3)
                 return matissa + "e" + getFullExpansion(power);
             }
@@ -273,7 +273,7 @@ function formatValue(notation, value, places, placesUnder1000, noInf) {
                 matissa = Math.round(matissa * Math.pow(10, places))
                 power -= places
             }
-            if (power > 1e5 && player.options.commas !== "Commas") power = formatValue(player.options.commas, power, 3, 3)
+            if (power > 1e5 && player.options.commas !== "Commas") power = formatValue(player.options.commas==""?player.options.notation:"Commas", power, 3, 3)
             else power = convTo(notation, power)
             if (notation == "Simplified Written") return "(" + power + ") " + convTo(notation, matissa)
             return convTo(notation, matissa) + (notation == "Symbols" ? '-' : "e") + power
@@ -289,7 +289,7 @@ function formatValue(notation, value, places, placesUnder1000, noInf) {
 				var splits=reduced.toFixed(Math.max(infPlaces, places)).split(".")
 				return splits[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "." + splits[1] + "∞"
             } else {
-                if (reduced>=1e5) return formatValue(player.options.commas, reduced, 3, 3) + "∞"
+                if (reduced>=1e5) return formatValue(player.options.commas==""?player.options.notation:"Commas", reduced, 3, 3) + "∞"
                 return reduced.toFixed(Math.max(infPlaces, places))+"∞"
             }
         }
@@ -299,7 +299,7 @@ function formatValue(notation, value, places, placesUnder1000, noInf) {
         if (notation === "Engineering" || notation === "Mixed engineering") pow = power - (power % 3)
         else pow = power
         if (pow > 100000) {
-            if (player.options.commas !== "Commas") pow = formatValue(player.options.commas, pow, 3, 3)
+            if (player.options.commas !== "Commas") pow = formatValue(player.options.commas==""?player.options.notation:"Commas", pow, 3, 3)
             else if (pow >= 1e9) pow = formatValue("Standard", pow, 3, 3)
             else pow = getFullExpansion(pow);
         }
@@ -322,7 +322,7 @@ function formatValue(notation, value, places, placesUnder1000, noInf) {
                     if (base == 10) return "ee" + Math.log10(power).toFixed(3)
                     return prefix + prefix + (Math.log10(power) / Math.log(base)).toFixed(3)
                 }
-                else if (player.options.commas !== "Commas") return prefix + formatValue(player.options.commas, power, 3, 3)
+                else if (player.options.commas !== "Commas") return prefix + formatValue(player.options.commas==""?player.options.notation:"Commas", power, 3, 3)
                 else if (power >= 1e9) return prefix + formatValue("Standard", power, 3, 3)
                 else return prefix + power.toFixed(places).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }

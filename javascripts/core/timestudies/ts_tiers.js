@@ -133,7 +133,7 @@ const TS_TIERS_EFF = [
         ],
         34: [
             ()=>{
-                let x = Math.log10(player.meta.antimatter.add(1).l+1)/2
+                let x = Math.log10(player.meta.best1.add(1).l+1)/2
 
                 return x
             },
@@ -246,10 +246,8 @@ function canBuyTSTier(t,id) {
 function buyTSTier(t,id) {
     if (hasTSTier(t,id)) return
 
-    let cost = tmp.ts_tier.cost[t][id]
-
-    if (player.timestudy.theorem >= cost) {
-        player.timestudy.theorem -= cost
+    if (canBuyTSTier(t,id)) {
+        player.timestudy.theorem -= tmp.ts_tier.cost[t][id]
         player.ts_tier[t-2].push(id)
 
         drawStudyTree()

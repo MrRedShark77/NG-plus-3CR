@@ -418,6 +418,7 @@ function onLoad() {
     document.getElementById('replicantibulkmodetoggle').textContent="Mode: "+(player.galaxyMaxBulk?"Max":"Singles")
 
     transformSaveToDecimal();
+    updateTemp()
     updateCosts();
     updateTickSpeed();
     updateAchievements();
