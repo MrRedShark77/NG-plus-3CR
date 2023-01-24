@@ -100,7 +100,7 @@ function getSupersonicMultIncrease() {
 function getShiftRequirement(bulk) {
   let amount = 20;
   var resetNum = player.resets + bulk
-	var maxTier = inNC(4) || player.pSac != undefined ? 6 : 8
+	var maxTier = inNC(4) ? 6 : 8
 	tier = Math.min(resetNum + 4, maxTier)
 
   let mult = 15

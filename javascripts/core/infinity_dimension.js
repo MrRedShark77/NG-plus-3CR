@@ -21,6 +21,7 @@ function DimensionDescription(tier) {
 
 
 function DimensionRateOfChange(tier) {
+  if (inEC(13)) return E(0)
   if (tier === 8) var toGain = getTimeDimensionProduction(1).pow(ECTimesCompleted("eterc7")*0.2).minus(1).max(0)
   else var toGain = DimensionProduction(tier+1)
   var current = Decimal.max(player["infinityDimension"+tier].amount, 1);
@@ -53,8 +54,8 @@ function DimensionProduction(tier) {
   if (player.currentEternityChall == "eterc7") ret = ret.dividedBy(player.tickspeed.dividedBy(1000))
   if (player.challenges.includes("postc6")) {
       let tick = E(player.tickspeed)
-      if (player.dilation.active) {
-        tick = Decimal.pow(10, Math.pow(Math.abs(tick.log10()), 0.75))
+      if (player.dilation.active || inEC(15)) {
+        tick = Decimal.pow(10, Math.pow(Math.abs(tick.log10()), getDilationPenalty()))
         if (player.dilation.upgrades.includes(11)) {
           tick = Decimal.pow(10, Math.pow(Math.abs(tick.log10()), 1.05))
         }
@@ -68,7 +69,7 @@ function DimensionProduction(tier) {
 function DimensionPower(tier) {
   var dim = player["infinityDimension"+tier]
   if (player.currentEternityChall == "eterc11") return E(1)
-  if (player.currentEternityChall == "eterc2") return E(0)
+  if (player.currentEternityChall == "eterc2" || inEC(14)) return E(0)
   var mult = dim.power
 
   mult = mult.times(infDimPow)
@@ -113,8 +114,8 @@ function DimensionPower(tier) {
 
   if (hasTSTier(2,22)) mult = mult.pow(1.025)
 
-  if (player.dilation.active) {
-    mult = Decimal.pow(10, Math.pow(mult.log10(), 0.75))
+  if (player.dilation.active || inEC(15)) {
+    mult = Decimal.pow(10, Math.pow(mult.log10(), getDilationPenalty()))
     if (player.dilation.upgrades.includes(11)) {
       mult = Decimal.pow(10, Math.pow(mult.log10(), 1.05))
     }
@@ -210,7 +211,7 @@ function buyManyInfinityDimension(tier) {
       dim.cost = Decimal.round(dim.cost.times(infCostMults[tier]))
   }
   dim.power = dim.power.times(getIDPowerMult(tier))
-  dim.baseAmount = Math.min(dim.baseAmount+10,tmp.inf_bought_cap*10)
+  dim.baseAmount = tier < 8 ? Math.min(dim.baseAmount+10,tmp.inf_bought_cap*10) : dim.baseAmount+10
 
   if (player.currentEternityChall == "eterc8") player.eterc8ids-=1
   document.getElementById("eterc8ids").textContent = "You have "+player.eterc8ids+" purchases left."
@@ -232,13 +233,13 @@ function buyMaxInfDims(tier) {
   }
 
   var toBuy = Math.floor((player.infinityPoints.e - dim.cost.e) / Math.log10(costMult))
-  toBuy = Math.min(toBuy+dim.baseAmount/10,tmp.inf_bought_cap)-dim.baseAmount/10
+  toBuy = tier < 8 ? Math.min(toBuy+dim.baseAmount/10,tmp.inf_bought_cap)-dim.baseAmount/10 : toBuy
   dim.cost = dim.cost.times(Decimal.pow(costMult, toBuy-1))
   player.infinityPoints = player.infinityPoints.minus(dim.cost)
   dim.cost = dim.cost.times(costMult)
   dim.amount = dim.amount.plus(10*toBuy);
   dim.power = dim.power.times(Decimal.pow(getIDPowerMult(tier), toBuy))
-  dim.baseAmount = Math.min(dim.baseAmount+10*toBuy,tmp.inf_bought_cap*10)
+  dim.baseAmount = tier < 8 ? Math.min(dim.baseAmount+10*toBuy,tmp.inf_bought_cap*10) : dim.baseAmount+10*toBuy
   buyManyInfinityDimension(tier)
 }
 

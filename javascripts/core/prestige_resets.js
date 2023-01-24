@@ -82,7 +82,7 @@ function doCrunchResetStuff(){
 	player.tickspeed = E(1000)
 }
 
-function doEternityResetStuff(){
+function doEternityResetStuff(chal=false){
 	player.money = new Decimal(10)
 	player.tickSpeedCost = new Decimal(1000)
 	player.tickspeed = new Decimal(1000)
@@ -137,8 +137,10 @@ function doEternityResetStuff(){
 	player.eterc8repl = 40
 	player.dimlife = true
 	player.dead = true
-	player.eternityChallGoal = new Decimal(Number.MAX_VALUE)
-	player.currentEternityChall = ""
+	if (!chal) {
+		player.eternityChallGoal = new Decimal(Number.MAX_VALUE)
+		player.currentEternityChall = ""
+	}
     player.postC3Reward = E(1)
 }
 

@@ -312,3 +312,18 @@ function checkAchievements() {
 function updateAchievementsTooltip() {
   el(allAchievements.r144).setAttribute('ach-tooltip',`Get over ${shortenMoney(Number.MAX_VALUE)} of tick reduction.`)
 }
+
+/*
+function checkADblocker() {
+  let test = new Request(
+    "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+    // "https://static.ads-twitter.com/uwt.js",
+    { method: "HEAD", mode: "no-cors" }
+  );
+ 
+  // (B) FIRE THE REQEST
+  fetch(test)
+  .then(res => alert("ADS ALLOWED"))
+  .catch(err => alert("ADBLOCK DETECTED"));
+}
+*/

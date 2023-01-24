@@ -10,11 +10,9 @@ function getTickSpeedMultiplier() {
       if (player.galaxies == 0) baseMultiplier = 0.89
       if (player.currentChallenge == "challenge6" || player.currentChallenge == "postc1") baseMultiplier = 0.93;
       let perGalaxy = 0.02;
-      let galaxies = player.galaxies+player.replicanti.galaxies+player.dilation.freeGalaxies
+      let galaxies = tmp.totalGalaxies
       if (player.timestudy.studies.includes(133)) galaxies += player.replicanti.galaxies/2
       if (player.timestudy.studies.includes(132)) galaxies += player.replicanti.galaxies*0.4
-      if (player.timestudy.studies.includes(225)) galaxies += Math.floor(player.replicanti.amount.e / 1000)
-      if (player.timestudy.studies.includes(226)) galaxies += Math.floor(player.replicanti.gal / 15)
       galaxies += Math.min(player.replicanti.galaxies, player.replicanti.gal) * Math.max(Math.pow(Math.log10(player.infinityPower.plus(1).log10()+1), 0.03 * ECTimesCompleted("eterc8"))-1, 0)
       if (player.infinityUpgrades.includes("galaxyBoost")) perGalaxy *= 2;
       if (player.infinityUpgrades.includes("postGalaxy")) perGalaxy *= 1.5;
@@ -22,16 +20,15 @@ function getTickSpeedMultiplier() {
       if (player.achievements.includes("r86")) perGalaxy *= 1.01;
       if (player.timestudy.studies.includes(212)) perGalaxy *= Math.min(Math.pow(player.timeShards.max(2).log2(), 0.005), 1.1)
 
-      return baseMultiplier-(player.galaxies*perGalaxy);
+      return E(baseMultiplier-(player.galaxies*perGalaxy));
   } else {
       let baseMultiplier = 0.8
       if (player.currentChallenge == "challenge6" || player.currentChallenge == "postc1") baseMultiplier = 0.83
       let perGalaxy = 0.965
-      let galaxies = player.galaxies-2+player.replicanti.galaxies+player.dilation.freeGalaxies
+      let galaxies = tmp.totalGalaxies-2
+
       if (player.timestudy.studies.includes(133)) galaxies += player.replicanti.galaxies/2
       if (player.timestudy.studies.includes(132)) galaxies += player.replicanti.galaxies*0.4
-      if (player.timestudy.studies.includes(225)) galaxies += Math.floor(player.replicanti.amount.e / 1000)
-      if (player.timestudy.studies.includes(226)) galaxies += Math.floor(player.replicanti.gal / 15)
       galaxies +=  Math.min(player.replicanti.galaxies, player.replicanti.gal) * Math.max(Math.pow(Math.log10(player.infinityPower.plus(1).log10()+1), 0.03 * ECTimesCompleted("eterc8"))-1, 0)
       if (player.infinityUpgrades.includes("galaxyBoost")) galaxies *= 2;
       if (player.infinityUpgrades.includes("postGalaxy")) galaxies *= 1.5;
@@ -42,7 +39,7 @@ function getTickSpeedMultiplier() {
 
 	  if (hasTSTier(2,31)) galaxies *= TSTierEffect(2,31)
 
-      return Decimal.pow(perGalaxy, (galaxies-2)).mul(baseMultiplier)
+      return Decimal.pow(perGalaxy, galaxies).mul(baseMultiplier)
   }
 }
 
@@ -113,7 +110,7 @@ function buyMaxPostInfTickSpeed(mult) {
 	}
 	player.tickSpeedCost = player.tickSpeedCost.times(player.tickspeedMultiplier.pow(buying-1)).times(Decimal.pow(mi, (buying-1)*(buying-2)/2))
 	player.tickspeedMultiplier = player.tickspeedMultiplier.times(Decimal.pow(mi, buying-1))
-  player.tickspeed = player.tickspeed.mul(Decimal.pow(mult,buying))
+  	player.tickspeed = player.tickspeed.mul(Decimal.pow(mult,buying))
 	if (player.money.gte(player.tickSpeedCost)) player.money = player.money.minus(player.tickSpeedCost)
 	else if (player.tickSpeedMultDecrease > 2) player.money = new Decimal(0)
 	player.tickSpeedCost = player.tickSpeedCost.times(player.tickspeedMultiplier)
@@ -163,6 +160,8 @@ function buyMaxTickSpeed() {
 	}
 
 	tmp.tickUpdate = true
+
+	updateTickSpeed()
 }
 
 

@@ -31,6 +31,16 @@ function startDilatedEternity() {
     }, 250)
 }
 
+function getDilationPenalty() {
+    let x = .75
+
+    if (!inEC(15)) x += ECTimesCompleted('eterc15')/100
+
+    if (inEC(15)) x **= 2
+
+    return x
+}
+
 function DilUnlocked() { return player.dilation.studies.includes(1) }
 
 function unlockDilation() {
@@ -59,6 +69,8 @@ function getTachyonGainMultiplier() {
 
 function getTachyonGainExponent() {
     let x = 1.5 + player.dilation.rebuyables[4] * .2
+
+    if (x >= 5) x = (x/5)**.5*5
 
     return x
 }
@@ -99,7 +111,7 @@ function eterUpgDilEff() {
  const DIL_UPG_COSTS = [null, [1e5, 10], [1e6, 100], [1e7, 20], [1e8, 1e4],
                               5e6,        1e9,         5e7,      1e20,
                               2e12,        1e10,         1e11,    1e15,
-                              1e35,         1e55,         1/0,       1/0,
+                              1e35,        1e55,       1e80,       1/0,
                             ]
 
 
@@ -147,6 +159,7 @@ function updateDilationUpgradeButtons() {
             document.getElementById("dil"+i).className = ( DIL_UPG_COSTS[i] > player.dilation.dilatedTime ) ? "dilationupglocked" : "dilationupg";
         }
     }
+    document.getElementById("dil4desc").textContent = "Currently: ^1.5 -> ^"+(getTachyonGainExponent().toFixed(2))
     document.getElementById("dil8desc").textContent = "Currently: "+shortenMoney(player.dilation.dilatedTime.max(1).pow(0.05))+"x faster"
     document.getElementById("dil9desc").textContent = "Currently: "+shortenMoney(player.dilation.dilatedTime.pow(1000).max(1))+"x"
     document.getElementById("dil12desc").textContent = "Currently: "+shortenMoney(getDU12Effect())+"/s"

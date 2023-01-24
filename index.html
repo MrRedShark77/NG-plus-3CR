@@ -490,7 +490,7 @@
                             <button class="timestudy" id="dil3" onclick="buyDilationUpgrade(3)">Triple the amount of Tachyon Particles gained.<br><span id="dil3cost">Cost: 1e7 dilated time</span></button>
                         </td>
                         <td>
-                            <button class="timestudy" id="dil4" onclick="buyDilationUpgrade(4)">Increase the exponent of the TP formula.<br><span id="dil4cost">Cost: ??? dilated time</span></button>
+                            <button class="timestudy" id="dil4" onclick="buyDilationUpgrade(4)">Increase the exponent of the TP formula.<br><span id="dil4desc"></span><br><span id="dil4cost">Cost: ??? dilated time</span></button>
                         </td>
                     </tr><tr>
                         <td>
@@ -520,13 +520,13 @@
                         </td>
                     </tr><tr id="meta_du">
                         <td>
-                            <button class="timestudy" id="dil13" style="font-size: 0.6rem;" onclick="buyDilationUpgrade(13)">Meta Dimensions gain a multiplier based on tickspeed. (1+log(1+log(x)))<br><span id="dil13desc"></span><br><span id="dil13cost"></span></button>
+                            <button class="timestudy" id="dil13" style="font-size: 0.6rem;" onclick="buyDilationUpgrade(13)">Meta Dimensions gain a multiplier based on tickspeed. [1+log(1+log(x))]<br><span id="dil13desc"></span><br><span id="dil13cost"></span></button>
                         </td>
                         <td>
-                            <button class="timestudy" id="dil14" style="font-size: 0.56rem;" onclick="buyDilationUpgrade(14)">	Meta-dimension shifts, boosts, and per-ten upgrades are boosted by dilated time. (log(log(x))+1)<br><span id="dil14desc"></span><br><span id="dil14cost"></span></button>
+                            <button class="timestudy" id="dil14" style="font-size: 0.56rem;" onclick="buyDilationUpgrade(14)">Meta-dimension shifts, boosts, and per-ten upgrades are boosted by dilated time. [log(log(x+1)+10)]<br><span id="dil14desc"></span><br><span id="dil14cost"></span></button>
                         </td>
                         <td>
-                            <button class="timestudy" id="dil15" style="font-size: 0.6rem;" onclick="buyDilationUpgrade(15)">???.<br><span id="dil15desc"></span><br><span id="dil15cost"></span></button>
+                            <button class="timestudy" id="dil15" style="font-size: 0.6rem;" onclick="buyDilationUpgrade(15)">The meta-antimatter effect on dimension boosts is stronger. (^5 -> ^6)<br><span id="dil15desc"></span><br><span id="dil15cost"></span></button>
                         </td>
                         <td>
                             <button class="timestudy" id="dil16" style="font-size: 0.6rem;" onclick="buyDilationUpgrade(16)">???.<br><span id="dil16desc"></span><br><span id="dil16cost"></span></button>
@@ -952,7 +952,7 @@
                     <p>You have <span id="metaAntimatter" style="font-size:35px; color: black">0</span> meta-antimatter.</p>
                     <p>
                         Your best meta-antimatter for next layer was <span id="bestMA1" style="font-size:35px; color: black">0</span>.
-                        Raising them by <span style="font-size:35px; color: black">5.0</span>, translated to <span id="MDEffect" style="font-size:35px; color: black">1.0</span>x extra multiplier per Dimension Boost.
+                        Raising them by <span id="MDEffectPower" style="font-size:35px; color: black">5.0</span>, translated to <span id="MDEffect" style="font-size:35px; color: black">1.0</span>x extra multiplier per Dimension Boost.
                     </p>
                 </div><div id="MAGain">
                     You are getting 0.0 meta-antimatter per second.
@@ -1035,7 +1035,7 @@
             <br><div style="display: none;"><textarea id="exportOutput" style="color:black; width: 200px; height: 55px;"></textarea></div>
             <p>Hotkeys: 1-8 for buy 10 dimension, shift+1-8 for buy 1 dimension, T to buy max tickspeed, shift+T to buy one tickspeed, M for max all<br>S for sacrifice, D for dimension boost, G for galaxy, C for crunch, A for toggle autobuyers, R for replicanti galaxies, E for eternity.<br>You can hold shift while buying time studies to buy all up until that point, see each study's number, and save study trees.<br>Hotkeys do not work while holding control.</p>
             <p>
-                Antimatter Dimensions: NG+3 Classic Reloaded v1.0.1 - Made by MrRedShark77
+                Antimatter Dimensions: NG+3 Classic Reloaded v1.0.2 - Made by MrRedShark77
             </p>
             <div id="footercontainer">
                 <table id="footer">
@@ -2091,11 +2091,55 @@
                                 <br>
                                 <br>
                                 <div class="outer">
-                                    <button id="eterc12" class="challengesbtn" onclick="startEternityChallenge('eterc12', E('1e110000'), E('1e12000'))">Start</button>
+                                    <button id="eterc12" class="challengesbtn" onclick="startEternityChallenge('eterc12')">Start</button>
                                     <br>
                                     <span id="eterc12completed">Completed 0 Times.</span><br>
                                     <span id="eterc12goal" >Goal: 1e110000 in 0.5 seconds or less.</span><br>
                                     <span id="ec12reward">Reward: Infinity Dimension cost multipliers are reduced. (x^1)</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="eterchallengediv" id="eterc13div" style="height: 140px; display: none">
+                                <span>Pre-Meta Dimensions 2-8 don’t produce anything.</span>
+                                <br>
+                                <br>
+                                <div class="outer">
+                                    <button id="eterc13" class="challengesbtn" onclick="startEternityChallenge('eterc13')">Start</button>
+                                    <br>
+                                    <span id="eterc13completed">Completed 0 Times.</span><br>
+                                    <span id="eterc13goal" >Goal: ??? IP</span><br>
+                                    <span id="ec13reward">Reward: ???</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="eterchallengediv" id="eterc14div" style="height: 140px; display: none">
+                                <span>The IP mult upgrade is nullified. Infinity and time dimensions, replicantis are disabled.</span>
+                                <br>
+                                <br>
+                                <div class="outer">
+                                    <button id="eterc14" class="challengesbtn" onclick="startEternityChallenge('eterc14')">Start</button>
+                                    <br>
+                                    <span id="eterc14completed">Completed 0 Times.</span><br>
+                                    <span id="eterc14goal" >Goal: ???</span><br>
+                                    <span id="ec14reward">Reward: ???</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="eterchallengediv" id="eterc15div" style="height: 140px; display: none">
+                                <span>You are trapped in Time Dilation, but it works twice as stronger and doesn’t get affected by this reward.</span>
+                                <br>
+                                <br>
+                                <div class="outer">
+                                    <button id="eterc15" class="challengesbtn" onclick="startEternityChallenge('eterc15')">Start</button>
+                                    <br>
+                                    <span id="eterc15completed">Completed 0 Times.</span><br>
+                                    <span id="eterc15goal" >Goal: ???</span><br>
+                                    <span id="ec15reward">Reward: Decrease dilation’s penalty. (^0.75 -> ^0.75)</span>
                                 </div>
                             </div>
                         </td>

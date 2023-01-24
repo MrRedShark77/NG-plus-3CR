@@ -1,5 +1,7 @@
 var tmp = {}
 
+var passed = false
+
 function setupTemp() {
     let s = {
         dimBoostReq: getShiftRequirement(0),
@@ -23,6 +25,8 @@ function setupTemp() {
         inf_pow: 7,
         inf_eff: E(1),
 
+        totalGalaxies: 0,
+
         meta: {
             mult: [null],
             cost: [null],
@@ -43,6 +47,8 @@ function setupTemp() {
         },
 
         remoteGalaxyStart: 800,
+
+        inf_mult_base: 2,
     }
 
     for (let x = 1; x <= 8; x++) {
@@ -68,14 +74,27 @@ function getRemoteGalaxyStarting() {
     return x
 }
 
+function getTotalGalaxies() {
+    let x = player.galaxies + player.replicanti.galaxies + player.dilation.freeGalaxies
+
+    if (player.timestudy.studies.includes(225)) x += Math.floor(player.replicanti.amount.e / 1000)
+    if (player.timestudy.studies.includes(226)) x += Math.floor(player.replicanti.gal / 15)
+
+    return x
+}
+
 function updateTemp() {
+    tmp.totalGalaxies = getTotalGalaxies()
+
+    tmp.inf_mult_base = 2 + ECTimesCompleted('eterc14')/5
+
     updateTSTiersTemp()
     updateMDTemp()
 
     tmp.inf_pow = 7
     if (hasTSTier(2,34)) tmp.inf_pow += TSTierEffect(2,34,0)
 
-    tmp.inf_eff = player.infinityPower.pow(tmp.inf_pow)
+    tmp.inf_eff = player.infinityPower.add(1).pow(tmp.inf_pow)
 
     tmp.remoteGalaxyStart = getRemoteGalaxyStarting()
 

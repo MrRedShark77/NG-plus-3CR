@@ -7,7 +7,8 @@ const TS_TIERS_MAP = [
         [11],
         [21,22,23],
         [31,32,33,34,35,36],
-        [41,42,43]
+        [41,42,43],
+        [51,52,53],
     ],
 ]
 
@@ -92,12 +93,34 @@ const TS_TIERS = [
             3e23,
             3,
         ],
+        51: [
+            "Eternity Challenge 13",
+            [41],
+            1e36,
+            1,
+            'ec',
+        ],
+        52: [
+            "Eternity Challenge 14",
+            [42],
+            1e36,
+            1,
+            'ec',
+        ],
+        53: [
+            "Eternity Challenge 15",
+            [43],
+            1e36,
+            1,
+            'ec',
+        ],
 
         /*
         11: [
             "Placeholder.",
             [],
             1/0,
+            1,
         ],
         */
     },
@@ -182,12 +205,71 @@ const TS_TIERS_EFF = [
     },
 ]
 
+const TS_NO_MULT_INCREASE = {
+    2: [51,52,53],
+}
+
+const TS_REQS = {
+    2: {
+        51: [
+            () => ECTimesCompleted('eterc13')*50+1350,
+            (x) => `${x} normal galaxies without non-bonus replicated galaxies in eternity run (${player.galaxies}/${x})`,
+            (x) => player.replicanti.galaxies == 0 && player.galaxies >= x,
+        ],
+        52: [
+            () => ECTimesCompleted('eterc14')*100+1200,
+            (x) => `${x} replicated galaxies (${tmp.totalGalaxies-player.galaxies-player.dilation.freeGalaxies}/${x})`,
+            (x) => tmp.totalGalaxies-player.galaxies-player.dilation.freeGalaxies >= x,
+        ],
+        53: [
+            () => ECTimesCompleted('eterc15')*50+400,
+            (x) => `${x} normal galaxies while dilated (${player.galaxies}/${x})`,
+            (x) => player.dilation.active && player.galaxies >= x,
+        ],
+    },
+}
+
+const TS_BUTTON_TYPE = {
+    normal: ['timestudy','timestudylocked','timestudybought'],
+    ec: ['eternitychallengestudy','eternitychallengestudylocked','eternitychallengestudybought'],
+}
+
 function getTSTierStyle(t,id) {
     let s = ""
     if (t == 2) {
-        if (id >= 31 && id <= 36) s = `width: 140px; font-size: 0.57rem; margin: 7px 0px;`
+        if (id >= 31 && id <= 36) s = `width: 140px; font-size: 0.57rem; margin: 7px 0px;`;
+        else if (id >= 51 && id <= 53) s = `font-size: 0.58rem;`
     }
     return s
+}
+
+function updateTSTiersButtons(tier=ts_tier_tab,force=false) {
+    if ((ts_tier_tab == tier || force) && tier > 1) {
+        for (id in TS_TIERS[tier]) {
+            id = parseInt(id)
+
+            let data = TS_TIERS[tier][id]
+            let eff = TS_TIERS_EFF[tier][id]
+            let btn = el('TST'+tier+"_"+id)
+            let cost = tmp.ts_tier.cost[tier][id]
+            let style = TS_BUTTON_TYPE[data[4] || 'normal']
+
+            let req
+
+            if (id in TS_REQS[tier]) req = TS_REQS[tier][id]
+
+            let h = data[0]
+
+            if (eff) h += "<span>Currently: "+eff[1](TSTierEffect(tier,id))
+
+            if (data[4] == 'ec') h += "<span>Requirement: "+req[1](req[0]())
+
+            h += "<span>Cost: "+shorten(cost)+" TT"
+
+            btn.innerHTML = h
+            btn.className = hasTSTier(tier,id) ? style[2] : canBuyTSTier(tier,id) ? style[0] : style[1]
+        }
+    } 
 }
 
 function setupTSTiersHTML() {
@@ -231,6 +313,15 @@ function getTSTierCost(t,id) { return tmp.ts_tier.cost[t][id] || TS_TIERS[t][id]
 function TSTierEffect(t,id,def=1) { return tmp.ts_tier.effect[t][id] || def } 
 
 function canBuyTSTier(t,id) {
+    if (player.eternityChallUnlocked !== 0 && t == 2 && id >= 51 && id <= 53 && player.eternityChallUnlocked != id - 38) return false
+
+    let req
+
+    if (id in TS_REQS[t]) {
+        req = TS_REQS[t][id]
+        if (!req[2](req[0]())) return false
+    }
+
     let data = TS_TIERS[t][id]
     let bought
 
@@ -250,8 +341,12 @@ function buyTSTier(t,id) {
         player.timestudy.theorem -= tmp.ts_tier.cost[t][id]
         player.ts_tier[t-2].push(id)
 
-        drawStudyTree()
+        if (t == 2 && id >= 51 && id <= 53) {
+            unlockEChall(id - 38)
+        }
+
         updateTSTierCosts(t)
+        drawStudyTree()
     }
 }
 
@@ -262,19 +357,7 @@ function updateTSTiersHTML() {
         for (let x = 1; x <= 2; x++) {
             el('TS_tier'+x).style.display = ts_tier_tab == x ? "block" : "none";
 
-            if (ts_tier_tab == x && x > 1) {
-                for (id in TS_TIERS[x]) {
-                    id = parseInt(id)
-
-                    let data = TS_TIERS[x][id]
-                    let eff = TS_TIERS_EFF[x][id]
-                    let btn = el('TST'+x+"_"+id)
-                    let cost = tmp.ts_tier.cost[x][id]
-
-                    btn.innerHTML = data[0]+(eff?"<span>Currently: "+eff[1](TSTierEffect(x,id)):"")+"<span>Cost: "+shorten(cost)+" TT"
-                    btn.className = hasTSTier(x,id) ? "timestudybought" : canBuyTSTier(x,id) ? "timestudy" : "timestudylocked"
-                }
-            } 
+            updateTSTiersButtons(x)
         }
     }
 }
@@ -292,8 +375,9 @@ function updateTSTierCosts(t) {
     tmp.ts_tier.mult[t] = mult
     //console.log(cost_mult)
     for (let id in datas) {
+        id = parseInt(id)
         let data = datas[id]
-        tmp.ts_tier.cost[t][id] = data[2] * (cost_mult[id]||mult)
+        tmp.ts_tier.cost[t][id] = data[2] * (TS_NO_MULT_INCREASE[t].includes(id) ? 1 : cost_mult[id]||mult)
     }
 }
 

@@ -42,8 +42,8 @@ function getTimeDimensionPower(tier) {
 
   if (hasTSTier(2,23)) ret = ret.pow(1.025)
 
-  if (player.dilation.active) {
-    ret = Decimal.pow(10, Math.pow(ret.log10(), 0.75))
+  if (player.dilation.active || inEC(15)) {
+    ret = Decimal.pow(10, Math.pow(ret.log10(), getDilationPenalty()))
     if (player.dilation.upgrades.includes(11)) {
       ret = Decimal.pow(10, Math.pow(ret.log10(), 1.05))
     }
@@ -71,7 +71,7 @@ function toggleAllTimeDims() {
 
 
 function getTimeDimensionProduction(tier) {
-  if (player.currentEternityChall == "eterc10") return E(0)
+  if (player.currentEternityChall == "eterc10" || inEC(14)) return E(0)
   var dim = player["timeDimension"+tier]
   if (player.currentEternityChall == "eterc11") return dim.amount
   var ret = dim.amount
@@ -85,6 +85,7 @@ function getTimeDimensionProduction(tier) {
 
 
 function getTimeDimensionRateOfChange(tier) {
+  if (inEC(13)) return E(0)
   let toGain = getTimeDimensionProduction(tier+1)
   var current = Decimal.max(player["timeDimension"+tier].amount, 1);
   var change  = toGain.times(10).dividedBy(current);

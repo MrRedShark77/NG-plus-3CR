@@ -121,6 +121,7 @@ function updateMetaDimensionsHTML() {
         el('metaAntimatter').textContent = shortenMoney(pm.antimatter)
         el('bestMA1').textContent = shortenMoney(pm.best1)
 
+        el('MDEffectPower').textContent = tmp.meta.pow.toFixed(1)
         el('MDEffect').textContent = shortenMoney(tmp.meta.effect)
         el('MAGain').textContent = `You are getting ${shortenMoney(getMetaDimensionProduction(1))} meta-antimatter per second.`
 
@@ -197,6 +198,8 @@ function getMDEffect() {
 
 function updateMDTemp() {
     let mtmp = tmp.meta
+
+    mtmp.pow = (player.dilation.upgrades.includes(15) ? 6 : 5) + ECTimesCompleted('eterc13')/5
 
     mtmp.mult_inc = getMDMultIncrease()
     mtmp.effect = getMDEffect()

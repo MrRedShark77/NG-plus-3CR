@@ -70,8 +70,8 @@ function getDimensionFinalMultiplier(tier) {
   
   if (hasTSTier(2,21)) multiplier = multiplier.pow(1.025)
   
-  if (player.dilation.active) {
-    multiplier = Decimal.pow(10, Math.pow(multiplier.log10(), 0.75))
+  if (player.dilation.active || inEC(15)) {
+    multiplier = Decimal.pow(10, Math.pow(multiplier.log10(), getDilationPenalty()))
     if (player.dilation.upgrades.includes(11)) {
       multiplier = Decimal.pow(10, Math.pow(multiplier.log10(), 1.05))
     }
@@ -100,7 +100,7 @@ function getDimensionDescription(tier) {
 }
 
 function getDimensionRateOfChange(tier) {
-  if (tier == 8 || (player.currentEternityChall == "eterc3" && tier > 3)) {
+  if (tier == 8 || (player.currentEternityChall == "eterc3" && tier > 3) || (inEC(13))) {
       return 0;
   }
 
@@ -575,9 +575,9 @@ function getDimensionProductionPerSecond(tier) {
         else if (tier == 2) ret = player[TIER_NAMES[tier] + 'Amount'].floor().pow(1.5).times(getDimensionFinalMultiplier(tier)).dividedBy(player.tickspeed.dividedBy(1000))
     }
     if (player.currentChallenge == "challenge2" || player.currentChallenge == "postc1") ret = ret.times(player.chall2Pow)
-    if (player.dilation.active) {
+    if (player.dilation.active || inEC(15)) {
         let tick = E(player.tickspeed)
-        tick = Decimal.pow(10, Math.pow(Math.abs(tick.log10()), 0.75))
+        tick = Decimal.pow(10, Math.pow(Math.abs(tick.log10()), getDilationPenalty()))
         if (player.dilation.upgrades.includes(11)) {
             tick = Decimal.pow(10, Math.pow(Math.abs(tick.log10()), 1.05))
           }

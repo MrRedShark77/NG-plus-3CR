@@ -389,7 +389,7 @@ function onLoad() {
 
             $.notify('The game will resets all TDs because of TD cost new scaling!')
         }
-    } 
+    }
 
     setTheme(player.options.theme);
 
@@ -416,7 +416,7 @@ function onLoad() {
     if (player.resets > 0) document.getElementById("fifthRow").style.display = "table-row";
     if (player.fifthAmount !== 0|| player.eternities >= 30)
     if (player.resets > 1) document.getElementById("sixthRow").style.display = "table-row";
-    if (player.sixthAmount !== 0|| player.eternities >= 30)
+    if (player.sixthBought !== 0|| player.eternities >= 30)
     if (player.resets > 2 && player.currentChallenge !== "challenge4" && player.currentChallenge !== "postc1") document.getElementById("seventhRow").style.display = "table-row";
     if (player.seventhAmount !== 0|| player.eternities >= 30)
     if (player.resets > 3 && player.currentChallenge !== "challenge4") document.getElementById("eightRow").style.display = "table-row";
@@ -453,6 +453,7 @@ function onLoad() {
     toggleEternityConf()
     toggleCommas()
     toggleCommas()
+
     if (!player.replicanti.auto[0]) document.getElementById("replauto1").textContent = "Auto: OFF"
     if (!player.replicanti.auto[1]) document.getElementById("replauto2").textContent = "Auto: OFF"
     if (!player.replicanti.auto[2]) document.getElementById("replauto3").textContent = "Auto: OFF"
@@ -478,7 +479,7 @@ function onLoad() {
 
 
     if (player.break == true) document.getElementById("break").textContent = "FIX INFINITY"
-    document.getElementById("infiMult").innerHTML = "Multiply infinity points from all sources by 2 <br>currently: "+shortenDimensions(player.infMult.times(kongIPMult)) +"x<br>Cost: "+shortenCosts(player.infMultCost)+" IP"
+    document.getElementById("infiMult").innerHTML = "You get "+tmp.inf_mult_base.toFixed(1)+"x more IP.<br>Currently: "+shortenDimensions(player.infMult.times(kongIPMult)) +"x<br>Cost: "+shortenCosts(player.infMultCost)+" IP"
 
     document.getElementById("notation").textContent = "Notation: " + player.options.notation
 

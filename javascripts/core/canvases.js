@@ -99,6 +99,7 @@ function drawTreeBranch(num1, num2, tier=1) {
         }
     } else {
         var name2 = parseInt(num2)
+        if (tier == 2 && name2 >= 51 && name2 <= 53) isECName = true
     }
     var start = document.getElementById((tier>1?"TST"+tier+"_":"")+num1).getBoundingClientRect();
     var end = document.getElementById((tier>1?"TST"+tier+"_":"")+num2).getBoundingClientRect();
@@ -150,7 +151,7 @@ function drawTreeBranch(num1, num2, tier=1) {
         }
     } else {
         if (
-            (hasTSTier(tier,name1) && hasTSTier(tier,name2) && !isECName)
+            hasTSTier(tier,name1) && hasTSTier(tier,name2)
         ) {
             if (isECName) ctx.strokeStyle="#490066";
             else ctx.strokeStyle="#000";
