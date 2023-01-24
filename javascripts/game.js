@@ -3060,8 +3060,8 @@ var ecExpData = {
 		eterc11: 200,
 		eterc12: 12000,
         eterc13: 1e6,
-        eterc14: 2e6,
-        eterc15: 11111,
+        eterc14: 4e6,
+        eterc15: 22222,
 	}
 }
 function getECGoal(x) {
