@@ -135,8 +135,8 @@ const allAchievements = {
   r144 : "'cow riding a skateboard'",
   r145 : "Super Booster!",
   r146 : "Anti-Immortal",
-  //
-  //
+  r147 : "You have already dilated...",
+  r148 : "Faster than a rainbow potato",
 
   s41 : "That dimension doesn’t exist",
 };
@@ -307,10 +307,12 @@ function checkAchievements() {
   if (player.infinityDimension1.baseAmount/10>=2e6) giveAchievement('r143',true)
   if (tmp.tsReduce.min(1).pow(-1).gte(Number.MAX_VALUE)) giveAchievement('r144',true)
   if (player.totalTickGained >= 1e6) giveAchievement('r146',true)
+  if (player.tickspeed.e <= -486539264) giveAchievement('r148',true)
 }
 
 function updateAchievementsTooltip() {
   el(allAchievements.r144).setAttribute('ach-tooltip',`Get over ${shortenMoney(Number.MAX_VALUE)} of tick reduction.`)
+  el(allAchievements.r148).setAttribute('ach-tooltip',`Get more than ${shortenCosts(Decimal.pow(10,486539264))} ticks per second.`)
 }
 
 /*

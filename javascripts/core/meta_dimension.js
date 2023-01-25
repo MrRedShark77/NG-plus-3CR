@@ -65,7 +65,7 @@ function buyMD(i,max=false) {
         if (max) {
             let bulk = getMDBulk(i)
 
-            cost = Decimal.pow(costMults[i],bulk-1).mul(STARTING_COST[i])
+            cost = getMDCost(i,bulk-1)
             buying = Math.max(bulk - player.meta[i].bought,0)
         }
 
@@ -147,8 +147,8 @@ function updateMetaDimensionsHTML() {
     }
 }
 
-function getMDCost(i) {
-    let p = player.meta[i].bought, q = 110 - 10*i
+function getMDCost(i, p = player.meta[i].bought) {
+    q = 110 - 10*i
 
     if (p>=q) p = (p/q)**2*q
 

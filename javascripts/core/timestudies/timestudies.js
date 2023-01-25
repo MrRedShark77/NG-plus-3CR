@@ -363,6 +363,8 @@ function respecTimeStudies(tier=ts_tier_tab) {
           player.timestudy.theorem += 1
           break;
         }
+
+        if (player.eternityChallUnlocked<=12) player.eternityChallUnlocked = 0
     } else {
         let pts = player.ts_tier[tier-2]
         let costs = tmp.ts_tier.cost[tier]
@@ -372,8 +374,8 @@ function respecTimeStudies(tier=ts_tier_tab) {
         }
 
         player.ts_tier[tier-2] = []
+        if (player.eternityChallUnlocked>12) player.eternityChallUnlocked = 0
     }
-  player.eternityChallUnlocked = 0
   updateTimeStudyButtons()
   updateTheoremButtons()
   drawStudyTree()

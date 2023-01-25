@@ -1,5 +1,6 @@
 function startDilatedEternity() {
     if (!player.dilation.studies.includes(1)) return
+    if (inEC(15)) giveAchievement('r147',true)
     clearInterval(gameLoopIntervalId);
     if (player.dilation.active) {
         eternity(true)
