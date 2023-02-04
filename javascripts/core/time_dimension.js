@@ -6,7 +6,7 @@ function getTimeDimensionPower(tier) {
   var ret = dim.power.pow(2)
 
   if (player.timestudy.studies.includes(11) && tier == 1) ret = ret.dividedBy(player.tickspeed.dividedBy(1000).pow(0.005).times(0.95).plus(player.tickspeed.dividedBy(1000).pow(0.0003).times(0.05)).max(Decimal.fromMantissaExponent(1, -2500)))
-  if (player.achievements.includes("r105")) ret = ret.div(player.tickspeed.div(1000).pow(0.000005))
+  if (player.achievements.includes("r105")) ret = ret.mul(getInfinityTimeReward())
 
   ret = ret.times(kongAllDimMult)
 
@@ -52,6 +52,14 @@ function getTimeDimensionPower(tier) {
 
   return ret
 
+}
+
+function getInfinityTimeReward() {
+  let x = player.tickspeed.div(1000).pow(-0.000005)
+
+  if (x.gte('1e25000')) x = Decimal.pow(10,softcap(x.l,25000,0.5,0))
+
+  return x
 }
 
 function toggleAllTimeDims() {
@@ -105,6 +113,9 @@ function getTimeDimensionDescription(tier) {
 }
 
 function updateTimeDimensions() {
+  el('infinityTimeReward').style.display = player.achievements.includes('r105') ? '' : 'none'
+  el('infinityTimeReward').innerHTML = `Your "Infinite Time" multiplier is currently <b>${shorten(getInfinityTimeReward())}x</b>.`
+
   if (document.getElementById("timedimensions").style.display == "block" && document.getElementById("dimensions").style.display == "block") {
     for (let tier = 1; tier <= 4; ++tier) {
       document.getElementById("timeD"+tier).textContent = DISPLAY_NAMES[tier] + " Time Dimension x" + shortenMoney(getTimeDimensionPower(tier));
@@ -143,7 +154,9 @@ function isTDUnlocked(t) {
 	return t < 5 || player.dilation.studies.includes(t - 3)
 }
 
-function timeDimCost(tier, bought) {
+function timeDimCost(tier,bought) { // timeDimCost(...args)
+  //var [tier,bought] = args.length > 1 ? args : args[0]
+
 	var cost = Decimal.pow(timeDimCostMults[tier], bought).times(timeDimStartCosts[tier])
 	if (cost.gte(Number.MAX_VALUE)) cost = Decimal.pow(timeDimCostMults[tier]*1.5, bought).times(timeDimStartCosts[tier])
 	if (cost.gte("1e1300")) cost = Decimal.pow(timeDimCostMults[tier]*2.2, bought).times(timeDimStartCosts[tier])
@@ -152,6 +165,11 @@ function timeDimCost(tier, bought) {
   if (cost.gte("1e4000")) {
     let ec = cost.log10()
     cost = Decimal.pow(10+(ec-4000)/100,ec**1.01)
+  }
+
+  if (cost.gte("1e500000")) {
+    let ec = cost.log10()
+    cost = cost.pow((ec-5e5)/1e6+1)
   }
 
 	return cost
@@ -164,13 +182,7 @@ function buyMaxTimeDimension(tier, bulk) {
 	var res = getOrSubResourceTD(tier)
 	if (!isTDUnlocked(tier)) return
 	if (res.lt(dim.cost)) return
-		var toBuy = 0
-		var increment = 1
-		while (player.eternityPoints.gte(timeDimCost(tier, dim.bought + increment - 1))) increment *= 2
-		while (increment>=1) {
-			if (player.eternityPoints.gte(timeDimCost(tier, dim.bought + toBuy + increment - 1))) toBuy += increment
-			increment /= 2
-		}
+		var toBuy = bulkNumberFromDecimalFunctionWithName('td',player.eternityPoints,[tier,dim.bought])
 		var num = toBuy
 		var newEP = player.eternityPoints
 		while (num > 0) {

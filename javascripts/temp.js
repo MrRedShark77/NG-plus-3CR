@@ -1,6 +1,6 @@
 var tmp = {}
 
-var passed = false
+var passed = 0
 
 function setupTemp() {
     let s = {
@@ -25,7 +25,10 @@ function setupTemp() {
         inf_pow: 7,
         inf_eff: E(1),
 
+        extraRG: 0,
         totalGalaxies: 0,
+
+        infGain: 1,
 
         meta: {
             mult: [null],
@@ -48,7 +51,21 @@ function setupTemp() {
 
         remoteGalaxyStart: 800,
 
+        infMultUpg: E(1),
+
         inf_mult_base: 2,
+
+        quarksGain: E(0),
+        chargeRate: {
+            r: E(0),
+            g: E(0),
+            b: E(0),
+        },
+        chargeEffect: {
+            r: 1,
+            g: 1,
+            b: E(1),
+        },
     }
 
     for (let x = 1; x <= 8; x++) {
@@ -74,20 +91,51 @@ function getRemoteGalaxyStarting() {
     return x
 }
 
-function getTotalGalaxies() {
-    let x = player.galaxies + player.replicanti.galaxies + player.dilation.freeGalaxies
+function getExtraReplicatedGalaxies() {
+    let x = 0
 
     if (player.timestudy.studies.includes(225)) x += Math.floor(player.replicanti.amount.e / 1000)
     if (player.timestudy.studies.includes(226)) x += Math.floor(player.replicanti.gal / 15)
+
+    if (player.quantum.unlocked) x *= tmp.chargeEffect.g
+
+    return Math.round(x)
+}
+
+function getTotalGalaxies() {
+    let x = player.galaxies + player.replicanti.galaxies + tmp.extraRG + player.dilation.freeGalaxies
+
+    return x
+}
+
+function getInfinitedGain() {
+    let x = 1
+
+    if (player.thisInfinityTime > 50 && player.achievements.includes("r87")) x = 250;
+    if (player.timestudy.studies.includes(32)) x *= Math.max(player.resets,1);
+
+    return x
+}
+
+function getIPMultiplierFromUpgrade() {
+    let x = player.infMult
+
+    if (x.gte('1e250000000')) x = Decimal.pow(10,softcapNumber(x.l,2.5e8,0.5,0))
 
     return x
 }
 
 function updateTemp() {
+    tmp.extraRG = getExtraReplicatedGalaxies()
     tmp.totalGalaxies = getTotalGalaxies()
+
+    tmp.infMultUpg = getIPMultiplierFromUpgrade()
 
     tmp.inf_mult_base = 2 + ECTimesCompleted('eterc14')/5
 
+    tmp.infGain = getInfinitedGain()
+
+    updateQuantumTemp()
     updateTSTiersTemp()
     updateMDTemp()
 

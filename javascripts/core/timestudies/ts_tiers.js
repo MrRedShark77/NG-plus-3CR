@@ -9,6 +9,7 @@ const TS_TIERS_MAP = [
         [31,32,33,34,35,36],
         [41,42,43],
         [51,52,53],
+        [61],
     ],
 ]
 
@@ -114,6 +115,11 @@ const TS_TIERS = [
             1,
             'ec',
         ],
+        61: [
+            "Colored charge rate is affected by tickspeed at a reduced rate.",
+            [51,52,53],
+            1e45,
+        ],
 
         /*
         11: [
@@ -202,6 +208,14 @@ const TS_TIERS_EFF = [
             },
             x=>shorten(x)+"x",
         ],
+        61: [
+            ()=>{
+                let x = player.tickspeed.div(1e3).pow(-1).max(1).l**0.4+1
+
+                return x
+            },
+            x=>shorten(x)+"x",
+        ],
     },
 ]
 
@@ -267,7 +281,7 @@ function updateTSTiersButtons(tier=ts_tier_tab,force=false) {
             h += "<span>Cost: "+shorten(cost)+" TT"
 
             btn.innerHTML = h
-            btn.className = hasTSTier(tier,id) ? style[2] : canBuyTSTier(tier,id) ? style[0] : style[1]
+            btn.className = (hasTSTier(tier,id) ? style[2] : canBuyTSTier(tier,id) ? style[0] : style[1]) + (!player.quantum.unlocked && tier==2 && id>60 ? " quantumized" : "")
         }
     } 
 }
@@ -310,9 +324,11 @@ function switchTSTier(i) {
 }
 
 function getTSTierCost(t,id) { return tmp.ts_tier.cost[t][id] || TS_TIERS[t][id][2] }
-function TSTierEffect(t,id,def=1) { return tmp.ts_tier.effect[t][id] || def } 
+function TSTierEffect(t,id,def=1) { return tmp.ts_tier.effect[t][id] || def }
 
 function canBuyTSTier(t,id) {
+    if (t == 2 && id == 61 && !(ECTimesCompleted('eterc13') || ECTimesCompleted('eterc14') || ECTimesCompleted('eterc15'))) return false
+    if (!player.quantum.unlocked && t == 2 && id > 60) return false
     if (player.eternityChallUnlocked !== 0 && t == 2 && id >= 51 && id <= 53 && player.eternityChallUnlocked != id - 38) return false
 
     let req
@@ -325,7 +341,7 @@ function canBuyTSTier(t,id) {
     let data = TS_TIERS[t][id]
     let bought
 
-    if (data[1].length == 0) bought = true
+    if (data[1].length == 0 || (t == 2 && id == 61 && (hasTSTier(2,41)||hasTSTier(2,42)||hasTSTier(2,43)))) bought = true
     else for (let i = 0; i < data[1].length; i++) if (hasTSTier(t,data[1][i])) {
         bought = true
         break

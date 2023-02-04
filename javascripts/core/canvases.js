@@ -37,6 +37,7 @@ function animationOnOff(name) {
     if (name == "floatingText") document.getElementById("floatingTextAnimBtn").textContent = "Floating text: " + ((player.options.animations.floatingText) ? "ON" : "OFF")
     else if (name == "bigCrunch") document.getElementById("bigCrunchAnimBtn").textContent = "Big crunch: " + ((player.options.animations.bigCrunch) ? "ON" : "OFF")
     else if (name == "tachyonParticles") document.getElementById("tachyonParticleAnimBtn").textContent = "Tachyon particles: " + ((player.options.animations.tachyonParticles) ? "ON" : "OFF")
+    else if (name == "quantum") document.getElementById("quantumAnimBtn").textContent = "Quantum: " + ((player.options.animations.quantum) ? "ON" : "OFF")
     if (player.options.animations[name]) requestAnimationFrame(drawAnimations);
 }
 
@@ -192,16 +193,16 @@ function drawTSName(id,tier) {
         if (tier == 1) txt = id
         else {
             let mult = TS_TIERS[tier][id][3]||1
-            txt = tier+"-"+id+" (" + (mult>1e3?shorten(mult):mult) + "x)"
+            txt = tier+"-"+id+(mult>1?" (" + (mult>1e3?shorten(mult):mult) + "x)":"")
         }
         ctx.strokeText(txt, x1 - start.width / 2, y1 - start.height / 2 - 1);
         ctx.fillText(txt, x1 - start.width / 2, y1 - start.height / 2 - 1);
     }
 }
 
-function drawStudyTree() {
+function drawStudyTree(tier=ts_tier_tab) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (ts_tier_tab == 1) {
+    if (tier == 1) {
         if (document.getElementById("secretstudy").style.opacity != "0") drawTreeBranch("11", "secretstudy");
         drawTreeBranch("11", "21");
         drawTreeBranch("11", "22");
@@ -294,14 +295,14 @@ function drawStudyTree() {
         drawTreeBranch("dilstudy4", "dilstudy5")
         drawTreeBranch("dilstudy5", "dilstudy6")
     } else {
-        for (let d in TS_TIERS[ts_tier_tab]) {
-            let b = TS_TIERS[ts_tier_tab][d][1]
+        for (let d in TS_TIERS[tier]) {
+            let b = TS_TIERS[tier][d][1]
 
-            if (b.length > 0) for (let i = 0; i < b.length; i++) drawTreeBranch(b[i],d,ts_tier_tab)
+            if (b.length > 0) for (let i = 0; i < b.length; i++) drawTreeBranch(b[i],d,tier)
         }
     }
     if (shiftDown && document.getElementById("eternitystore").style.display !== "none" && document.getElementById("timestudies").style.display !== "none") {
-        if (ts_tier_tab == 1) for (i=0; i<all.length; i++) drawTSName(all[i],1)
-        else for (id in TS_TIERS[ts_tier_tab]) drawTSName(id,ts_tier_tab)
+        if (tier == 1) for (i=0; i<all.length; i++) drawTSName(all[i],1)
+        else for (id in TS_TIERS[tier]) drawTSName(id,tier)
     }
 }

@@ -412,8 +412,6 @@ button {
     border-radius: 4px;
     transition-duration: 0.2s;
     cursor: pointer;
-    position: absolute;
-    left: 75%;
     width: 210px;
     height: 70px;
     font-family: Typewriter;
@@ -444,7 +442,6 @@ button {
 .IP {
     left: 75%;
     position: absolute;
-    font-size: 12px;
     width: 210px;
 }
 
@@ -455,7 +452,6 @@ button {
 .EP {
     right: 75%;
     position: absolute;
-    font-size: 12px;
     width: 210px;
 }
 
@@ -468,8 +464,6 @@ button {
     border-radius: 4px;
     transition-duration: 0.2s;
     cursor: pointer;
-    position: absolute;
-    right: 75%;
     width: 200px;
     height: 60px;
     font-family: Typewriter;
@@ -491,8 +485,6 @@ button {
 .newdimlocked {
     border-radius: 4px;
     transition-duration: 0.2s;
-    position: absolute;
-    right: 75%;
     width: 200px;
     height: 60px;
     color: #000000;
@@ -512,8 +504,6 @@ button {
     border-radius: 4px;
     transition-duration: 0.2s;
     cursor: pointer;
-    position: absolute;
-    right: 75%;
     width: 210px;
     height: 70px;
     font-family: Typewriter;
@@ -561,9 +551,29 @@ button {
     cursor: pointer;
 }
 
+.quantumtabbtn {
+    color: #32c832;
+    background: #0a640a;
+    border: 2px solid #32c832;
+    font-family: Typewriter;
+    font-weight: bold;
+    border-radius: 4px;
+    transition-duration: 0.2s;
+    cursor: pointer;
+}
+
+.quantumbtn:hover {
+    background: #32c832;
+    color: #0a640a;
+}
+
 .eternitytabbtn:hover {
     color: #511568;
     background: white;
+}
+
+.achievement {
+    position: relative;
 }
 
 .achievementhidden {
@@ -997,7 +1007,7 @@ button {
     font-weight: bold;
     font-family: Typewriter;
     border: 1px solid #691fa5;
-    width: 170px;
+    width: 210px;
     height: 70px;
     transition-duration: 0.2s;
     cursor: pointer;
@@ -1022,7 +1032,7 @@ button {
     font-weight: bold;
     font-family: Typewriter;
     border: 1px solid #691fa5;
-    width: 170px;
+    width: 210px;
     height: 70px;
     transition-duration: 0.2s;
     border-radius: 4px;
@@ -1045,29 +1055,28 @@ button {
 #timetheorems {
     color: black;
     position: fixed;
-    bottom: 80px;
-    left: 50%;
+    bottom: 87px;
+    right: calc(50% - 214px);
     font-size: 15px;
-    transform: translateX(-50%);
 }
 
 #studytreeloadsavetext {
     color: black;
     position: fixed;
-    bottom: 82px;
+    bottom: 72px;
     left: 50%;
-    margin-left: 145px;
+    margin-left: 185px;
     font-size: 10px;
 }
 
 #theorembuybackground {
     background: #E0E0E0;
-    width: 570px;
+    width: 640px;
     height: 110px;
     position: fixed;
     bottom: 0;
     left: 50%;
-    margin-left: -287px;
+    margin-left: -322px;
     border: 2px solid black;
     border-bottom: none;
     border-top-left-radius: 7px;
@@ -1296,6 +1305,120 @@ button {
     background: white;
 }
 
+#qu_buttons_div {
+    margin-bottom: 8px;
+    min-height: 105px;
+}
+
+#quantum_bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0a640a;
+    background-image: url('../images/new/quantum_bg.png');
+    z-index: 3;
+    animation: qu_bg_animation 5s linear infinite;
+    pointer-events: none;
+    transition: opacity 1s linear;
+    opacity: 0;
+}
+
+@keyframes qu_bg_animation {
+    0% {
+        background-position: 0px 0px;
+    }
+    100% {
+        background-position: 200px 200px;
+    }
+}
+
+.quantumbtn {
+    color: #32c832;
+    background: #0a640a;
+    border: 2px solid #32c832;
+    font-family: Typewriter;
+    font-weight: bold;
+    border-radius: 4px;
+    transition-duration: 0.2s;
+    width: 210px;
+    height: 70px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.quantumbtn:hover {
+    background: #32c832;
+    color: #0a640a;
+}
+
+.quantumized {
+    filter: blur(5px);
+    pointer-events: none;
+}
+
+.quantumized:after {
+    position: absolute;
+    content: '';
+    top: -2px;
+    left: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    background: #32c832;
+}
+
+.qumilestonereward {
+    width: 250px;
+    height: 60px;
+    color: 0a640a;
+    background: #32c832;
+    font-weight: bold;
+    font-family: Typewriter;
+    border: 1px solid #32c832;
+    transition-duration: 0.2s;
+    border-radius: 4px;
+    vertical-align: top;
+    font-size: 12px;
+}
+
+.qtable, .qtable_4col, #gluonupgrades {
+	width:100%;
+    font-size: 11px;
+}
+
+.qtable td {
+	min-width: 33%;
+	width: 33%;
+	max-width: 33%;
+	text-align: center;
+	vertical-align: 0
+}
+
+.qtable_4col td {
+	min-width: 25%;
+	width: 25%;
+	max-width: 25%;
+	text-align: center;
+	vertical-align: 0
+}
+
+.red { color: #bf0000 }
+.green { color: #00bf00 }
+.blue { color: #0000bf }
+
+.chosenbtn {
+    width: 120px;
+	height: 25px;
+	background: #3A7F42;
+	border: 1px solid #127A20;
+	border-radius: 4px;
+	font-size: 13px;
+	font-weight: bold;
+    font-family: Typewriter;
+	transition-duration: 0.2s
+}
+
 .glyph {
     display:flex;
     justify-content:center;
@@ -1345,7 +1468,7 @@ button {
 }
 
 [ach-tooltip]:before,
-[ach-tooltip]:after {
+[ach-tooltip]:not(.quantumized):after {
     visibility: hidden;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
     filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
@@ -1374,7 +1497,7 @@ button {
     transition-duration: .5s;
 }
 
-[ach-tooltip]:after {
+[ach-tooltip]:not(.quantumized):after {
     position: absolute;
     bottom: 100%;
     left: 50%;
@@ -1391,7 +1514,7 @@ button {
 }
 
 [ach-tooltip]:hover:before,
-[ach-tooltip]:hover:after {
+[ach-tooltip]:not(.quantumized):hover:after {
     visibility: visible;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
     filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);

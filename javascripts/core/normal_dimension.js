@@ -1,4 +1,6 @@
 function getDimensionFinalMultiplier(tier) {
+    if (passed > 0) return E(1)
+
   //if (player.currentEternityChall == "eterc3" && tier > 4) return E(0)
   var name = TIER_NAMES[tier];
 
@@ -77,7 +79,7 @@ function getDimensionFinalMultiplier(tier) {
     }
   }
 
-  if (player.dilation.upgrades.includes(7)) multiplier = multiplier.times(player.dilation.dilatedTime.pow(308))
+  if (player.dilation.upgrades.includes(7)) multiplier = multiplier.times(player.dilation.dilatedTime.add(1).pow(308))
   return multiplier;
 }
 
@@ -179,13 +181,14 @@ function hasInfinityMult(tier) {
     function getDimensionPowerMultiplier() {
         let dimMult = 2;
     
-    
         if (player.currentChallenge == "challenge9" || player.currentChallenge == "postc1") dimMult = Math.pow(10/0.30,Math.random())*0.30
     
         if (player.infinityUpgrades.includes('dimMult')) dimMult *= 1.1;
         if (player.achievements.includes("r58")) dimMult *= 1.01;
 
         dimMult += ECTimesCompleted("eterc3") * 0.8
+
+        if (player.achievements.includes("r151")) dimMult *= 10;
 
         return dimMult;
     }

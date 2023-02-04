@@ -14,6 +14,9 @@ function metaDimensionSetupHTML() {
             <td>
                 <div id="MDAmount${x}">0 (0)</div>
             </td>
+            <td>
+                <button id="md${x}auto" style="width:70px; font-size: 10px; float: right; visibility: hidden" onclick="toggleAutoMD(${x})" class="storebtn">Auto: ON</button>
+            </td>
             <td align="right" width="10%">
                 <button onclick="buyMD(${x})" id="MDCost${x}" style="color:black; height: 25px; font-size: 10px; width: 210px" class="storebtn" align="right">Cost: ${shortenCosts(STARTING_COST[x])}</button>
             </td>
@@ -27,10 +30,36 @@ function metaDimensionSetupHTML() {
     mp.innerHTML = h
 }
 
+function toggleAutoMD(i) {
+    player.meta[i].auto = !player.meta[i].auto
+    updateAutoMD()
+}
+
+function toggleAutoMDReset() {
+    player.meta.auto_reset = !player.meta.auto_reset
+    updateAutoMD()
+}
+
 function getMetaDimensionProduction(tier) {
     var ret = player.meta[tier].amount
     ret = ret.times(tmp.meta.mult[tier])
     return ret
+}
+
+function updateAutoMD() {
+    let qsm = player.quantum.speedruns
+
+    for (let x = 1; x <= 8; x++) {
+        let ma = el('md'+x+'auto')
+
+        ma.style.visibility = x <= qsm - 6 ? 'visible' : 'hidden'
+        ma.textContent = player.meta[x].auto ? "Auto: ON" : "Auto: OFF"
+    }
+
+    let mr = el('metaresetauto')
+
+    mr.style.visibility = qsm > 14 ? 'visible' : 'hidden'
+    mr.textContent = player.meta.auto_reset ? "Auto: ON" : "Auto: OFF"
 }
 
 function getMetaDimensionRateOfChange(tier) {
@@ -80,9 +109,17 @@ function buyMD(i,max=false) {
     }
 }
 
-function metaSoftReset() {
+function metaSoftReset(auto) {
     if (player.meta[Math.min(8,player.meta.reset+4)].bought >= tmp.meta.reset_req) {
-        player.meta.reset++
+        let bulk = 1
+
+        if (auto) {
+            bulk = bulkNumberFromFunction(getMDResetReq,player.meta[8].bought,-player.meta.reset)
+
+            if (bulk <= 0) bulk = 1
+        }
+
+        player.meta.reset += bulk
 
         if (player.meta.reset>=10) giveAchievement('r145',true)
 
@@ -97,6 +134,7 @@ function resetMD() {
         player.meta[x] = {
             amount: E(0),
             bought: 0,
+            auto: player.meta[x].auto,
         }
     }
 }
@@ -118,6 +156,9 @@ function updateMetaDimensionsHTML() {
     if (document.getElementById("metadimensions").style.display == "block" && document.getElementById("dimensions").style.display == "block") {
         let mtier = Math.min(8,pm.reset+4)
 
+        el('r154Reward').style.display = player.achievements.includes('r154') ? '' : 'none'
+        el('r154Reward').innerHTML = `Your "Hadronization" multiplier is currently <b>${shorten(getR154Reward())}x</b>.`
+
         el('metaAntimatter').textContent = shortenMoney(pm.antimatter)
         el('bestMA1').textContent = shortenMoney(pm.best1)
 
@@ -126,7 +167,7 @@ function updateMetaDimensionsHTML() {
         el('MAGain').textContent = `You are getting ${shortenMoney(getMetaDimensionProduction(1))} meta-antimatter per second.`
 
         for (let x = 1; x <= 8; x++) {
-            let unl = x <= mtier && (x == 1 || pm[x-1].bought>0)
+            let unl = x <= mtier && (x == 1 || player.quantum.speedruns>0 || pm[x-1].bought>0)
 
             el("MD_div"+x).style.display = unl ? "" : "none"
 
@@ -144,7 +185,19 @@ function updateMetaDimensionsHTML() {
         el('metaSoftReset').textContent = 
         `Reset meta-dimensions for a `+(pm.reset<4?"new meta-dimension":"boost");
         el('metaSoftReset').className = pm[mtier].bought >= tmp.meta.reset_req ? "storebtn" : "unavailablebtn"
+
+        el('quantumReq').textContent = `Quantum: requires ${shortenMoney(QU_REQ_MA)} meta-antimatter and two EC15 completions`
+        el('quButton').textContent = `Lose all your previous progress, but gain ${shortenDimensions(tmp.quarksGain)} quarks for boosts`
+        el('quButton').className = player.meta.best1.gte(QU_REQ_MA) && ECTimesCompleted('eterc15') >= 2 ? "storebtn" : "unavailablebtn"
     }
+}
+
+function getR154Reward() {
+    let c = player.quantum.charge, x = E(1)
+
+    for (let i in c) x = x.mul(c[i].add(1).l+1)
+
+    return x
 }
 
 function getMDCost(i, p = player.meta[i].bought) {
@@ -187,6 +240,9 @@ function getMDMult(i) {
 
     for (let t = 41; t <= 43; t++) if (hasTSTier(2,t)) x = x.mul(TSTierEffect(2,t))
 
+    if (player.achievements.includes('r153')) x = x.mul(player.achPow)
+    if (player.achievements.includes('r154')) x = x.mul(getR154Reward())
+
     return x
 }
 
@@ -194,6 +250,10 @@ function getMDEffect() {
     let p = tmp.meta.pow
 
     return player.meta.best1.div(10).max(1).pow(p)
+}
+
+function getMDResetReq(x) {
+    return Math.ceil(2+Math.max(0,x-4)*1.5)
 }
 
 function updateMDTemp() {
@@ -204,7 +264,7 @@ function updateMDTemp() {
     mtmp.mult_inc = getMDMultIncrease()
     mtmp.effect = getMDEffect()
 
-    mtmp.reset_req = Math.ceil(2+Math.max(0,player.meta.reset-4)*1.5)
+    mtmp.reset_req = getMDResetReq(player.meta.reset)
 
     for (let x = 1; x <= 8; x++) {
         mtmp.mult[x] = getMDMult(x)

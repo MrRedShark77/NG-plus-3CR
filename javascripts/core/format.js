@@ -305,7 +305,7 @@ function formatValue(notation, value, places, placesUnder1000, noInf) {
         }
 
         if (notation === "Logarithm" || notation === 'Iroha' || (notation === "Mixed logarithm" && power > 32)) {
-            var base = Math.max(player.options.logarithm.base, 1.01)
+            var base = 10
             var prefix
             if (base == 10) {
                 power = Decimal.log10(value)
@@ -361,6 +361,8 @@ function formatValue(notation, value, places, placesUnder1000, noInf) {
           }
           return prefix + "⇈" + (value + count).toFixed(Math.max(places, 0, Math.min(count-1, 4)));
         }
+
+        if (notation == 'Blind') return " "
 
         if (notation === "AAS") {
             if (power >= 3e9 + 3) return getAASAbbreviation(power / 3 - 1)

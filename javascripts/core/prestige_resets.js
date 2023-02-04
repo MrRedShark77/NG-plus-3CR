@@ -62,6 +62,8 @@ function doGalaxyResetStuff(bulk){
 }
 
 function doCrunchResetStuff(){
+	let spm = player.quantum.speedruns
+
 	player.money = new Decimal(10)
 	player.tickSpeedCost = new Decimal(1000)
 	player.sacrificed = new Decimal(0)
@@ -80,9 +82,12 @@ function doCrunchResetStuff(){
 	player.galaxies = 0
     player.postC3Reward = E(1)
 	player.tickspeed = E(1000)
+	completelyResetNormalDimensions()
 }
 
 function doEternityResetStuff(chal=false){
+	let spm = player.quantum.speedruns
+
 	player.money = new Decimal(10)
 	player.tickSpeedCost = new Decimal(1000)
 	player.tickspeed = new Decimal(1000)
@@ -128,7 +133,7 @@ function doEternityResetStuff(chal=false){
 	player.offlineProdCost = getEternitied() > 19 ? player.offlineProdCost : 1e7
 	player.challengeTarget = 0
 	player.autoSacrifice = getEternitied() > 6 ? player.autoSacrifice : 1
-	player.replicanti.amount = new Decimal(getEternitied() > 49 ? 1 : 0)
+	if (spm>21) player.replicanti.amount = new Decimal(getEternitied() > 49 ? 1 : 0)
 	player.replicanti.unl = getEternitied() > 49
 	player.replicanti.galaxies = 0
 	player.autoIP = new Decimal(0)
@@ -286,6 +291,129 @@ function completelyResetInfinityDimensions(){
 	}
 }
 
+function doQuantumResetStuff() {
+	let spm = player.quantum.speedruns
+	let headstart = true, oheHeadstart = spm>0, keepABnICs = spm>0
+
+	player.eternities = spm>0 ? 25000 : 10*player.quantum.times
+
+	player.money = new Decimal(10)
+	player.tickSpeedCost = new Decimal(1000)
+	player.tickspeed = new Decimal(1000)
+	completelyResetNormalDimensions()
+	player.currentChallenge = ""
+	player.infinitied = 0
+	player.infinitiedBank = 0
+	player.bestInfinityTime = 9999999999
+	player.thisInfinityTime = 0
+	player.interval = null
+	player.partInfinityPoint = 0
+	player.partInfinitied = 0
+	player.costMultipliers = [new Decimal(1e3), new Decimal(1e4), new Decimal(1e5), new Decimal(1e6), new Decimal(1e8), new Decimal(1e10), new Decimal(1e12), new Decimal(1e15)]
+	player.tickspeedMultiplier = new Decimal(10)
+	player.chall2Pow = 1
+	player.chall3Pow = new Decimal(0.01)
+	player.matter = new Decimal(0)
+	player.chall11Pow = new Decimal(1)
+	player.lastTenRuns = [[600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)]]
+	player.lastTenEternities = [[600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)], [600*60*24*31, new Decimal(0)]]
+	player.infMult = new Decimal(1)
+	player.infMultCost = new Decimal(10)
+	player.postC4Tier = 1
+	player.postC8Mult = new Decimal(1)
+	player.postChallUnlocked = player.achievements.includes("r133") ? player.postChallUnlocked : 0
+	player.postC4Tier = 0
+	player.postC3Reward = new Decimal(1)
+	player.eternityPoints = new Decimal(0)
+	player.thisEternity = 0
+	player.bestEternity = headstart ? player.bestEternity : 9999999999
+	player.epmult = new Decimal(1)
+	player.epmultCost = new Decimal(500)
+	player.infDimensionsUnlocked = resetInfDimUnlocked()
+	player.infinityPower = new Decimal(1)
+	completelyResetInfinityDimensions()
+	player.infDimBuyers = oheHeadstart ? player.infDimBuyers : [false, false, false, false, false, false, false, false]
+	player.timeShards = new Decimal(0)
+	player.tickThreshold = new Decimal(1)
+	player.totalTickGained = 0
+	completelyResetTimeDimensions()
+	player.challengeTarget = 0
+	player.replicanti = {
+		amount: new Decimal(oheHeadstart ? 1 : 0),
+		unl: oheHeadstart,
+		chance: 0.01,
+		chanceCost: new Decimal(1e150),
+		interval: 1000,
+		intervalCost: new Decimal(1e140),
+		gal: 0,
+		galaxies: 0,
+		galCost: new Decimal(1e170),
+		auto: oheHeadstart ? player.replicanti.auto : [false, false, false],
+		galaxybuyer: player.replicanti.galaxybuyer,
+	}
+	player.timestudy = false ? player.timestudy : {
+		theorem: 0,
+		amcost: new Decimal("1e20000"),
+		ipcost: new Decimal(1),
+		epcost: new Decimal(1),
+		studies: spm>10?player.timestudy.studies:[],
+		auto: player.timestudy.auto,
+	}
+	player.eternityChalls = {}
+	if (spm>2) for (let i = 1; i <= (spm>5?15:12); i++) player.eternityChalls['eterc'+i] = 5
+	player.eternityChallGoal = new Decimal(Number.MAX_VALUE)
+	player.currentEternityChall = ""
+	player.eternityChallUnlocked = false ? player.eternityChallUnlocked : 0
+	player.etercreq = 0
+	player.autoIP = new Decimal(0)
+	player.autoTime = 1e300
+	player.respec = false
+	player.eternityBuyer = keepABnICs ? player.eternityBuyer : {
+		limit: new Decimal(0),
+		isOn: false
+	}
+	player.eterc8ids = 50
+	player.eterc8repl = 40
+	player.dimlife = true
+	player.dead = true
+	//if (!player.dilation.bestTP) player.dilation.bestTP = player.dilation.tachyonParticles
+	player.dilation = {
+		studies: spm>4?[1,2,3,4,5,6]:spm>3?[1]:[],
+		active: false,
+		tachyonParticles: new Decimal(0),
+		totalTachyonParticles: new Decimal(0),
+		dilatedTime: new Decimal(spm>19?1e100:0),
+		//bestTP: Decimal.max(player.dilation.bestTP || 0, player.dilation.tachyonParticles),
+		nextThreshold: new Decimal(1000),
+		freeGalaxies: 0,
+		upgrades: spm>13?player.dilation.upgrades:spm>4?[5,6,7,8,9,10,11]:[],
+		//autoUpgrades: [],
+		rebuyables: {
+			1: 0,
+			2: 0,
+			3: 0,
+			4: 0,
+		},
+		auto_upg: player.dilation.auto_upg,
+	}
+
+	player.eternityUpgrades = []
+	if (spm>2) player.eternityUpgrades = spm>3?[1,2,3,4,5,6,7,8,9]:[1,2,3,4,5,6]
+
+	if (spm<=15) player.ts_tier[0] = []
+
+	let r = player.achievements.includes('r142')?E(110):E(10)
+	if (spm>17) r = E(2e25)
+	player.meta.antimatter = r
+	player.meta.best1 = r
+	player.meta.reset = spm>16 ? 4 : 0
+	player.quantum.reached = false
+	resetMD()
+
+	doEternityResetStuff()
+	doCrunchResetStuff()
+}
+
 function challengesCompletedOnEternity() {
 	var array = []
 	if (getEternitied() > 1) for (i = 1; i < 13; i++) array.push("challenge" + i)
@@ -303,6 +431,6 @@ function resetInfDimUnlocked() {
 
 function resetTimeDimensions() {
     for (let x = 1; x < 8; x++) {
-        player['timeDimension'+x].amount = E(0)
+        player['timeDimension'+x].amount = E(player['timeDimension'+x].bought)
     }
 }

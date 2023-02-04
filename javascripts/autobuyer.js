@@ -19,7 +19,15 @@ var softcap = function (x, start, power, mode, dis=false) {
   x = E(x)
   if (!dis&&x.gte(start)) {
       if ([0, "pow"].includes(mode)) x = x.div(start).max(1).pow(power).mul(start)
-      if ([1, "mul"].includes(mode)) x = x.sub(start).div(power).add(start)
+      if ([1, "mul"].includes(mode)) x = x.sub(start).mul(power).add(start)
+  }
+  return x
+}
+
+var softcapNumber = function (x, start, power, mode, dis=false) {
+  if (!dis&&x>=start) {
+      if ([0, "pow"].includes(mode)) x = (x/start)**power*start
+      if ([1, "mul"].includes(mode)) x = (x-start)*power*start
   }
   return x
 }

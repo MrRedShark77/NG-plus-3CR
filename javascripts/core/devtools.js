@@ -101,3 +101,19 @@ dev.testTDCosts = function() {
         }
     }
 }
+
+dev.quantumAnimation = function(def) {
+    let q = el('quantum_bg')
+
+    q.style.opacity = 1
+
+    if (def) {
+        setTimeout(()=>{
+            def()
+        },2000)
+    }
+
+    setTimeout(()=>{
+        q.style.opacity = 0
+    },3000)
+}

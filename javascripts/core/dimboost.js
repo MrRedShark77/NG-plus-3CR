@@ -15,6 +15,8 @@ function getDimensionBoostPower() {
 
   if (metaUnlocked()) ret = ret.mul(tmp.meta.effect)
 
+  if (player.achievements.includes("r151")) ret = ret.mul(100)
+
   return Decimal.fromValue(ret)
 }
 
@@ -156,7 +158,7 @@ function getShiftRequirement(bulk) {
 
 document.getElementById("softReset").onclick = function () {
   var name = TIER_NAMES[tmp.dimBoostReq.tier]
-  if ((!player.break && player.money.gt(Number.MAX_VALUE)) || player[name + "Amount"] < tmp.dimBoostReq.amount) return;
+  if ((!player.break && player.money.gt(Number.MAX_VALUE)) || player[name + "Bought"] < tmp.dimBoostReq.amount) return;
   auto = false;
   if (player.infinityUpgrades.includes("bulkBoost")) maxBuyDimBoosts(true);
   else softReset(1)

@@ -224,6 +224,7 @@ function getPlayerData() {
             auto: [false, false, false]
         },
         timestudy: {
+            auto: false,
             theorem: 0,
             amcost: E("1e20000"),
             ipcost: E(1),
@@ -274,7 +275,8 @@ function getPlayerData() {
                 2: 0,
                 3: 0,
                 4: 0,
-            }
+            },
+            auto_upg: false,
         },
         why: 0,
         options: {
@@ -292,6 +294,7 @@ function getPlayerData() {
             secretThemeKey: 0,
             eternityconfirm: true,
             dilationconfirm: true,
+            quantumconfirm: true,
             commas: true,
             updateRate: 50,
             chart: {
@@ -304,13 +307,17 @@ function getPlayerData() {
                 bigCrunch: true,
                 eternity: true,
                 tachyonParticles: true,
-            }
+                quantum: true,
+            },
+            hideCompletedAchs: false,
         },
         meta: {
             antimatter: E(10),
             best1: E(10),
             reset: 0,
+            auto_reset: false,
         },
+        quantum: getQuantumSave(),
     }
 
     for (let x = 0; x < 10; x++) {
@@ -321,6 +328,7 @@ function getPlayerData() {
     for (let x = 1; x <= 8; x++) s.meta[x] = {
         amount: E(0),
         bought: 0,
+        auto: false,
     }
 
     for (let x = 2; x < TS_TIERS.length; x++) s.ts_tier[x-2] = []
@@ -391,6 +399,11 @@ function onLoad() {
         }
     }
 
+    if (player.version<13.002) {
+        player.version = 13.002
+        player.quantum.time = player.totalTimePlayed
+    }
+
     setTheme(player.options.theme);
 
     sliderText.textContent = "Update rate: " + player.options.updateRate + "ms";
@@ -432,7 +445,11 @@ function onLoad() {
         document.getElementById("tdtabbtn").style.display = "none";
     }
 
+    if (player.quantum.unlocked) document.getElementById("quantumstorebtn").style.display = "";
+
     document.getElementById('replicantibulkmodetoggle').textContent="Mode: "+(player.galaxyMaxBulk?"Max":"Singles")
+
+    document.getElementById("confirmation").checked = !player.options.sacrificeConfirmation
 
     transformSaveToDecimal();
     updateTemp()
@@ -479,13 +496,14 @@ function onLoad() {
 
 
     if (player.break == true) document.getElementById("break").textContent = "FIX INFINITY"
-    document.getElementById("infiMult").innerHTML = "You get "+tmp.inf_mult_base.toFixed(1)+"x more IP.<br>Currently: "+shortenDimensions(player.infMult.times(kongIPMult)) +"x<br>Cost: "+shortenCosts(player.infMultCost)+" IP"
+    document.getElementById("infiMult").innerHTML = "You get "+tmp.inf_mult_base.toFixed(1)+"x more IP.<br>Currently: "+shortenDimensions(tmp.infMultUpg.times(kongIPMult)) +"x<br>Cost: "+shortenCosts(player.infMultCost)+" IP"
 
     document.getElementById("notation").textContent = "Notation: " + player.options.notation
 
     document.getElementById("floatingTextAnimBtn").textContent = "Floating text: " + ((player.options.animations.floatingText) ? "ON" : "OFF")
     document.getElementById("bigCrunchAnimBtn").textContent = "Big crunch: " + ((player.options.animations.bigCrunch) ? "ON" : "OFF")
     document.getElementById("tachyonParticleAnimBtn").textContent = "Tachyon particles: " + ((player.options.animations.tachyonParticles) ? "ON" : "OFF")
+    document.getElementById("quantumAnimBtn").textContent = "Quantum: " + ((player.options.animations.quantum) ? "ON" : "OFF")
 
     if (player.infinitied == 0 && player.eternities == 0) document.getElementById("infinityPoints2").style.display = "none"
 
@@ -582,11 +600,15 @@ function onLoad() {
     checkForEndMe();
     updateEternityChallenges();
     updateDilationUpgradeCosts()
+    updateHTMLOnLoad()
     let diff = new Date().getTime() - player.lastUpdate
     if (diff > 1000*1000) {
         simulateTime(diff/1000)
     }
 
+    if (new Date().getHours() == 3 && new Date().getMinutes() == 0) giveAchievement('s46',true)
+
+    document.getElementById("hideCompletedAchs").textContent=(player.options.hideCompletedAchs?"Show":"Hide")+" completed achievement rows"
 }
 
 function load_cloud_save(saveId, cloudPlayer) {
@@ -693,6 +715,7 @@ function loadAutoBuyerSettings() {
   document.getElementById("prioritySac").value = player.autoSacrifice.priority
   document.getElementById("bulkgalaxy").value = player.autobuyers[10].bulk
   document.getElementById("priority13").value = player.eternityBuyer.limit
+  document.getElementById("priority14").value = player.quantum.buyer.limit
 
 }
 

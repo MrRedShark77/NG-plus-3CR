@@ -138,7 +138,21 @@ const allAchievements = {
   r147 : "You have already dilated...",
   r148 : "Faster than a rainbow potato",
 
+  r151 : "Protoversal Form",
+  // r152
+  r153 : "este logro no existe 3",
+  r154 : "Hadronization",
+  // r155
+  r156 : `Quantum Fission`,
+
   s41 : "That dimension doesn’t exist",
+  // s42
+  // s43
+  s44 : "Did you understand some numbers?",
+  // s45
+  s46 : "Nightmare Mode",
+  // s47
+  // s48
 };
 const secretAchievementTooltips = {
     s11 : "Click on this achievement.",
@@ -167,9 +181,18 @@ const secretAchievementTooltips = {
     s38 : "Get all your dimension bulk buyers to 1e100.",
 
     s41 : "Try to purchase the 9th dimension.",
+    // s42
+    // s43
+    s44 : "Play the game using blind notation within 1 hour.",
+    // s45
+    s46 : "Run the game at 3:00 AM.",
+    // s47
+    // s48
   };
 const allAchievementNums = Object.invert(allAchievements)
 // to retrieve by value: Object.keys(allAchievements).find(key => allAchievements[key] === "L4D: Left 4 Dimensions");
+
+var blindTime = 0
 
 function clearOldAchieves(){
     var toRemove = [];
@@ -241,20 +264,24 @@ function updateAchievements() {
           var name = allAchievements["r"+achNum]
             var domObj = el(name);
             if (!domObj) continue
+          let class_name = "achievement"
           if (player.achievements.includes("r"+achNum)) {
               n++
-              domObj.className = "achievementunlocked";
-              updateAchievementAria(domObj);
+              class_name += " achievementunlocked";
           } else {
-              domObj.className = "achievementlocked";
-              updateAchievementAria(domObj);
+            class_name += " achievementlocked";
           }
+          if (!player.quantum.unlocked && i >= 15) class_name += " quantumized";
+          domObj.className = class_name
+          updateAchievementAria(domObj);
       }
+      let ari = document.getElementById("achRow"+i)
       if (n == 8) {
           amount++
-          document.getElementById("achRow"+i).className = "completedrow"
+          ari.className = "completedrow"
+          ari.style.display = player.options.hideCompletedAchs?"none":""
       } else {
-          document.getElementById("achRow"+i).className = ""
+          ari.className = ""
       }
   }
   for (var i=1; i<document.getElementById("secretachievementtable").children[0].children.length+1; i++) {
@@ -272,7 +299,7 @@ function updateAchievements() {
               updateAchievementAria(domObj, true);
           } else {
               domObj.className = "achievementhidden";
-              domObj.setAttribute('ach-tooltip', (name[name.length-1] !== "?" && name[name.length-1] !== "!" && name[name.length-1] !== ".") ? name+"." : name);
+              domObj.setAttribute('ach-tooltip', name) // (name[name.length-1] !== "?" && name[name.length-1] !== "!" && name[name.length-1] !== ".") ? name+"." : name
               updateAchievementAria(domObj, true);
           }
       }
@@ -308,11 +335,20 @@ function checkAchievements() {
   if (tmp.tsReduce.min(1).pow(-1).gte(Number.MAX_VALUE)) giveAchievement('r144',true)
   if (player.totalTickGained >= 1e6) giveAchievement('r146',true)
   if (player.tickspeed.e <= -486539264) giveAchievement('r148',true)
+
+  if (player.meta.antimatter.gte('9.99e999')) giveAchievement('r153',true)
+  if (player.quantum.color.r.gte(1) && player.quantum.color.g.gte(1) && player.quantum.color.b.gte(1)) giveAchievement('r154',true)
+
+  // Secret
+
+  if (player.options.notation == "Blind" && blindTime >= 36000) giveAchievement('s44',true)
 }
 
 function updateAchievementsTooltip() {
   el(allAchievements.r144).setAttribute('ach-tooltip',`Get over ${shortenMoney(Number.MAX_VALUE)} of tick reduction.`)
   el(allAchievements.r148).setAttribute('ach-tooltip',`Get more than ${shortenCosts(Decimal.pow(10,486539264))} ticks per second.`)
+
+  el(allAchievements.r153).setAttribute('ach-tooltip',`Reach ${shorten(E('9.99e999'))} meta-antimatter. Reward: Current achievement multiplier affects Meta-Dimensions.`)
 }
 
 /*
@@ -329,3 +365,10 @@ function checkADblocker() {
   .catch(err => alert("ADBLOCK DETECTED"));
 }
 */
+
+function toggleCompletedAchs() {
+	// 0 == visible, 1 == not visible
+	player.options.hideCompletedAchs = !player.options.hideCompletedAchs;
+	updateAchievements();
+	document.getElementById("hideCompletedAchs").textContent = (player.options.hideCompletedAchs ? "Show" : "Hide") + " completed achievement rows";
+}

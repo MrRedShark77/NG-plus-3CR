@@ -38,6 +38,7 @@ function getTickSpeedMultiplier() {
       if (player.timestudy.studies.includes(232)) galaxies *= Math.pow(1+player.galaxies/1000, 0.2)
 
 	  if (hasTSTier(2,31)) galaxies *= TSTierEffect(2,31)
+	  if (player.quantum.unlocked) galaxies *= tmp.chargeEffect.r
 
       return Decimal.pow(perGalaxy, galaxies).mul(baseMultiplier)
   }

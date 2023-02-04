@@ -64,7 +64,6 @@ function maxTheorems() {
 		if (!break_infinity_js && isNaN(player.eternityPoints.logarithm)) player.eternityPoints = new Decimal(0)
 		player.timestudy.epcost = player.timestudy.epcost.times(Decimal.pow(2, gainTT))
 	}
-  while (buyWithEP()) continue
   updateTheoremButtons()
   updateTimeStudyButtons()
   updateEternityUpgrades()
@@ -275,6 +274,8 @@ function updateTimeStudyButtons() {
           }
       }
   }
+
+  el('131').innerHTML = (player.quantum.speedruns>18?"You get 50% more replicanti galaxies":`Automatic replicanti galaxies are disabled, but you can get 50% more replicanti galaxies`)+`<span>Cost: 5 Time Theorems`
 
   for (i=1; i<7; i++) {
     if (player.dilation.studies.includes(i)) document.getElementById("dilstudy"+i).className = "dilationupgbought"
