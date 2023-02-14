@@ -404,6 +404,12 @@ function onLoad() {
         player.quantum.time = player.totalTimePlayed
     }
 
+    if (player.version<13.003) {
+        player.version = 13.003
+        
+        updateMultDecreases()
+    }
+
     setTheme(player.options.theme);
 
     sliderText.textContent = "Update rate: " + player.options.updateRate + "ms";

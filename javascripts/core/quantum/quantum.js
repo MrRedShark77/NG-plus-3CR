@@ -103,6 +103,7 @@ function quantumReset(force,auto) {
 
     doQuantumResetStuff()
     eternity(true,true,true)
+    updateMultDecreases()
     setInitialDimensionPower()
 
     for (var i=1; i<9; i++) {
