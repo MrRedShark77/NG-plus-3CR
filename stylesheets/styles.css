@@ -362,9 +362,15 @@ button {
     vertical-align: top;
 }
 
-.unavailablebtn:hover {
+.unavailablebtn:hover, .locked:hover {
     color: #000000;
     background: #B84B5F;
+}
+
+.locked {
+    color: #000000;
+    background: #A3A3A3;
+    border: 1px solid #B84B5F;
 }
 
 .tabbtn {
@@ -1755,13 +1761,10 @@ br {
     pointer-events:none;
 }
 
-
-
 #timestudies span {
     display:block;
     pointer-events:none;
 }
-
 
 .floatingText {
     position: absolute;
@@ -1776,10 +1779,154 @@ br {
 .rel {
     position: relative;
 }
+
+#gluonupgrades {
+	width:100%
+}
   
+#gluonupgrades td {
+	min-width:16.7%;
+	width:16.7%;
+	max-width:16.7%;
+	text-align:center;
+    vertical-align: 0;
+}
 
+#gluonupgrades tr:not(:first-child) button {
+    height: 80px;
+}
 
+#rg { animation: rg 5s infinite }
+#gb { animation: gb 5s infinite }
+#br { animation: br 5s infinite }
 
+.gluonupgrade, .gluonupgradebought {
+    font-weight: bold;
+    width: 190px;
+    height: 90px;
+    transition-duration: 0.2s;
+    border-radius: 4px;
+    font-size: 10px;
+    font-family: Typewriter;
+    vertical-align: top;
+}
+
+.gluonupgrade.rg:not(.locked) { animation: rgupg 5s infinite }
+.gluonupgrade.gb:not(.locked) { animation: gbupg 5s infinite }
+.gluonupgrade.br:not(.locked) { animation: brupg 5s infinite }
+
+.gluonupgrade.rg:not(.locked):hover {
+	animation: rgupghover 5s infinite;
+	cursor: pointer
+}
+.gluonupgrade.gb:not(.locked):hover {
+	animation: gbupghover 5s infinite;
+	cursor: pointer
+}
+.gluonupgrade.br:not(.locked):hover {
+	animation: brupghover 5s infinite;
+	cursor: pointer
+}
+
+.gluonupgradebought.rg { animation: rgupgbought 5s infinite }
+.gluonupgradebought.gb { animation: gbupgbought 5s infinite }
+.gluonupgradebought.br { animation: brupgbought 5s infinite }
+
+@keyframes rg {
+	0% {color: #bf0000}
+	25% {color: #bfbf00}
+	50% {color: #00bf00}
+	75% {color: #bfbf00}
+	100% {color: #bf0000}
+}
+
+@keyframes gb {
+	0% {color: #00bf00}
+	25% {color: #00bfbf}
+	50% {color: #0000bf}
+	75% {color: #00bfbf}
+	100% {color: #00bf00}
+}
+
+@keyframes br {
+	0% {color: #0000bf}
+	25% {color: #bf00bf}
+	50% {color: #bf0000}
+	75% {color: #bf00bf}
+	100% {color: #0000bf}
+}
+
+@keyframes rgupg {
+	0% {background-color: #1f0000; border: 1px solid #3f0000; box-shadow: inset 0px 0px 5px 0px #7f0000; color: #bf0000}
+	25% {background-color: #1f1f00; border: 1px solid #3f3f00; box-shadow: inset 0px 0px 10px 0px #7f7f00; color: #7f7f00}
+	50% {background-color: #001f00; border: 1px solid #003f00; box-shadow: inset 0px 0px 20px 0px #007f00; color: #007f00}
+	75% {background-color: #1f1f00; border: 1px solid #3f3f00; box-shadow: inset 0px 0px 10px 0px #7f7f00; color: #7f7f00}
+	100% {background-color: #1f0000; border: 1px solid #3f0000; box-shadow: inset 0px 0px 5px 0px #7f0000; color: #bf0000}
+}
+
+@keyframes gbupg {
+	0% {background-color: #001f00; border: 1px solid #003f00; box-shadow: inset 0px 0px 5px 0px #007f00; color: #007f00}
+	25% {background-color: #001f1f; border: 1px solid #003f3f; box-shadow: inset 0px 0px 5px 0px #007f7f; color: #007f7f}
+	50% {background-color: #00001f; border: 1px solid #00003f; box-shadow: inset 0px 0px 5px 0px #00007f; color: #0000df}
+	75% {background-color: #001f1f; border: 1px solid #003f3f; box-shadow: inset 0px 0px 5px 0px #007f7f; color: #007f7f}
+	100% {background-color: #001f00; border: 1px solid #003f00; box-shadow: inset 0px 0px 5px 0px #007f00; color: #007f00}
+}
+
+@keyframes brupg {
+	0% {background-color: #00001f; border: 1px solid #00003f; box-shadow: inset 0px 0px 5px 0px #00007f; color: #0000df}
+	25% {background-color: #1f001f; border: 1px solid #3f003f; box-shadow: inset 0px 0px 5px 0px #7f007f; color: #7f007f}
+	50% {background-color: #1f0000; border: 1px solid #3f0000; box-shadow: inset 0px 0px 5px 0px #7f0000; color: #bf0000}
+	75% {background-color: #1f001f; border: 1px solid #3f003f; box-shadow: inset 0px 0px 5px 0px #7f007f; color: #7f007f}
+	100% {background-color: #00001f; border: 1px solid #00003f; box-shadow: inset 0px 0px 5px 0px #00007f; color: #0000df}
+}
+
+@keyframes rgupghover {
+	0% {background-color: #7f0000; border: 1px solid #3f0000; box-shadow: inset 0px 0px 5px 0px #bf0000; color: #1f0000}
+	25% {background-color: #7f7f00; border: 1px solid #3f3f00; box-shadow: inset 0px 0px 10px 0px #bfbf00; color: #1f1f00}
+	50% {background-color: #007f00; border: 1px solid #003f00; box-shadow: inset 0px 0px 20px 0px #00bf00; color: #001f00}
+	75% {background-color: #7f7f00; border: 1px solid #3f3f00; box-shadow: inset 0px 0px 10px 0px #bfbf00; color: #1f1f00}
+	100% {background-color: #7f0000; border: 1px solid #3f0000; box-shadow: inset 0px 0px 5px 0px #bf0000; color: #1f0000}
+}
+
+@keyframes gbupghover {
+	0% {background-color: #007f00; border: 1px solid #003f00; box-shadow: inset 0px 0px 5px 0px #00bf00; color: #001f00}
+	25% {background-color: #007f7f; border: 1px solid #003f3f; box-shadow: inset 0px 0px 5px 0px #00bfbf; color: #001f1f}
+	50% {background-color: #00007f; border: 1px solid #00003f; box-shadow: inset 0px 0px 5px 0px #0000bf; color: #00001f}
+	75% {background-color: #007f7f; border: 1px solid #003f3f; box-shadow: inset 0px 0px 5px 0px #00bfbf; color: #001f1f}
+	100% {background-color: #007f00; border: 1px solid #003f00; box-shadow: inset 0px 0px 5px 0px #00bf00; color: #001f00}
+}
+
+@keyframes brupghover {
+	0% {background-color: #00007f; border: 1px solid #00003f; box-shadow: inset 0px 0px 5px 0px #0000bf; color: #00001f}
+	25% {background-color: #7f007f; border: 1px solid #3f003f; box-shadow: inset 0px 0px 5px 0px #bf00bf; color: #1f001f}
+	50% {background-color: #7f0000; border: 1px solid #3f0000; box-shadow: inset 0px 0px 5px 0px #bf0000; color: #1f0000}
+	75% {background-color: #7f007f; border: 1px solid #3f003f; box-shadow: inset 0px 0px 5px 0px #bf00bf; color: #1f001f}
+	100% {background-color: #00007f; border: 1px solid #00003f; box-shadow: inset 0px 0px 5px 0px #0000bf; color: #00001f}
+}
+
+@keyframes rgupgbought {
+	0% {background-color: #bf0000; border: 1px solid #7f0000; color: #1f0000}
+	25% {background-color: #bfbf00; border: 1px solid #7f7f00; color: #1f1f00}
+	50% {background-color: #00bf00; border: 1px solid #007f00; color: #001f00}
+	75% {background-color: #bfbf00; border: 1px solid #7f7f00; color: #1f1f00}
+	100% {background-color: #bf0000; border: 1px solid #7f0000; color: #1f0000}
+}
+
+@keyframes gbupgbought {
+	0% {background-color: #00bf00; border: 1px solid #007f00; color: #001f00}
+	25% {background-color: #00bfbf; border: 1px solid #007f7f; color: #001f1f}
+	50% {background-color: #0000bf; border: 1px solid #00007f; color: #00001f}
+	75% {background-color: #00bfbf; border: 1px solid #007f7f; color: #001f1f}
+	100% {background-color: #00bf00; border: 1px solid #007f00; color: #001f00}
+}
+
+@keyframes brupgbought {
+	0% {background-color: #0000bf; border: 1px solid #00007f; color: #00001f}
+	25% {background-color: #bf00bf; border: 1px solid #7f007f; color: #1f001f}
+	50% {background-color: #bf0000; border: 1px solid #7f0000; color: #1f0000}
+	75% {background-color: #bf00bf; border: 1px solid #7f007f; color: #1f001f}
+	100% {background-color: #0000bf; border: 1px solid #00007f; color: #00001f}
+}
 
 @media print,
 screen and (max-width: 960px) {

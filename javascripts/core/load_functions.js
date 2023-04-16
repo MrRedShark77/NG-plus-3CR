@@ -312,6 +312,7 @@ function getPlayerData() {
             hideCompletedAchs: false,
         },
         meta: {
+            firstDBought: false,
             antimatter: E(10),
             best1: E(10),
             reset: 0,

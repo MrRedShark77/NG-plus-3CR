@@ -91,6 +91,7 @@ if (player.currentChallenge == "postc2") {
 
 function getSupersonicStart() {
 	let r = 1e5
+  if (hasGluonUpg('rg3')) r += gluonUpgEff('rg3',0)
 	return r
 }
 

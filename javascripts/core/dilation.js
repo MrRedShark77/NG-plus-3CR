@@ -64,6 +64,7 @@ function getReqForTPGain() {
 function getTachyonGainMultiplier() {
     let tachyonMultiplier = Decimal.pow(3, player.dilation.rebuyables[3]);
     if (player.achievements.includes("r132")) tachyonMultiplier = tachyonMultiplier.mul(Math.max(Math.pow(player.galaxies, 0.04), 1));
+    if (hasGluonUpg('br1')) tachyonMultiplier = tachyonMultiplier.mul(gluonUpgEff('br1'))
 
     return tachyonMultiplier;
 }
@@ -78,7 +79,11 @@ function getTachyonGainExponent() {
 }
 
 function getDilatedTimeGain() {
-    let dtGain = player.dilation.tachyonParticles.times(Decimal.pow(2, player.dilation.rebuyables[1]));
+    let dtGain = player.dilation.tachyonParticles
+
+    if (hasGluonUpg('br3')) dtGain = dtGain.pow(1.05)
+
+    dtGain = dtGain.times(Decimal.pow(2, player.dilation.rebuyables[1]));
     if (player.achievements.includes("r132")) dtGain = dtGain.mul(Math.max(Math.pow(player.galaxies, 0.04), 1));
     if (player.achievements.includes("r137") && player.dilation.active) dtGain = dtGain.mul(2);
 
@@ -87,6 +92,8 @@ function getDilatedTimeGain() {
     if (player.quantum.unlocked) dtGain = dtGain.mul(tmp.chargeEffect.b)
 
     if (player.dilation.upgrades.includes(16)) dtGain = dtGain.mul(player.meta.best1.add(1).l**0.5+1)
+
+    if (hasGluonUpg('br2')) dtGain = dtGain.mul(gluonUpgEff('br2'))
 
     return dtGain;
 }

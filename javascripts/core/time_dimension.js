@@ -13,12 +13,12 @@ function getTimeDimensionPower(tier) {
   if (player.eternityUpgrades.includes(4)) ret = ret.times(player.achPow)
   if (player.eternityUpgrades.includes(5)) ret = ret.times(Math.max(player.timestudy.theorem, 1))
   if (player.eternityUpgrades.includes(6)) ret = ret.times(player.totalTimePlayed / 10 / 60 / 60 / 24)
-  if (player.timestudy.studies.includes(73) && tier == 3) ret = ret.times(calcTotalSacrificeBoost().pow(0.005).min(E("1e1300")))
+  if (player.timestudy.studies.includes(73) && tier == 3) ret = ret.times(tmp.sacPow.pow(0.005).min(E("1e1300")))
   if (player.timestudy.studies.includes(93)) ret = ret.times(Decimal.pow(player.totalTickGained, 0.25).max(1))
   if (player.timestudy.studies.includes(103)) ret = ret.times(Math.max(player.replicanti.galaxies, 1))
   if (player.timestudy.studies.includes(151)) ret = ret.times(1e4)
   if (player.timestudy.studies.includes(221)) ret = ret.times(Decimal.pow(1.0025, player.resets))
-  if (player.timestudy.studies.includes(227) && tier == 4) ret = ret.times(Math.max(Math.pow(calcTotalSacrificeBoost().log10(), 10), 1))
+  if (player.timestudy.studies.includes(227) && tier == 4) ret = ret.times(Math.max(Math.pow(tmp.sacPow.log10(), 10), 1))
   if (player.currentEternityChall == "eterc9") ret = ret.times((Decimal.pow(Math.max(player.infinityPower.log2(), 1), 4)).max(1))
   if (ECTimesCompleted("eterc1") !== 0) ret = ret.times(Math.pow(Math.max(player.thisEternity*10, 0.9), 0.3+(ECTimesCompleted("eterc1")*0.05)))
   let ec10bonus = E(1)
@@ -27,14 +27,7 @@ function getTimeDimensionPower(tier) {
   ret = ret.times(ec10bonus)
   if (player.achievements.includes("r128")) ret = ret.times(Math.max(player.timestudy.studies.length, 1))
 
-  if (player.replicanti.unl && player.replicanti.amount.gt(1) && player.dilation.upgrades.includes(6)) {
-    var replmult = Decimal.pow(Decimal.log2(player.replicanti.amount), 2)
-
-    if (player.timestudy.studies.includes(21)) replmult = replmult.plus(Decimal.pow(player.replicanti.amount, 0.032))
-    if (player.timestudy.studies.includes(102)) replmult = replmult.times(Decimal.pow(5, player.replicanti.galaxies))
-
-    ret = ret.times(replmult.pow(0.1))
-  }
+  if (player.replicanti.unl && player.dilation.upgrades.includes(6)) ret = ret.times(tmp.repEff.root(10))
 
   if (hasTSTier(2,35)) ret = ret.mul(TSTierEffect(2,35))
 

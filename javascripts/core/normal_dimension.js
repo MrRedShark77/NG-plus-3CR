@@ -51,11 +51,11 @@ function getDimensionFinalMultiplier(tier) {
   else if (player.achievements.includes("r73")) multiplier = multiplier.times(player.money.pow(0.00002).plus(1));
 
 
-  if (player.timestudy.studies.includes(71) && tier !== 8) multiplier = multiplier.times(calcTotalSacrificeBoost().pow(0.25).min("1e210000"));
+  if (player.timestudy.studies.includes(71) && tier !== 8) multiplier = multiplier.times(tmp.sacPow.pow(0.25).min("1e210000"));
   if (player.timestudy.studies.includes(91)) multiplier = multiplier.times(Decimal.pow(10, Math.min(player.thisEternity, 18000)/60));
   if (player.timestudy.studies.includes(101)) multiplier = multiplier.times(Decimal.max(player.replicanti.amount, 1))
   if (player.timestudy.studies.includes(161)) multiplier = multiplier.times(E("1e616"))
-  if (player.timestudy.studies.includes(234) && tier == 1) multiplier = multiplier.times(calcTotalSacrificeBoost())
+  if (player.timestudy.studies.includes(234) && tier == 1) multiplier = multiplier.times(tmp.sacPow)
 
   multiplier = multiplier.times(player.postC3Reward)
   if (player.challenges.includes("postc8") && tier < 8 && tier > 1) multiplier = multiplier.times(mult18);
@@ -67,7 +67,7 @@ function getDimensionFinalMultiplier(tier) {
   if (player.challenges.includes("postc4")) multiplier = multiplier.pow(1.05);
   if (player.currentEternityChall == "eterc10") multiplier = multiplier.times(ec10bonus)
   if (player.timestudy.studies.includes(193)) multiplier = multiplier.times(Decimal.pow(1.03, player.eternities).min("1e13000"))
-  if (tier == 8 && player.timestudy.studies.includes(214)) multiplier = multiplier.times((calcTotalSacrificeBoost().pow(8)).min("1e46000").times(calcTotalSacrificeBoost().pow(1.1).min(E("1e125000"))))
+  if (tier == 8 && player.timestudy.studies.includes(214)) multiplier = multiplier.times((tmp.sacPow.pow(8)).min("1e46000").times(tmp.sacPow.pow(1.1).min(E("1e125000"))))
   if (multiplier.lt(1)) multiplier = E(1)
   
   if (hasTSTier(2,21)) multiplier = multiplier.pow(1.025)

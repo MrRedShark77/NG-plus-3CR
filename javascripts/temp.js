@@ -66,6 +66,13 @@ function setupTemp() {
             g: 1,
             b: E(1),
         },
+        quarksWorth: E(0),
+
+        repSpeed: {inc: 1.2, exp: 308},
+        repEff: E(1),
+        sacPow: E(1),
+
+        gluon_eff: {},
     }
 
     for (let x = 1; x <= 8; x++) {
@@ -79,6 +86,34 @@ function setupTemp() {
     }
 
     tmp = s
+}
+
+function getReplicantEffect() {
+    var replmult = Decimal.pow(Decimal.log2(player.replicanti.amount.max(2)), 2)
+
+    if (player.timestudy.studies.includes(21)) replmult = replmult.plus(Decimal.pow(player.replicanti.amount.max(1), 0.032))
+    if (player.achievements.includes('r155')) replmult = replmult.plus(Decimal.pow(player.replicanti.amount.max(1), 0.5))
+
+    if (player.timestudy.studies.includes(102)) replmult = replmult.times(Decimal.pow(5, player.replicanti.galaxies))
+
+    return replmult
+}
+
+function getReplicantSpeed() {
+    let inc = .2
+    let exp = 308
+
+    if (hasGluonUpg('gb2')) exp *= 2
+
+    return {inc: inc+1, exp: exp}
+}
+
+function getQuarksWorth() {
+    let x = player.quantum.quarks
+    var colors = ['r','g','b']
+    for (let c = 0; c < 3; c++) x = x.add(player.quantum.color[colors[c]])
+    for (let mix = 0; mix < 3; mix++) x = x.add(player.quantum.gluons[MIX_COLORS[mix]])
+    return x
 }
 
 function getRemoteGalaxyStarting() {
@@ -126,6 +161,11 @@ function getIPMultiplierFromUpgrade() {
 }
 
 function updateTemp() {
+    tmp.repSpeed = getReplicantSpeed()
+    tmp.repEff = getReplicantEffect()
+    tmp.sacPow = calcTotalSacrificeBoost()
+
+    tmp.quarksWorth = getQuarksWorth()
     tmp.extraRG = getExtraReplicatedGalaxies()
     tmp.totalGalaxies = getTotalGalaxies()
 

@@ -1,3 +1,5 @@
+const MIX_COLORS = ['rg','gb','br']
+
 function getAssortPercentage() {
 	return player.quantum.assortPercentage || 100
 }
@@ -66,8 +68,6 @@ function assignAll(auto) {
 		}
 	}
 	player.quantum.quarks = player.quantum.quarks.sub(oldQuarks).round()
-	if (mult.gt(1)) updateQuantumWorth()
-	updateColorCharge()
 }
 
 function updateQuarksHTML() {
@@ -112,4 +112,110 @@ var chargeEffects = {
 
         return Decimal.pow(10,Math.pow(x,2/3))
     },
+}
+
+function generateGluons(mix) {
+	let toConsume = player.quantum.gluons[mix].add(player.quantum.color[mix[0]])
+	if (toConsume.eq(0)) return
+	player.quantum.gluons[mix] = toConsume
+	player.quantum.color[mix[0]] = player.quantum.color[mix[0]].sub(toConsume).round()
+	updateQuarksHTML()
+}
+
+var gluonUpgCosts = [null,20,40,100,1000]
+
+var gluonUpgs = {
+	rg: [
+		null,
+		[
+			`Remote Antimatter Galaxy cost scaling is approximately 2x slower.`,
+		],
+		[
+			`Dimension Boosts boost Meta Dimensions.`,
+			() => {
+				let x = player.resets+1
+
+				return x
+			},
+			x => shorten(x)+"x",
+		],
+		[
+			`Dimension Supersonic starts +25 later per total galaxy.`,
+			() => {
+				let x = tmp.totalGalaxies*25
+
+				return x
+			},
+			x => "+"+shortenDimensions(x)+" later",
+		],
+	],
+	gb: [
+		null,
+		[
+			`You gain replicanti faster based on tickspeed upgrades from Time Shards.`,
+			() => {
+				let x = Math.log10(player.totalTickGained+1)**2+1
+
+				return x
+			},
+			x => shorten(x)+"x",
+		],
+		[
+			`Replicate interval scaling is 2x slower.`,
+		],
+		[
+			`Replicate chance can go over 100%.`,
+		],
+	],
+	br: [
+		null,
+		[
+			`Blue Powers boost tachyon particles.`,
+			() => {
+				let x = player.quantum.charge.b.add(1).l
+
+				return Decimal.pow(10,Math.pow(x,1/3)/2)
+			},
+			x => shorten(x)+"x",
+		],
+		[
+			`Sacrifice boosts dilated time.`,
+			() => {
+				let x = Decimal.pow(tmp.sacPow.l+1,1/3)
+
+				return x
+			},
+			x => shorten(x)+"x",
+		],
+		[
+			`Dilated time formula from tachyon particle is better.`,
+		],
+	],
+}
+
+function hasGluonUpg(name) { return player.quantum.gluon_upg.includes(name) }
+function gluonUpgEff(name,def=1) { return tmp.gluon_eff?tmp.gluon_eff[name]||def:def }
+
+function buyGluonUpg(mix,i) {
+	let name = mix+i, cost = gluonUpgCosts[i], g = player.quantum.gluons
+	if (hasGluonUpg(name) || g[mix].lt(cost)) return
+	player.quantum.gluon_upg.push(name)
+	g[mix] = g[mix].sub(cost).round()
+}
+
+function updateGluonsHTML() {
+	for (let mix in player.quantum.gluons) {
+		let g = player.quantum.gluons[mix]
+		el('generate'+mix.toUpperCase()+'GluonsAmount').textContent = shortenDimensions(player.quantum.color[mix[0]])
+        el(mix).textContent = shortenDimensions(g)
+
+		for (let i = 1; i < gluonUpgCosts.length; i++) {
+			let upg_el = el(mix+"upg"+i), upg = gluonUpgs[mix][i]||["Placeholder."], h = upg[0]
+			if (upg[2]) h += `<br>Effect: ${upg[2](tmp.gluon_eff[mix+i])}`
+			if (!hasGluonUpg(mix+i)) h += `<br>Cost: ${shortenDimensions(gluonUpgCosts[i])} ${mix.toUpperCase()} gluons`
+			upg_el.innerHTML = h
+
+			upg_el.className = (hasGluonUpg(mix+i) ? "gluonupgradebought " : "gluonupgrade " + (g.gte(gluonUpgCosts[i]) ? "" : "locked ")) + mix
+		}
+    }
 }

@@ -196,7 +196,7 @@ function canBuyStudy(name) {
       break;
 
       case 12:
-      if (hasRow(row-1) && !hasRow(row)) return true; else return false
+      if (hasRow(row-1) && !hasRow(row) || hasTSTier(2,63)) return true; else return false
       break;
 
       case 7:
@@ -368,13 +368,15 @@ function respecTimeStudies(tier=ts_tier_tab) {
         if (player.eternityChallUnlocked<=12) player.eternityChallUnlocked = 0
     } else {
         let pts = player.ts_tier[tier-2]
+        let k = []
         let costs = tmp.ts_tier.cost[tier]
 
         for (let i = 0; i < pts.length; i++) {
+            if (TS_DIL[tier].includes(pts[i])) k.push(pts[i])
             player.timestudy.theorem += costs[pts[i]]
         }
 
-        player.ts_tier[tier-2] = []
+        player.ts_tier[tier-2] = k
         if (player.eternityChallUnlocked>12) player.eternityChallUnlocked = 0
     }
   updateTimeStudyButtons()
@@ -389,7 +391,7 @@ function exportStudyTree() {
   let parent = output.parentElement;
 
   parent.style.display = "";
-  output.value = player.timestudy.studies + "|" + player.eternityChallUnlocked;
+  output.value = player.timestudy.studies + "|" + player.eternityChallUnlocked + "|" + player.ts_tier[0];
 
   output.onblur = function() {
       parent.style.display = "none";
@@ -409,23 +411,29 @@ function exportStudyTree() {
 };
 
 function importStudyTree(input) {
-  if (typeof input !== 'string') var input = prompt()
-  if (sha512_256(input) == "08b819f253b684773e876df530f95dcb85d2fb052046fa16ec321c65f3330608") giveAchievement("You followed the instructions")
-  if (input === "") return false
-  var studiesToBuy = input.split("|")[0].split(",");
-  for (i=0; i<studiesToBuy.length; i++) {
-      document.getElementById(studiesToBuy[i]).click();
-  }
-  if (parseInt(input.split("|")[1]) !== 0) {
-      justImported = true;
-      document.getElementById("ec"+parseInt(input.split("|")[1])+"unl").click();
-      setTimeout(function(){ justImported = false; }, 100);
-  }
+    if (typeof input !== 'string') var input = prompt()
+    if (sha512_256(input) == "08b819f253b684773e876df530f95dcb85d2fb052046fa16ec321c65f3330608") giveAchievement("You followed the instructions")
+    if (input === "") return false
+    var studiesToBuy = input.split("|")[0].split(",");
+    for (i=0; i<studiesToBuy.length; i++) {
+        document.getElementById(studiesToBuy[i]).click();
+    }
+    if (input.split("|")[2]) {
+        studiesToBuy = input.split("|")[2].split(",");
+        for (i=0; i<studiesToBuy.length; i++) {
+            buyTSTier(2,parseInt(studiesToBuy[i]))
+        }
+    }
+    if (parseInt(input.split("|")[1]) !== 0) {
+        justImported = true;
+        document.getElementById("ec"+parseInt(input.split("|")[1])+"unl").click();
+        setTimeout(function(){ justImported = false; }, 100);
+    }
 };
 
 function studyTreeSaveButton(num) {
     if (shiftDown) {
-        localStorage.setItem("studyTree"+num, player.timestudy.studies + "|" + player.eternityChallUnlocked);
+        localStorage.setItem("studyTree"+num, player.timestudy.studies + "|" + player.eternityChallUnlocked + "|" + player.ts_tier[0]);
         $.notify("Study tree "+num+" saved", "info")
     } else if (localStorage.getItem("studyTree"+num) !== null && localStorage.getItem("studyTree"+num) !== "|0") {
         importStudyTree(localStorage.getItem("studyTree"+num));

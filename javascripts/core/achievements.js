@@ -139,20 +139,20 @@ const allAchievements = {
   r148 : "Faster than a rainbow potato",
 
   r151 : "Protoversal Form",
-  // r152
+  r152 : `Day 1209 of not using Dimensions:`,
   r153 : "este logro no existe 3",
   r154 : "Hadronization",
-  // r155
+  r155 : `It is never stopped`,
   r156 : `Quantum Fission`,
 
   s41 : "That dimension doesn’t exist",
-  // s42
-  // s43
+  // s42,
+  // s43,
   s44 : "Did you understand some numbers?",
-  // s45
+  // s45,
   s46 : "Nightmare Mode",
-  // s47
-  // s48
+  // s47,
+  // s48,
 };
 const secretAchievementTooltips = {
     s11 : "Click on this achievement.",
@@ -336,7 +336,9 @@ function checkAchievements() {
   if (player.totalTickGained >= 1e6) giveAchievement('r146',true)
   if (player.tickspeed.e <= -486539264) giveAchievement('r148',true)
 
+  if (player.money.gte('1e100000000') && player.infinityDimension1.amount <= 0 && player.timeDimension1.amount <= 0 && player.meta[1].amount <= 0 && !player.meta.firstDBought) giveAchievement('r152',true)
   if (player.meta.antimatter.gte('9.99e999')) giveAchievement('r153',true)
+  if (player.replicanti.amount.gte('1e100000')) giveAchievement('r155',true)
   if (player.quantum.color.r.gte(1) && player.quantum.color.g.gte(1) && player.quantum.color.b.gte(1)) giveAchievement('r154',true)
 
   // Secret
@@ -348,7 +350,9 @@ function updateAchievementsTooltip() {
   el(allAchievements.r144).setAttribute('ach-tooltip',`Get over ${shortenMoney(Number.MAX_VALUE)} of tick reduction.`)
   el(allAchievements.r148).setAttribute('ach-tooltip',`Get more than ${shortenCosts(Decimal.pow(10,486539264))} ticks per second.`)
 
+  el(allAchievements.r152).setAttribute('ach-tooltip',`Reach ${shorten(E('1e100000000'))} antimatter without Infinity, Time, nor Meta Dimensions in quantum run.`)
   el(allAchievements.r153).setAttribute('ach-tooltip',`Reach ${shorten(E('9.99e999'))} meta-antimatter. Reward: Current achievement multiplier affects Meta-Dimensions.`)
+  el(allAchievements.r155).setAttribute('ach-tooltip',`Reach ${shorten(E('1e100000'))} replicanti. Reward: Replicanti multiplier's formula is better.`)
 }
 
 /*

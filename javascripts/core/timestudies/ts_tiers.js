@@ -9,7 +9,7 @@ const TS_TIERS_MAP = [
         [31,32,33,34,35,36],
         [41,42,43],
         [51,52,53],
-        [61],
+        [61,62,63],
     ],
 ]
 
@@ -119,6 +119,20 @@ const TS_TIERS = [
             "Colored charge rate is affected by tickspeed at a reduced rate.",
             [51,52,53],
             1e45,
+            2,
+        ],
+        62: [
+            "Unlock Gluons.",
+            [61],
+            0,
+            1,
+            'dil',
+        ],
+        63: [
+            "You can buy all Time Studies in all 3-way splits.",
+            [62],
+            1e52,
+            2,
         ],
 
         /*
@@ -220,7 +234,11 @@ const TS_TIERS_EFF = [
 ]
 
 const TS_NO_MULT_INCREASE = {
-    2: [51,52,53],
+    2: [51,52,53,62],
+}
+
+const TS_DIL = {
+    2: [62],
 }
 
 const TS_REQS = {
@@ -240,12 +258,18 @@ const TS_REQS = {
             (x) => `${x} normal galaxies while dilated (${player.galaxies}/${x})`,
             (x) => player.dilation.active && player.galaxies >= x,
         ],
+        62: [
+            () => 50,
+            (x) => `${x} Quarks Worth (${shortenDimensions(tmp.quarksWorth)}/${x})`,
+            (x) => tmp.quarksWorth.gte(x),
+        ],
     },
 }
 
 const TS_BUTTON_TYPE = {
     normal: ['timestudy','timestudylocked','timestudybought'],
     ec: ['eternitychallengestudy','eternitychallengestudylocked','eternitychallengestudybought'],
+    dil: ['dilationupg','timestudylocked','dilationupgbought'],
 }
 
 function getTSTierStyle(t,id) {
@@ -276,9 +300,9 @@ function updateTSTiersButtons(tier=ts_tier_tab,force=false) {
 
             if (eff) h += "<span>Currently: "+eff[1](TSTierEffect(tier,id))
 
-            if (data[4] == 'ec') h += "<span>Requirement: "+req[1](req[0]())
+            if (data[4] == 'ec' || data[4] == 'dil') h += "<span>Requirement: "+req[1](req[0]())
 
-            h += "<span>Cost: "+shorten(cost)+" TT"
+            if (data[4] != 'dil') h += "<span>Cost: "+shorten(cost)+" TT"
 
             btn.innerHTML = h
             btn.className = (hasTSTier(tier,id) ? style[2] : canBuyTSTier(tier,id) ? style[0] : style[1]) + (!player.quantum.unlocked && tier==2 && id>60 ? " quantumized" : "")
@@ -327,6 +351,7 @@ function getTSTierCost(t,id) { return tmp.ts_tier.cost[t][id] || TS_TIERS[t][id]
 function TSTierEffect(t,id,def=1) { return tmp.ts_tier.effect[t][id] || def }
 
 function canBuyTSTier(t,id) {
+    if (t == 2 && id == 63 && !hasTSTier(2,61)) return false
     if (t == 2 && id == 61 && !(ECTimesCompleted('eterc13') || ECTimesCompleted('eterc14') || ECTimesCompleted('eterc15'))) return false
     if (!player.quantum.unlocked && t == 2 && id > 60) return false
     if (player.eternityChallUnlocked !== 0 && t == 2 && id >= 51 && id <= 53 && player.eternityChallUnlocked != id - 38) return false
@@ -341,7 +366,10 @@ function canBuyTSTier(t,id) {
     let data = TS_TIERS[t][id]
     let bought
 
-    if (data[1].length == 0 || (t == 2 && id == 61 && (hasTSTier(2,41)||hasTSTier(2,42)||hasTSTier(2,43)))) bought = true
+    if (
+        data[1].length == 0
+        || (t == 2 && id == 61 && (hasTSTier(2,41)||hasTSTier(2,42)||hasTSTier(2,43)))
+    ) bought = true
     else for (let i = 0; i < data[1].length; i++) if (hasTSTier(t,data[1][i])) {
         bought = true
         break
@@ -359,6 +387,11 @@ function buyTSTier(t,id) {
 
         if (t == 2 && id >= 51 && id <= 53) {
             unlockEChall(id - 38)
+        }
+
+        if (t == 2 && id == 62) {
+            showTab('quantum')
+            showQuantumTab('gluons_tab')
         }
 
         updateTSTierCosts(t)

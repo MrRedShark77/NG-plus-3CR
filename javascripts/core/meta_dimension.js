@@ -101,6 +101,8 @@ function buyMD(i,max=false) {
         player.meta[i].amount = player.meta[i].amount.add(buying)
         player.meta[i].bought += buying
 
+        player.meta.firstDBought = true
+
         player.meta.antimatter = player.meta.antimatter.sub(cost).max(0)
 
         if (i==8) giveAchievement('r142',true)
@@ -237,6 +239,8 @@ function getMDMult(i) {
     let x = Decimal.pow(tmp.meta.mult_inc[0],p).mul(Decimal.pow(tmp.meta.mult_inc[1],Math.max(0,player.meta.reset-i+1)))
 
     if (player.dilation.upgrades.includes(13)) x = x.mul(Math.log10(Math.abs(player.tickspeed.l)+10))
+
+    if (hasGluonUpg('rg2')) x = x.mul(gluonUpgEff('rg2'))
 
     for (let t = 41; t <= 43; t++) if (hasTSTier(2,t)) x = x.mul(TSTierEffect(2,t))
 

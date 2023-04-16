@@ -1069,7 +1069,7 @@
             <br><div style="display: none;"><textarea id="exportOutput" style="color:black; width: 200px; height: 55px;"></textarea></div>
             <p>Hotkeys: 1-8 for buy 10 dimension, shift+1-8 for buy 1 dimension, T to buy max tickspeed, shift+T to buy one tickspeed, M for max all<br>S for sacrifice, D for dimension boost, G for galaxy, C for crunch, A for toggle autobuyers, R for replicanti galaxies, E for eternity.<br>You can hold shift while buying time studies to buy all up until that point, see each study's number, and save study trees.<br>Hotkeys do not work while holding control.</p>
             <p>
-                Antimatter Dimensions: NG+3 Classic Reloaded v1.1 - Made by MrRedShark77
+                Antimatter Dimensions: NG+3 Classic Reloaded v1.1.1 - Made by MrRedShark77
             </p>
             <div id="footercontainer">
                 <table id="footer">
@@ -1551,13 +1551,13 @@
                         <td>
                             <div id="Protoversal Form" class="achievement achievementlocked quantumized" style="background-image: url(images/new/ap10.png)" ach-tooltip="Go Quantum. Reward: You start with 10 eternities per quantize, and gain 25x more eternities. Normal dimensions are 10x stronger, and dimension boosts are 100x stronger."><br></div>
                         </td><td>
-                            <div class="achievement achievementlocked" style="opacity: 0;"><br></div>
+                            <div id="Day 1209 of not using Dimensions:" class="achievement achievementlocked" style="background-image: url(images/new/ap15.png)" ach-tooltip="Reach 1e100,000,000 antimatter without Infinity, Time, nor Meta Dimensions in quantum run."><br></div>
                         </td><td>
                             <div id="este logro no existe 3" class="achievement achievementlocked quantumized" style="background-image: url(images/new/ap11.png)" ach-tooltip="Reach 9.99e999 meta-antimatter. Reward: Current achievement multiplier affects Meta-Dimensions."><br></div>
                         </td><td>
                             <div id="Hadronization" class="achievement achievementlocked quantumized" style="background-image: url(images/new/ap12.png)" ach-tooltip="Have colored quarks. Reward: Colored powers boost Meta-Dimensions."><br></div>
                         </td><td>
-                            <div class="achievement achievementlocked" style="opacity: 0;"><br></div>
+                            <div id="It is never stopped" class="achievement achievementlocked" style="background-image: url(images/new/ap14.png)" ach-tooltip="Reach 1e100000 replicanti. Reward: Replicanti now affects Time Dimensions."><br></div>
                         </td><td>
                             <div id="Quantum Fission" class="achievement achievementlocked" style="background-image: url(images/new/ap13.png)" ach-tooltip="Go Quantum under 30 seconds. Reward: Your EP boosts Quarks gain."><br></div>
                         </td><td>
@@ -2751,10 +2751,13 @@
         </div>
 
         <div id="quantum" class="tab" align="center" style="display: none">
-            <br>
+            <br><p>
+                Your Quantum worth is <b id="qu_worth">0</b>
+            </p><br>
             <tr>
                 <td><button class="secondarytabbtn" onclick="showQuantumTab('quarks_tab')">Quarks</button><td>
                 <td><button class="secondarytabbtn" onclick="showQuantumTab('speedrummilestone')">Speedrun Milestones</button></td>
+                <td><button id="gluonstabbtn" class="secondarytabbtn" onclick="showQuantumTab('gluons_tab')">Gluons</button></td>
             </tr>
             <div id="quarks_tab" class="quantumtab">
                 <table class='qtable'><tr>
@@ -2819,6 +2822,45 @@
 				</tr></table>
             </div><div id="speedrummilestone" class="quantumtab">
                 <table class="table" align="center" style="margin: auto" id="sm_table"></table>
+            </div><div id="gluons_tab" class="quantumtab">
+                <table id='gluonupgrades'>
+                    <tr>
+                        <td class="rqC" colspan=2>
+                            <p>You have <span id="rg" style="font-size:35px">0</span> red-green gluons.</p>
+                            <button class="gluonupgrade rg" id="generateRGGluons" onclick="generateGluons('rg')">
+                                Generate <span id="generateRGGluonsAmount">0</span> red-green gluons from red quarks, but reduce them to 0
+                            </button>
+                        </td>
+                        <td class="gqC" colspan=2>
+                            <p>You have <span id="gb" style="font-size:35px">0</span> green-blue gluons.</p>
+                            <button class="gluonupgrade gb" id="generateGBGluons" onclick="generateGluons('gb')">
+                                Generate <span id="generateGBGluonsAmount">0</span> green-blue gluons from green quarks, but reduce them to 0
+                            </button>
+                        </td>
+                        <td class="bqC" colspan=2>
+                            <p>You have <span id="br" style="font-size:35px">0</span> blue-red gluons.</p>
+                            <button class="gluonupgrade br" id="generateBRGluons" onclick="generateGluons('br')">
+                                Generate <span id="generateBRGluonsAmount">0</span> blue-red gluons from blue quarks, but reduce them to 0
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><button id='rgupg1' class="gluonupgrade rg locked" onclick='buyGluonUpg("rg",1)'>???</button></td>
+                        <td><button id='rgupg2' class="gluonupgrade rg locked" onclick='buyGluonUpg("rg",2)'>???</button></td>
+                        <td><button id='gbupg1' class="gluonupgrade gb locked" onclick='buyGluonUpg("gb",1)'>???</button></td>
+                        <td><button id='gbupg2' class="gluonupgrade gb locked" onclick='buyGluonUpg("gb",2)'>???</button></td>
+                        <td><button id='brupg1' class="gluonupgrade br locked" onclick='buyGluonUpg("br",1)'>???</button></td>
+                        <td><button id='brupg2' class="gluonupgrade br locked" onclick='buyGluonUpg("br",2)'>???</button></td>
+                    </tr>
+                    <tr>
+                        <td><button id='rgupg3' class="gluonupgrade rg locked" onclick='buyGluonUpg("rg",3)'>???</button></td>
+                        <td><button id='rgupg4' class="gluonupgrade rg locked" onclick='buyGluonUpg("rg",4)'>???</button></td>
+                        <td><button id='gbupg3' class="gluonupgrade gb locked" onclick='buyGluonUpg("gb",3)'>???</button></td>
+                        <td><button id='gbupg4' class="gluonupgrade gb locked" onclick='buyGluonUpg("gb",4)'>???</button></td>
+                        <td><button id='brupg3' class="gluonupgrade br locked" onclick='buyGluonUpg("br",3)'>???</button></td>
+                        <td><button id='brupg4' class="gluonupgrade br locked" onclick='buyGluonUpg("br",4)'>???</button></td>
+                    </tr>
+                </table>
             </div><div>
                 <table id="footer">
                     <tr>

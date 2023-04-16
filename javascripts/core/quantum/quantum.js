@@ -33,6 +33,12 @@ function getQuantumSave() {
             g: E(0),
             b: E(0),
         },
+        gluons: {
+            rg: E(0),
+            gb: E(0),
+            br: E(0),
+        },
+        gluon_upg: [],
         assortPercentage: 10,
         assortRatio: {
             r: 1,
@@ -59,6 +65,14 @@ function updateQuantumTemp() {
         tmp.chargeRate[cc] = getColorPowerProduction(cc)
         tmp.chargeEffect[cc] = chargeEffects[cc]()
     }
+
+    for (let mix in player.quantum.gluons) {
+        for (let i = 1; i < gluonUpgCosts.length; i++) {
+            let gu = gluonUpgs[mix][i]
+            if (!gu) continue
+            if (gu[1]) tmp.gluon_eff[mix+i] = gu[1]()
+        }
+    }
 }
 
 function updateQuantumHTML() {
@@ -78,12 +92,19 @@ function updateQuantumHTML() {
     }
 
     if (el('quantum').style.display !== 'none') {
+        el('qu_worth').innerHTML = shortenDimensions(tmp.quarksWorth)
+
+        el('gluonstabbtn').style.display = hasTSTier(2,62)?'':'none'
+
         if (el('quarks_tab').style.display !== 'none') updateQuarksHTML()
+        if (el('gluons_tab').style.display !== 'none') updateGluonsHTML()
     }
 }
 
 function quantumReset(force,auto) {
     if (!force && tmp.quarksGain.lt(1)) return;
+
+    player.meta.firstDBought = false
 
     player.quantum.unlocked = true
     player.quantum.quarks = player.quantum.quarks.add(tmp.quarksGain)
