@@ -277,7 +277,7 @@ function updateDimensions() {
         } else {
             document.getElementById("softReset").textContent = "Reset the game for a new Dimension"
         }
-        let extraGals = tmp.extraRG+player.replicanti.gal
+        let extraGals = tmp.extraRG+player.replicanti.galaxies
         var galString = "", bonus = false
         if (player.galaxies >= tmp.remoteGalaxyStart) galString += "Remote Antimatter Galaxies (";
         else if (player.galaxies >= getGalaxyCostScalingStart() || player.currentEternityChall === "eterc5") galString += "Distant Antimatter Galaxies (";
