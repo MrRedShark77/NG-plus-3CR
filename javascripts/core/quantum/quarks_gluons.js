@@ -194,7 +194,7 @@ var gluonUpgs = {
 }
 
 function hasGluonUpg(name) { return player.quantum.gluon_upg.includes(name) }
-function gluonUpgEff(name,def=1) { return tmp.gluon_eff?tmp.gluon_eff[name]||def:def }
+function gluonUpgEff(name,def=1) { return tmp.gluon_eff[name]||def }
 
 function buyGluonUpg(mix,i) {
 	let name = mix+i, cost = gluonUpgCosts[i], g = player.quantum.gluons

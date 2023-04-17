@@ -370,9 +370,9 @@ function deepUndefinedAndDecimal(obj, data) {
 }
 
 function onLoad() {
-    setupTemp()
-
     player = loadPlayer(player)
+
+    setupTemp()
 
     if (player.version<13) {
         player.version = 13

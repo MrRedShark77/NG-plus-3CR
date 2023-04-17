@@ -4,8 +4,8 @@ var passed = 0
 
 function setupTemp() {
     let s = {
-        dimBoostReq: getShiftRequirement(0),
-        galaxyReq: getGalaxyRequirement(),
+        dimBoostReq: { tier: 1/0, amount: 1/0, mult: 1 },
+        galaxyReq: 1/0,
 
         ndPower: 2,
 
