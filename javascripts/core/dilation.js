@@ -95,6 +95,8 @@ function getDilatedTimeGain() {
 
     if (hasGluonUpg('br2')) dtGain = dtGain.mul(gluonUpgEff('br2'))
 
+    if (hasTSTier(2,91)) dtGain = dtGain.mul(TSTierEffect(2,91))
+
     return dtGain;
 }
 
@@ -183,6 +185,14 @@ function getDU12Effect() {
     return Math.floor(x)
 }
 
+function getDU14Effect() {
+    let x = Math.log10(player.dilation.dilatedTime.max(1).l+10)
+
+    if (hasGluonUpg('rg4')) x *= 1.1
+
+    return x
+}
+
 function updateDilationUpgradeButtons() {
     el('meta_du').style.display = metaUnlocked() ? '' : 'none';
     for (var i = 1; i <= 16; i++) {
@@ -199,7 +209,7 @@ function updateDilationUpgradeButtons() {
     document.getElementById("dil9desc").textContent = "Currently: "+shortenMoney(player.dilation.dilatedTime.pow(1000).max(1))+"x"
     document.getElementById("dil12desc").textContent = "Currently: "+shortenMoney(getDU12Effect())+"/s"
     el('dil13desc').textContent = "Currently: "+shortenMoney(Math.log10(Math.abs(player.tickspeed.l)+10))+"x"
-    el('dil14desc').textContent = "Currently: "+shortenMoney(Math.log10(player.dilation.dilatedTime.max(1).l+10))+"x"
+    el('dil14desc').textContent = "Currently: "+shortenMoney(getDU14Effect())+"x"
     el('dil16desc').textContent = "Currently: "+shortenMoney(player.meta.best1.add(1).l**0.5+1)+"x"
 }
 

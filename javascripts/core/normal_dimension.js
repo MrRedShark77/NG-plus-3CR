@@ -92,7 +92,7 @@ function getDimensionDescription(tier) {
   var name = TIER_NAMES[tier];
 
   let description = shortenDimensions(player[name + 'Amount']) + ' (' + dimBought(tier) + ')';
-  if (tier == 8) description = Math.round(player[name + 'Amount']) + ' (' + dimBought(tier) + ')';
+  if (tier == 8) description = getFullExpansion(Math.round(player[name + 'Amount'])) + ' (' + dimBought(tier) + ')';
 
   if (tier < 8) {
       description += '  (+' + formatValue(player.options.notation, getDimensionRateOfChange(tier), 2, 2) + '%/s)';
@@ -279,12 +279,12 @@ function hasInfinityMult(tier) {
         player[name + 'Bought']++;
     
         if (dimBought(tier) === 0) {
-            player[name + 'Pow']  = player[name + 'Pow'].times(getDimensionPowerMultiplier(tier));
+            player[name + 'Pow']  = player[name + 'Pow'].times(tmp.ndPower);
             if (player.currentChallenge != "challenge5" && player.currentChallenge != "postc5") player[name + 'Cost'] = player[name + 'Cost'].times(getDimensionCostMultiplier(tier));
             else if (player.currentChallenge == "postc5") multiplyPC5Costs(player[name + 'Cost'], tier)
             else multiplySameCosts(cost);
             if (player[name + 'Cost'].gte(Number.MAX_VALUE)) player.costMultipliers[tier-1] = player.costMultipliers[tier-1].times(player.dimensionMultDecrease)
-            floatText(name+"D", "x" + shortenMoney(getDimensionPowerMultiplier(tier)))
+            floatText(name+"D", "x" + shortenMoney(tmp.ndPower))
         }
     
         if (player.currentChallenge == "challenge2" || player.currentChallenge == "postc1") player.chall2Pow = 0;
@@ -324,10 +324,10 @@ function hasInfinityMult(tier) {
         else player[name + "Cost"] = player[name + "Cost"].times(getDimensionCostMultiplier(tier))
         if (costIncreaseActive(player[name + "Cost"])) player.costMultipliers[tier - 1] = player.costMultipliers[tier - 1].times(getDimensionCostMultiplierIncrease())
         if (!quick) {
-            floatText(name+"D", "x" + shortenMoney(getDimensionPowerMultiplier()))
+            floatText(name+"D", "x" + shortenMoney(tmp.ndPower))
             onBuyDimension(tier)
         }
-        player[name + "Pow"] = player[name + "Pow"].mul(getDimensionPowerMultiplier())
+        player[name + "Pow"] = player[name + "Pow"].mul(tmp.ndPower)
         return true
     }
 
@@ -456,8 +456,8 @@ function hasInfinityMult(tier) {
             player.costMultipliers[tier - 1] = newMult.times(mi)
             bought += toBuy
         }
-        if (!auto) floatText(name+"D", "x" + shortenMoney(Decimal.pow(getDimensionPowerMultiplier(), bought)))
-        player[name + "Pow"] = player[name + "Pow"].mul(Decimal.pow(getDimensionPowerMultiplier(), bought))
+        if (!auto) floatText(name+"D", "x" + shortenMoney(Decimal.pow(tmp.ndPower, bought)))
+        player[name + "Pow"] = player[name + "Pow"].mul(Decimal.pow(tmp.ndPower, bought))
         onBuyDimension(tier)
     }
     

@@ -441,8 +441,6 @@ function onLoad() {
     if (player.seventhAmount !== 0|| player.eternities >= 30)
     if (player.resets > 3 && player.currentChallenge !== "challenge4") document.getElementById("eightRow").style.display = "table-row";
 
-    document.getElementById("totaltickgained").textContent = "You've gained "+shortenDimensions(player.totalTickGained)+" tickspeed upgrades."
-
     if (typeof player.autobuyers[9].bulk !== "number") {
         player.autobuyers[9].bulk = 1
     }

@@ -122,7 +122,7 @@ function generateGluons(mix) {
 	updateQuarksHTML()
 }
 
-var gluonUpgCosts = [null,20,40,100,1000]
+var gluonUpgCosts = [null,20,40,100,1500]
 
 var gluonUpgs = {
 	rg: [
@@ -148,6 +148,9 @@ var gluonUpgs = {
 			},
 			x => "+"+shortenDimensions(x)+" later",
 		],
+		[
+			`14th dilation upgrade is 10% stronger.`,
+		],
 	],
 	gb: [
 		null,
@@ -165,6 +168,14 @@ var gluonUpgs = {
 		],
 		[
 			`Replicate chance can go over 100%.`,
+		],
+		[
+			`Replicate chance boosts itself.`,
+			() => {
+				var intensity = 5
+				return Decimal.max(Math.log10(player.replicanti.chance + 1), 1).pow(intensity)
+			},
+			x => "^"+shorten(x),
 		],
 	],
 	br: [
@@ -189,6 +200,15 @@ var gluonUpgs = {
 		],
 		[
 			`Dilated time formula from tachyon particle is better.`,
+		],
+		[
+			`Multiplier per ten dimensions boosts Meta Dimensions.`,
+			() => {
+				let x = tmp.atom.electron_eff[1].root(2000)
+
+				return x
+			},
+			x => shorten(x)+"x",
 		],
 	],
 }

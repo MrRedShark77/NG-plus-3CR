@@ -1781,7 +1781,8 @@ br {
 }
 
 #gluonupgrades {
-	width:100%
+    font-size: 11px;
+	width: 100%;
 }
   
 #gluonupgrades td {
@@ -1831,6 +1832,70 @@ br {
 .gluonupgradebought.rg { animation: rgupgbought 5s infinite }
 .gluonupgradebought.gb { animation: gbupgbought 5s infinite }
 .gluonupgradebought.br { animation: brupgbought 5s infinite }
+
+#atom_table {
+    font-size: 11px;
+    width: 100%;
+}
+
+#atom_table td {
+    width: 50%;
+	text-align:center;
+    vertical-align: 0;
+}
+
+#proton_amt {
+    color: #8d1a1a;
+}
+
+#electron_amt {
+    color: #8e991e;
+}
+
+#atomupgs button {
+    font-size: 11px;
+    width: 200px;
+}
+
+.gluonupgrade.proton:not(.locked) {
+    background-color: black !important;
+	border: solid 1px #8d1a1a;
+	color: #8d1a1a;
+	animation: protonupg 5s infinite;
+    cursor: pointer;
+}
+
+.gluonupgrade.proton:not(.locked):hover {
+	background-color: #8d1a1a !important;
+	color: #ffffff;
+	animation: protonupg 5s infinite
+}
+
+@keyframes protonupg {
+    0%  {box-shadow: inset 0px 0px 20px 0px #8d1a1a;}
+    50% {box-shadow: inset 0px 0px 40px 0px #8d1a1a;}
+    100% {box-shadow: inset 0px 0px 20px 0px #8d1a1a;}
+}
+
+.gluonupgrade.electron:not(.locked) {
+    background-color: black !important;
+	border: solid 1px #8e991e;
+	color: #8e991e;
+	animation: electronupg 5s infinite;
+    cursor: pointer;
+}
+
+.gluonupgrade.electron:not(.locked):hover {
+	background-color: #8e991e !important;
+	color: #ffffff;
+	animation: electronupg 5s infinite
+}
+
+@keyframes electronupg {
+    0%  {box-shadow: inset 0px 0px 20px 0px #8e991e;}
+    50% {box-shadow: inset 0px 0px 40px 0px #8e991e;}
+    100% {box-shadow: inset 0px 0px 20px 0px #8e991e;}
+}
 
 @keyframes rg {
 	0% {color: #bf0000}

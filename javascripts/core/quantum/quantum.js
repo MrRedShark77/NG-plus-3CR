@@ -45,6 +45,13 @@ function getQuantumSave() {
             g: 1,
             b: 1,
         },
+        protons: 0,
+        electrons: 0,
+        neutrons: 0,
+        atom_upg: [
+            [0,0],
+            [0,0],
+        ],
     }
     return s
 }
@@ -56,6 +63,7 @@ function toggleQuantumConf() {
 
 function updateQuantumTemp() {
     tmp.quarksGain = quarksGain()
+    updateAtomTemp()
 
     let colors = ['r','g','b']
 
@@ -95,9 +103,11 @@ function updateQuantumHTML() {
         el('qu_worth').innerHTML = shortenDimensions(tmp.quarksWorth)
 
         el('gluonstabbtn').style.display = hasTSTier(2,62)?'':'none'
+        el('atomstabbtn').style.display = hasTSTier(2,71)?'':'none'
 
         if (el('quarks_tab').style.display !== 'none') updateQuarksHTML()
         if (el('gluons_tab').style.display !== 'none') updateGluonsHTML()
+        if (el('atoms_tab').style.display !== 'none') updateAtomsHTML()
     }
 }
 
@@ -111,6 +121,10 @@ function quantumReset(force,auto) {
     player.quantum.times++
     player.quantum.best = Math.min(player.quantum.best,player.quantum.time)
     player.quantum.time = 0
+
+    player.quantum.protons = 0
+    player.quantum.electrons = 0
+    player.quantum.neutrons = 0
 
     for (let i = player.quantum.speedruns; i < QU_SPEEDRUN.length; i++) {
         if (player.quantum.best < QU_SPEEDRUN[i][1]*10) player.quantum.speedruns++
@@ -155,6 +169,9 @@ function quantumReset(force,auto) {
 
     drawStudyTree(1)
     updateTimeStudyButtons()
+
+    document.getElementById("epmult").className = player.eternityPoints.gte(player.epmultCost) ? "eternityupbtn" : "eternityupbtnlocked"
+    document.getElementById("epmult").innerHTML = "You gain 5 times more EP<p>Currently: "+shortenDimensions(player.epmult)+"x<p>Cost: "+shortenDimensions(player.epmultCost)+" EP"
 }
 
 function quantum() {
@@ -186,5 +203,12 @@ function quantumTick(dt) {
 
     for (let c in colors) {
         player.quantum.charge[colors[c]] = player.quantum.charge[colors[c]].add(tmp.chargeRate[colors[c]].mul(dt))
+    }
+
+    if (hasTSTier(2,71)) {
+        player.quantum.electrons = Math.max(player.quantum.electrons,Math.floor(Math.floor(tmp.totalGalaxies/10)*tmp.atom.total_mult[1]))
+        player.quantum.protons = Math.max(player.quantum.protons,Math.floor(Math.floor(player.infinityDimension8.baseAmount/1e7)*tmp.atom.total_mult[0]))
+        
+        player.quantum.neutrons = Math.max(player.quantum.neutrons,Math.floor(player.quantum.protons*player.quantum.electrons/1e4))
     }
 }

@@ -4,7 +4,7 @@
 function DimensionDescription(tier) {
   var name = TIER_NAMES[tier];
 
-  let description = shortenDimensions(player['infinityDimension'+tier].amount) + ' (' + Math.round(player['infinityDimension'+tier].baseAmount/10) + ')';
+  let description = shortenDimensions(player['infinityDimension'+tier].amount) + ' (' + getFullExpansion(Math.round(player['infinityDimension'+tier].baseAmount/10)) + ')';
 
   if (ECTimesCompleted("eterc7")) {
     if (tier < 9) {
@@ -34,7 +34,7 @@ function updateInfinityDimensions() {
   if (document.getElementById("infinitydimensions").style.display == "block" && document.getElementById("dimensions").style.display == "block") {
     for (let tier = 1; tier <= 8; ++tier) {
         document.getElementById("infD"+tier).textContent = DISPLAY_NAMES[tier] + " Infinity Dimension x" + shortenMoney(DimensionPower(tier));
-        document.getElementById("infAmount"+tier).textContent = DimensionDescription(tier);
+        document.getElementById("infAmount"+tier).innerHTML = DimensionDescription(tier);
         var name = TIER_NAMES[tier];
         if (!player.infDimensionsUnlocked[tier-1]) {
             break;
@@ -44,6 +44,8 @@ function updateInfinityDimensions() {
         document.getElementById("infRow"+tier).style.visibility = "visible";
     }
   }
+
+  el('infDimCap').textContent = getFullExpansion(tmp.inf_bought_cap)
 }
 
 function DimensionProduction(tier) {

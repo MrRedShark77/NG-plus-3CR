@@ -10,6 +10,9 @@ const TS_TIERS_MAP = [
         [41,42,43],
         [51,52,53],
         [61,62,63],
+        [71],
+        [82,81,83],
+        [91,0,93],
     ],
 ]
 
@@ -134,6 +137,44 @@ const TS_TIERS = [
             1e52,
             2,
         ],
+        71: [
+            "Unlock Atoms.",
+            [63],
+            0,
+            1,
+            'dil',
+        ],
+        81: [
+            "You can buy beyond 1ms interval upgrades, but the cost begins to increase faster.",
+            [71],
+            1e49,
+            1,
+        ],
+        82: [
+            "Protons increase the exponent of infinity power formula.",
+            [81],
+            1e50,
+            2,
+        ],
+        83: [
+            "Electrons increase the exponent of meta-antimatter's effect.",
+            [81],
+            1e50,
+            2,
+        ],
+        91: [
+            "Replicanti slightly boosts dilated time.",
+            [81,82],
+            2.5e50,
+            4,
+        ],
+
+        93: [
+            "Replicanti slightly boosts meta-antimatter.",
+            [81,83],
+            2.5e50,
+            4,
+        ],
 
         /*
         11: [
@@ -230,6 +271,38 @@ const TS_TIERS_EFF = [
             },
             x=>shorten(x)+"x",
         ],
+        82: [
+            ()=>{
+                let x = Math.log10(player.quantum.protons+1)/3
+
+                return x
+            },
+            x=>"+"+shorten(x),
+        ],
+        83: [
+            ()=>{
+                let x = Math.log10(player.quantum.electrons+1)/3
+
+                return x
+            },
+            x=>"+"+shorten(x),
+        ],
+        91: [
+            ()=>{
+                let x = Decimal.pow(1.25,player.replicanti.amount.max(1).l**0.25)
+
+                return x
+            },
+            x=>shorten(x)+"x",
+        ],
+        93: [
+            ()=>{
+                let x = Decimal.pow(1.2,player.replicanti.amount.max(1).l**0.33)
+
+                return x
+            },
+            x=>shorten(x)+"x",
+        ],
     },
 ]
 
@@ -238,7 +311,7 @@ const TS_NO_MULT_INCREASE = {
 }
 
 const TS_DIL = {
-    2: [62],
+    2: [62,71],
 }
 
 const TS_REQS = {
@@ -263,6 +336,16 @@ const TS_REQS = {
             (x) => `${x} Quarks Worth (${shortenDimensions(tmp.quarksWorth)}/${x})`,
             (x) => tmp.quarksWorth.gte(x),
         ],
+        71: [
+            () => 500,
+            (x) => `${x} Quarks Worth (${shortenDimensions(tmp.quarksWorth)}/${x})`,
+            (x) => tmp.quarksWorth.gte(x),
+        ],
+        81: [
+            () => 15,
+            (x) => `${x} TS tier II (${tmp.ts_tier.boughts[2]}/${x})`,
+            (x) => tmp.ts_tier.boughts[2] >= 15,
+        ],
     },
 }
 
@@ -277,18 +360,40 @@ function getTSTierStyle(t,id) {
     if (t == 2) {
         if (id >= 31 && id <= 36) s = `width: 140px; font-size: 0.57rem; margin: 7px 0px;`;
         else if (id >= 51 && id <= 53) s = `font-size: 0.58rem;`
+        else if (id == 81) s = `width: 200px; font-size: 0.58rem;`
     }
     return s
 }
+
+const TS_UNLS = {
+    2() {
+        let s = [11,21,22,23,31,32,33,34,35,36,41,42,43,51,52,53]
+
+        if (player.quantum.unlocked) s.push(61,62)
+
+        if (hasTSTier(2,62)) s.push(63,71)
+
+        if (hasTSTier(2,71)) s.push(81,82,83,91,92,93)
+
+        return s
+    },
+}
+
+var ts_unlocked = {2: [11,21,22,23,31,32,33,34,35,36,41,42,43,51,52,53]}
 
 function updateTSTiersButtons(tier=ts_tier_tab,force=false) {
     if ((ts_tier_tab == tier || force) && tier > 1) {
         for (id in TS_TIERS[tier]) {
             id = parseInt(id)
 
+            let btn = el('TST'+tier+"_"+id), unl = ts_unlocked[tier].includes(id)
+
+            btn.style.visibility = unl?'visible':'hidden'
+
+            if (!unl) continue;
+
             let data = TS_TIERS[tier][id]
             let eff = TS_TIERS_EFF[tier][id]
-            let btn = el('TST'+tier+"_"+id)
             let cost = tmp.ts_tier.cost[tier][id]
             let style = TS_BUTTON_TYPE[data[4] || 'normal']
 
@@ -300,12 +405,12 @@ function updateTSTiersButtons(tier=ts_tier_tab,force=false) {
 
             if (eff) h += "<span>Currently: "+eff[1](TSTierEffect(tier,id))
 
-            if (data[4] == 'ec' || data[4] == 'dil') h += "<span>Requirement: "+req[1](req[0]())
+            if (req) h += "<span>Requirement: "+req[1](req[0]())
 
             if (data[4] != 'dil') h += "<span>Cost: "+shorten(cost)+" TT"
 
             btn.innerHTML = h
-            btn.className = (hasTSTier(tier,id) ? style[2] : canBuyTSTier(tier,id) ? style[0] : style[1]) + (!player.quantum.unlocked && tier==2 && id>60 ? " quantumized" : "")
+            btn.className = (hasTSTier(tier,id) ? style[2] : canBuyTSTier(tier,id) ? style[0] : style[1]) // + (!player.quantum.unlocked && tier==2 && id>60 ? " quantumized" : "")
         }
     } 
 }
@@ -351,10 +456,13 @@ function getTSTierCost(t,id) { return tmp.ts_tier.cost[t][id] || TS_TIERS[t][id]
 function TSTierEffect(t,id,def=1) { return tmp.ts_tier.effect[t][id] || def }
 
 function canBuyTSTier(t,id) {
-    if (t == 2 && id == 63 && !hasTSTier(2,61)) return false
-    if (t == 2 && id == 61 && !(ECTimesCompleted('eterc13') || ECTimesCompleted('eterc14') || ECTimesCompleted('eterc15'))) return false
-    if (!player.quantum.unlocked && t == 2 && id > 60) return false
-    if (player.eternityChallUnlocked !== 0 && t == 2 && id >= 51 && id <= 53 && player.eternityChallUnlocked != id - 38) return false
+    if (!ts_unlocked[t].includes(id)) return false
+
+    if (t == 2 && id == 81 && !hasTSTier(2,63)) return false
+    else if (t == 2 && id == 63 && !hasTSTier(2,61)) return false
+    else if (t == 2 && id == 61 && !(ECTimesCompleted('eterc13') || ECTimesCompleted('eterc14') || ECTimesCompleted('eterc15'))) return false
+    else if (!player.quantum.unlocked && t == 2 && id > 60) return false
+    else if (player.eternityChallUnlocked !== 0 && t == 2 && id >= 51 && id <= 53 && player.eternityChallUnlocked != id - 38) return false
 
     let req
 
@@ -392,6 +500,11 @@ function buyTSTier(t,id) {
         if (t == 2 && id == 62) {
             showTab('quantum')
             showQuantumTab('gluons_tab')
+        }
+
+        if (t == 2 && id == 71) {
+            showTab('quantum')
+            showQuantumTab('atoms_tab')
         }
 
         updateTSTierCosts(t)
@@ -432,8 +545,21 @@ function updateTSTierCosts(t) {
 
 function updateTSTiersTemp() {
     for (let x = 2; x < TS_TIERS.length; x++) {
+        let datas = TS_TIERS[x]
+        ts_unlocked[x] = TS_UNLS[x]()
+
         let effs = TS_TIERS_EFF[x]
         updateTSTierCosts(x)
+
+        let b = 0, bb = player.ts_tier[x-2]
+
+        for (let i = 0; i < bb.length; i++) {
+            let d = datas[bb[i]]
+
+            if (d[4] != 'ec' && d[4] != 'dil') b++
+        }
+
+        tmp.ts_tier.boughts[x] = b
 
         for (let id in effs) {
             let eff = effs[id]

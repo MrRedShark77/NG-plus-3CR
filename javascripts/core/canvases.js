@@ -298,7 +298,7 @@ function drawStudyTree(tier=ts_tier_tab) {
         for (let d in TS_TIERS[tier]) {
             let b = TS_TIERS[tier][d][1]
 
-            if (b.length > 0) for (let i = 0; i < b.length; i++) drawTreeBranch(b[i],d,tier)
+            if (b.length > 0 && ts_unlocked[tier].includes(parseInt(d))) for (let i = 0; i < b.length; i++) drawTreeBranch(b[i],d,tier)
         }
     }
     if (shiftDown && document.getElementById("eternitystore").style.display !== "none" && document.getElementById("timestudies").style.display !== "none") {

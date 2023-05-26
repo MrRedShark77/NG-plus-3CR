@@ -725,7 +725,7 @@
                     <p>Raising them by <span id="infRaiseAmount" style="font-size:35px; color: black">7.0</span>, translated to <span id="infDimMultAmount" style="font-size:35px; color: black">0</span>x multiplier on all dimensions</p>
                 </div>
                 <div id="infPowPerSec">You are getting 0 antimatter per second.</div>
-                <div id="infBoughtCapped">All Infinity Dimensions except for the 8th are limited to a maximum of 2.00e6 purchases each.</div>
+                <div id="infBoughtCapped">All Infinity Dimensions except for the 8th are limited to a maximum of <b id="infDimCap">2.00e6</b> purchases each.</div>
                 <table class="table" id="inf_parent">
                     <tr style="font-size: 16px" id="infRow1">
                         <td id="infD1" width="41%">
@@ -847,7 +847,8 @@
                 <div>
                     <p id="infinityTimeReward">Your "Infinite Time" multiplier is currently <b>1.0x</b>.</p>
                     <p id="totaltickgained">You've gained 0 tickspeed upgrades.</p>
-                    <p>You have <span id="timeShardAmount" style="font-size:35px; color: black">0</span> time shards. Next tickspeed upgrade at <span id="tickThreshold" style="font-size:35px; color: black">0</span></p>
+                    <p>You have <span id="timeShardAmount" style="font-size:35px; color: black">0</span> time shards.</p>
+                    <p>Next tickspeed upgrade at <span id="nextTickUpg" style="font-size:35px; color: black">???</span>, increasing by <span id="tickThreshold" style="font-size:35px; color: black">0</span>x for next.</p>
                 </div>
                 <div id="timeShardsPerSec">You are getting 0 Timeshards per second.</div>
                 <button id="maxTimeDimensions" class="storebtn" style="font-size: 12px" onclick="buyMaxTimeDimensions()">Max all</Button>
@@ -1069,7 +1070,7 @@
             <br><div style="display: none;"><textarea id="exportOutput" style="color:black; width: 200px; height: 55px;"></textarea></div>
             <p>Hotkeys: 1-8 for buy 10 dimension, shift+1-8 for buy 1 dimension, T to buy max tickspeed, shift+T to buy one tickspeed, M for max all<br>S for sacrifice, D for dimension boost, G for galaxy, C for crunch, A for toggle autobuyers, R for replicanti galaxies, E for eternity.<br>You can hold shift while buying time studies to buy all up until that point, see each study's number, and save study trees.<br>Hotkeys do not work while holding control.</p>
             <p>
-                Antimatter Dimensions: NG+3 Classic Reloaded v1.1.1 - Made by MrRedShark77
+                Antimatter Dimensions: NG+3 Classic Reloaded v1.2 - Made by MrRedShark77
             </p>
             <div id="footercontainer">
                 <table id="footer">
@@ -2758,6 +2759,7 @@
                 <td><button class="secondarytabbtn" onclick="showQuantumTab('quarks_tab')">Quarks</button><td>
                 <td><button class="secondarytabbtn" onclick="showQuantumTab('speedrummilestone')">Speedrun Milestones</button></td>
                 <td><button id="gluonstabbtn" class="secondarytabbtn" onclick="showQuantumTab('gluons_tab')">Gluons</button></td>
+                <td><button id="atomstabbtn" class="secondarytabbtn" onclick="showQuantumTab('atoms_tab')">Atoms</button></td>
             </tr>
             <div id="quarks_tab" class="quantumtab">
                 <table class='qtable'><tr>
@@ -2859,6 +2861,41 @@
                         <td><button id='gbupg4' class="gluonupgrade gb locked" onclick='buyGluonUpg("gb",4)'>???</button></td>
                         <td><button id='brupg3' class="gluonupgrade br locked" onclick='buyGluonUpg("br",3)'>???</button></td>
                         <td><button id='brupg4' class="gluonupgrade br locked" onclick='buyGluonUpg("br",4)'>???</button></td>
+                    </tr>
+                </table>
+            </div><div id="atoms_tab" class="quantumtab">
+                <table id="atom_table">
+                    <tr>
+                        <td>
+                            <p>You have <span style="font-size: 35px;" id="proton_amt">0</span> protons.</p>
+                            <p>Gain <b id="proton_mult">1</b> protons per <b>1,000,000</b> purchased 8th infinity dimensions.</p>
+                        </td><td>
+                            <p>You have <span style="font-size: 35px;" id="electron_amt">0</span> electrons.</p>
+                            <p>Gain <b id="electron_mult">1</b> electrons per <b>10</b> total galaxies.</p>
+                        </td>
+                    </tr><tr>
+                        <td>
+                            <p>The infinity dimensions' cap after being multiplied by <span style="font-size: 35px;" id="proton_eff1">1.0</span>, is currently <span style="font-size: 35px;" id="proton_eff2">2,000,000</span> from <span>2,000,000</span>.</p>
+                        </td><td>
+                            <p>The multiplier per ten dimensions after being raised to the power of <span style="font-size: 35px;" id="electron_eff1">1</span>, is currently <span style="font-size: 35px;" id="electron_eff2">1</span>x from <span id="electron_eff3">2</span>x.</p>
+                        </td>
+                    </tr><tr id="atomupgs">
+                        <td>
+                            <button id='protonupg1' class="gluonupgrade proton locked" onclick='buyAtomUpg(0,0)'>???</button>
+                            <button id='protonupg2' class="gluonupgrade proton locked" onclick='buyAtomUpg(0,1)'>???</button>
+                        </td><td>
+                            <button id='electronupg1' class="gluonupgrade electron locked" onclick='buyAtomUpg(1,0)'>???</button>
+                            <button id='electronupg2' class="gluonupgrade electron locked" onclick='buyAtomUpg(1,1)'>???</button>
+                        </td>
+                    </tr><tr>
+                        <td colspan=2>
+                            <p>You have <span style="font-size: 35px;" id="neutron_amt">0</span> neutrons.</p>
+                            <p>Gain <b>1</b> neutrons per <b>10,000</b> Xs. (X = multiplication of protons and electrons)</p>
+                        </td>
+                    </tr><tr>
+                        <td colspan=2>
+                            <p>Meta-dimensions' scaling starts +<span style="font-size: 35px;" id="neutron_eff">0</span> later.</p>
+                        </td>
                     </tr>
                 </table>
             </div><div>
@@ -2982,6 +3019,7 @@
 <script type="text/javascript" src="javascripts/core/quantum/quantum.js"></script>
 <script type="text/javascript" src="javascripts/core/quantum/speedrun.js"></script>
 <script type="text/javascript" src="javascripts/core/quantum/quarks_gluons.js"></script>
+<script type="text/javascript" src="javascripts/core/quantum/atom.js"></script>
 
 <script type="text/javascript" src="javascripts/core/html.js"></script>
 <script type="text/javascript" src="javascripts/core/prestige_resets.js"></script>

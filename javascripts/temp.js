@@ -7,7 +7,7 @@ function setupTemp() {
         dimBoostReq: { tier: 1/0, amount: 1/0, mult: 1 },
         galaxyReq: 1/0,
 
-        ndPower: 2,
+        ndPower: E(2),
 
         dimBoostPower: E(1),
         finalNDmult: [E(1),E(1),E(1),E(1),E(1),E(1),E(1),E(1)],
@@ -19,6 +19,8 @@ function setupTemp() {
 
         dil_nextThresholdMult: 5,
         dil_nextThreshold: E(1e3),
+
+        nextTickUpg: E(1/0),
 
         tsReduce: E(1),
 
@@ -47,6 +49,7 @@ function setupTemp() {
             cost: [],
             effect: [],
             mult: [],
+            boughts: [],
         },
 
         remoteGalaxyStart: 800,
@@ -68,11 +71,19 @@ function setupTemp() {
         },
         quarksWorth: E(0),
 
-        repSpeed: {inc: 1.2, exp: 308},
         repEff: E(1),
         sacPow: E(1),
 
         gluon_eff: {},
+
+        atom: {
+            proton_eff: [1,2e6],
+            electron_eff: [1,E(2)],
+
+            mult: .25,
+
+            total_mult: [1,1],
+        },
     }
 
     for (let x = 1; x <= 8; x++) {
@@ -160,8 +171,21 @@ function getIPMultiplierFromUpgrade() {
     return x
 }
 
+function calcNextTickUpg(offset=0) {
+    let t = player.totalTickGained + offset
+
+    if (t > 1.5e7) t = (t/1.5e7)**2*1.5e7
+
+    let base = player.timestudy.studies.includes(171) ? 1.25 : 1.33
+
+    return Decimal.pow(base,t)
+}
+
 function updateTemp() {
-    tmp.repSpeed = getReplicantSpeed()
+    updateReplicantiTemp()
+
+    tmp.nextTickUpg = calcNextTickUpg()
+    
     tmp.repEff = getReplicantEffect()
     tmp.sacPow = calcTotalSacrificeBoost()
 
@@ -181,6 +205,7 @@ function updateTemp() {
 
     tmp.inf_pow = 7
     if (hasTSTier(2,34)) tmp.inf_pow += TSTierEffect(2,34,0)
+    if (hasTSTier(2,82)) tmp.inf_pow += TSTierEffect(2,82,0)
 
     tmp.inf_eff = player.infinityPower.add(1).pow(tmp.inf_pow)
 
@@ -190,7 +215,9 @@ function updateTemp() {
     tmp.galaxyReq = getGalaxyRequirement()
 
     tmp.dimBoostPower = getDimensionBoostPower()
-    tmp.ndPower = getDimensionPowerMultiplier()
+
+    tmp.inf_bought_cap = tmp.atom.proton_eff[1]
+    tmp.ndPower = tmp.atom.electron_eff[1]
 
     for (let x = 1; x <= 8; x++) {
         tmp.finalNDmult[x-1] = getDimensionFinalMultiplier(x)
@@ -210,4 +237,51 @@ function updateTemp() {
 function updateMultDecreases() {
     player.dimensionMultDecrease = parseFloat((10 - Math.round(Math.log(player.dimensionMultDecreaseCost/1e8)/Math.log(5000)) - 0.2*ECTimesCompleted("eterc6")).toFixed(1))
     player.tickSpeedMultDecrease = parseFloat((10 - Math.round(Math.log(player.tickSpeedMultDecreaseCost/3e6)/Math.log(5)) - 0.07*ECTimesCompleted("eterc11")).toFixed(2))
+}
+
+function getReplicantiInterval() {
+	let interval = E(player.replicanti.interval)
+    if (player.timestudy.studies.includes(62)) interval = interval.div(3)
+    if (player.timestudy.studies.includes(133) || player.replicanti.amount.gt(Number.MAX_VALUE)) interval = interval.mul(10)
+    if (player.timestudy.studies.includes(213)) interval = interval.div(20)
+    if (player.replicanti.amount.lt(Number.MAX_VALUE) && player.achievements.includes("r134")) interval = interval.div(2)
+    if (player.dilation.upgrades.includes(8)) interval = interval.div(player.dilation.dilatedTime.max(1).pow(0.05))
+    if (hasGluonUpg('gb1')) interval = interval.div(gluonUpgEff('gb1'))
+	return interval
+}
+
+function getReplicantiFinalInterval() {
+	let x = getReplicantiInterval()
+	if (player.replicanti.amount.gt(Number.MAX_VALUE)) x = Decimal.pow(tmp.rep.speeds.inc, Math.max(player.replicanti.amount.log10() - tmp.rep.speeds.exp, 0)/tmp.rep.speeds.exp).times(x)
+	return x
+}
+
+function updateReplicantiTemp() {
+	var data = {}
+	tmp.rep = data
+
+	data.ln = player.replicanti.amount.ln()
+	data.chance = player.replicanti.chance
+	data.speeds = getReplicantSpeed()
+	data.interval = getReplicantiFinalInterval()
+
+    /*
+	if (tmp.ngp3 && player.masterystudies.includes("t273")) {
+		data.chance = Decimal.pow(data.chance, tmp.mts[273])
+		data.freq = 0
+		if (data.chance.gte("1e9999998")) data.freq = tmp.mts[273].times(Math.log10(player.replicanti.chance + 1) / Math.log10(2))
+	}
+    */
+
+    var exp = E(1)
+
+    if (hasGluonUpg('gb4')) exp = exp.mul(gluonUpgEff('gb4'))
+
+    data.chance = Decimal.pow(data.chance, exp)
+
+    data.freq = 0
+	if (data.chance.gte("1e9999998")) data.freq = exp.times(Math.log10(player.replicanti.chance + 1) / Math.log10(2))
+
+	data.est = Decimal.div((data.freq ? data.freq.times(Math.log10(2) / Math.log10(Math.E) * 1e3) : Decimal.add(data.chance, 1).log(Math.E) * 1e3), data.interval)
+	data.estLog = data.est.times(Math.log10(Math.E))
 }

@@ -203,7 +203,7 @@ function getR154Reward() {
 }
 
 function getMDCost(i, p = player.meta[i].bought) {
-    q = 110 - 10*i
+    q = 110 - 10*i + tmp.atom.neutron_eff||0
 
     if (p>=q) p = (p/q)**2*q
 
@@ -211,7 +211,7 @@ function getMDCost(i, p = player.meta[i].bought) {
 }
 
 function getMDBulk(i) {
-    let x = player.meta.antimatter.div(STARTING_COST[i]).log(costMults[i]), q = 110 - 10*i
+    let x = player.meta.antimatter.div(STARTING_COST[i]).log(costMults[i]), q = 110 - 10*i + tmp.atom.neutron_eff||0
 
     if (x >= q) x = Math.pow(x/q,1/2)*q
 
@@ -224,7 +224,7 @@ function getMDMultIncrease() {
     let y = 2 // Meta-Boost Increase
 
     if (player.dilation.upgrades.includes(14)) {
-        let e = Math.log10(player.dilation.dilatedTime.max(1).l+10)
+        let e = getDU14Effect()
 
         x *= e
         y *= e
@@ -247,6 +247,10 @@ function getMDMult(i) {
     if (player.achievements.includes('r153')) x = x.mul(player.achPow)
     if (player.achievements.includes('r154')) x = x.mul(getR154Reward())
 
+    if (hasTSTier(2,93)) x = x.mul(TSTierEffect(2,93))
+
+    if (hasGluonUpg('br4')) x = x.mul(gluonUpgEff('br4'))
+
     return x
 }
 
@@ -264,6 +268,7 @@ function updateMDTemp() {
     let mtmp = tmp.meta
 
     mtmp.pow = (player.dilation.upgrades.includes(15) ? 6 : 5) + ECTimesCompleted('eterc13')/5
+    if (hasTSTier(2,83)) mtmp.pow += TSTierEffect(2,83,0)
 
     mtmp.mult_inc = getMDMultIncrease()
     mtmp.effect = getMDEffect()
