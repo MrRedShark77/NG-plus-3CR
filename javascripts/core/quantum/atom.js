@@ -13,8 +13,12 @@ function updateAtomTemp() {
 
     ta.neutron_eff = m/3
 
+    var qc1 = QCCompleted(1), qc1m = tmp.qc_completions * 1
+
     for (let i = 0; i < 2; i++) {
         let s = 1
+
+        if (qc1) s += qc1m
 
         for (let j = 0; j < 2; j++) {
             s += player.quantum.atom_upg[i][j] * ta.mult
@@ -70,6 +74,9 @@ function updateAtomsHTML() {
 
     el('neutron_eff').textContent = getFullExpansion(Math.round(ta.neutron_eff*100)/100)
 
+    el('neutron_reduction').innerHTML = player.quantum.neutrons < 100 ? ""
+    : `After <b>100</b>, neutrons gain is reduced to <b>100*(x/100)^0.5</b>!`
+
     let at = ['proton','electron','neutron']
 
     for (let i = 0; i < 2; i++) {
@@ -87,5 +94,14 @@ function updateAtomsHTML() {
 
             btn.className = 'gluonupgrade '+at[i]+(canBuyAtomUpg(i,j,cost) ? "" : ' locked')
         }
+    }
+
+    let cap_at = ['Proton','Electron','Neutron']
+
+    let in_qc = inQC(0)
+
+    for (let i = 0; i < 3; i++) {
+        el('auto'+at[i]).textContent = "Auto "+cap_at[i]+": "+(player.quantum['auto'+cap_at[i]] && (in_qc || i == 2) ? "ON" : "OFF")
+        el('auto'+at[i]).className = in_qc || i == 2 ? "storebtn" : "unavailablebtn"
     }
 }

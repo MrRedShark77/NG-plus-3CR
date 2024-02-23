@@ -144,6 +144,17 @@ const allAchievements = {
   r154 : "Hadronization",
   r155 : `It is never stopped`,
   r156 : `Quantum Fission`,
+  r157 : `Stellar Time`,
+  r158 : `There's no way what I get rid of you.`,
+
+  r161 : `I ran out of energy`,
+  r162 : `Theorem of Everything`,
+  //
+  //
+  //
+  //
+  r167 : `Exploration of Endless Time`,
+  //
 
   s41 : "That dimension doesn’t exist",
   // s42,
@@ -330,31 +341,6 @@ function getSecretAchAmount() {
     return n
 }
 
-function checkAchievements() {
-  if (player.infinityDimension1.baseAmount/10>=2e6) giveAchievement('r143',true)
-  if (tmp.tsReduce.min(1).pow(-1).gte(Number.MAX_VALUE)) giveAchievement('r144',true)
-  if (player.totalTickGained >= 1e6) giveAchievement('r146',true)
-  if (player.tickspeed.e <= -486539264) giveAchievement('r148',true)
-
-  if (player.money.gte('1e100000000') && player.infinityDimension1.amount <= 0 && player.timeDimension1.amount <= 0 && player.meta[1].amount <= 0 && !player.meta.firstDBought) giveAchievement('r152',true)
-  if (player.meta.antimatter.gte('9.99e999')) giveAchievement('r153',true)
-  if (player.replicanti.amount.gte('1e100000')) giveAchievement('r155',true)
-  if (player.quantum.color.r.gte(1) && player.quantum.color.g.gte(1) && player.quantum.color.b.gte(1)) giveAchievement('r154',true)
-
-  // Secret
-
-  if (player.options.notation == "Blind" && blindTime >= 36000) giveAchievement('s44',true)
-}
-
-function updateAchievementsTooltip() {
-  el(allAchievements.r144).setAttribute('ach-tooltip',`Get over ${shortenMoney(Number.MAX_VALUE)} of tick reduction.`)
-  el(allAchievements.r148).setAttribute('ach-tooltip',`Get more than ${shortenCosts(Decimal.pow(10,486539264))} ticks per second.`)
-
-  el(allAchievements.r152).setAttribute('ach-tooltip',`Reach ${shorten(E('1e100000000'))} antimatter without Infinity, Time, nor Meta Dimensions in quantum run.`)
-  el(allAchievements.r153).setAttribute('ach-tooltip',`Reach ${shorten(E('9.99e999'))} meta-antimatter. Reward: Current achievement multiplier affects Meta-Dimensions.`)
-  el(allAchievements.r155).setAttribute('ach-tooltip',`Reach ${shorten(E('1e100000'))} replicanti. Reward: Replicanti multiplier's formula is better.`)
-}
-
 /*
 function checkADblocker() {
   let test = new Request(
@@ -375,4 +361,51 @@ function toggleCompletedAchs() {
 	player.options.hideCompletedAchs = !player.options.hideCompletedAchs;
 	updateAchievements();
 	document.getElementById("hideCompletedAchs").textContent = (player.options.hideCompletedAchs ? "Show" : "Hide") + " completed achievement rows";
+} 
+
+function updateAchievementsTooltip() {
+  el(allAchievements.r144).setAttribute('ach-tooltip',`Get over ${shortenMoney(Number.MAX_VALUE)} of tick reduction.`)
+  el(allAchievements.r148).setAttribute('ach-tooltip',`Get more than ${shortenCosts(Decimal.pow(10,486539264))} ticks per second.`)
+
+  el(allAchievements.r152).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e100000000'))} antimatter without Infinity, Time, nor Meta Dimensions in the quantum run.`)
+  el(allAchievements.r153).setAttribute('ach-tooltip',`Reach ${shorten(E('9.99e999'))} meta-antimatter. Reward: Current achievement multiplier affects Meta-Dimensions.`)
+  el(allAchievements.r155).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e100000'))} replicanti. Reward: Replicanti multiplier's formula is better.`)
+  el(allAchievements.r157).setAttribute('ach-tooltip',`Reach ${shortenCosts(getStellarAgeRequirement())} antimatter.`)
+  el(allAchievements.r158).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e200000'))} IP without having TS Tiers 1–2, Meta Dimensions, Protons, and Electrons while dilated in the quantum run.`)
+
+  el(allAchievements.r162).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e60'))} Time Theorems. Reward: Weaken the softcap of 12th dilation upgrade.`)
+  el(allAchievements.r167).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e100'))} Tachyon Particles. Reward: Further reduce free galaxy threshold.`)
+}
+
+// CHECKING
+
+function getStellarAgeRequirement() {
+	let sec = Math.floor(new Date().getTime() / 1000 * 3) / 3
+	sec += 1970 * 365.24 * 24 * 3600
+	return Decimal.pow(10, 3 * sec)
+}
+
+function checkAchievements() {
+  if (player.infinityDimension1.baseAmount/10>=2e6) giveAchievement('r143',true)
+  if (tmp.tsReduce.min(1).pow(-1).gte(Number.MAX_VALUE)) giveAchievement('r144',true)
+  if (player.totalTickGained >= 1e6) giveAchievement('r146',true)
+  if (player.tickspeed.e <= -486539264) giveAchievement('r148',true)
+
+  if (player.money.gte('1e100000000') && player.infinityDimension1.amount <= 0 && player.timeDimension1.amount <= 0 && player.meta[1].amount <= 0 && !player.meta.firstDBought) giveAchievement('r152',true)
+  if (player.meta.antimatter.gte('9.99e999')) giveAchievement('r153',true)
+  if (player.replicanti.amount.gte('1e100000')) giveAchievement('r155',true)
+  if (player.quantum.color.r.gte(1) && player.quantum.color.g.gte(1) && player.quantum.color.b.gte(1)) giveAchievement('r154',true)
+  if (player.money.gte(getStellarAgeRequirement())) giveAchievement('r157',true)
+  if (player.timestudy.studies.length == 0
+    && player.ts_tier[0].filter(x => !TS_DIL[2].includes(x)).length == 0
+    && player.meta[1].amount <= 0 && !player.meta.firstDBought
+  && player.dilation.active && player.infinityPoints.e >= 200000 && player.quantum.protons == 0 && player.quantum.electrons == 0) giveAchievement('r158',true)
+
+  if (player.money.gte(Decimal.pow(10,1e12))) giveAchievement('r161',true)
+  if (player.timestudy.theorem.gte(1e60)) giveAchievement('r162',true)
+  if (player.dilation.totalTachyonParticles.gte(1e100)) giveAchievement('r167',true)
+
+  // Secret
+
+  if (player.options.notation == "Blind" && blindTime >= 36000) giveAchievement('s44',true)
 }

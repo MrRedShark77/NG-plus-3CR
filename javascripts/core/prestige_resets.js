@@ -348,11 +348,12 @@ function doQuantumResetStuff() {
 		gal: 0,
 		galaxies: 0,
 		galCost: new Decimal(1e170),
-		auto: oheHeadstart ? player.replicanti.auto : [false, false, false],
+		auto: oheHeadstart ? player.replicanti.auto : [false, false, false, false],
 		galaxybuyer: player.replicanti.galaxybuyer,
+		mult: 0,
 	}
 	player.timestudy = false ? player.timestudy : {
-		theorem: 0,
+		theorem: E(0),
 		amcost: new Decimal("1e20000"),
 		ipcost: new Decimal(1),
 		epcost: new Decimal(1),

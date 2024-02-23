@@ -12,7 +12,8 @@ const TS_TIERS_MAP = [
         [61,62,63],
         [71],
         [82,81,83],
-        [91,0,93],
+        [91,92,93],
+        [102,101,103],
     ],
 ]
 
@@ -168,12 +169,37 @@ const TS_TIERS = [
             2.5e50,
             4,
         ],
-
+        92: [
+            "Unlock Quantum Challenges. (NYI)",
+            [81],
+            0,
+            1,
+            'dil',
+        ],
         93: [
             "Replicanti slightly boosts meta-antimatter.",
             [81,83],
             2.5e50,
             4,
+        ],
+        101: [
+            "You gain 1% of your EP gained on eternity each second.",
+            [92],
+            1e51,
+            0,
+        ],
+        102: [
+            "You can gain tachyon particles without disabling dilation.",
+            [101],
+            1e64,
+            1,
+        ],
+        103: [
+            "Unlock ECs Modification. (NYI)",
+            [101],
+            0,
+            1,
+            'dil',
         ],
 
         /*
@@ -241,7 +267,7 @@ const TS_TIERS_EFF = [
         ],
         41: [
             ()=>{
-                let x = (player.galaxies+1)**.75
+                let x = QCCompleted(3) ? Decimal.pow(2,player.galaxies**0.42) : (player.galaxies+1)**.75
 
                 return x
             },
@@ -249,7 +275,7 @@ const TS_TIERS_EFF = [
         ],
         42: [
             ()=>{
-                let x = (player.infinityPower.max(1).l+1)**.33
+                let x = QCCompleted(3) ? Decimal.pow(10,player.infinityPower.max(1).l**0.1) : (player.infinityPower.max(1).l+1)**.33
 
                 return x
             },
@@ -257,7 +283,7 @@ const TS_TIERS_EFF = [
         ],
         43: [
             ()=>{
-                let x = (player.timeShards.max(1).l+1)**.5
+                let x = QCCompleted(3) ? Decimal.pow(10,player.timeShards.max(1).l**0.15) : (player.timeShards.max(1).l+1)**.5
 
                 return x
             },
@@ -311,7 +337,7 @@ const TS_NO_MULT_INCREASE = {
 }
 
 const TS_DIL = {
-    2: [62,71],
+    2: [62,71,92,103],
 }
 
 const TS_REQS = {
@@ -346,6 +372,21 @@ const TS_REQS = {
             (x) => `${x} TS tier II (${tmp.ts_tier.boughts[2]}/${x})`,
             (x) => tmp.ts_tier.boughts[2] >= 15,
         ],
+        92: [
+            () => [1e4,100],
+            (x) => `${shortenCosts(x[0])} Quarks Worth (${shortenDimensions(tmp.quarksWorth)}/${shortenCosts(x[0])}), and ${x[1]} Neutrons (${shortenDimensions(player.quantum.neutrons)}/${x[1]})`,
+            (x) => tmp.quarksWorth.gte(x[0]) && player.quantum.neutrons >= x[1],
+        ],
+        101: [
+            () => 20,
+            (x) => `${x} TS tier II (${tmp.ts_tier.boughts[2]}/${x})`,
+            (x) => tmp.ts_tier.boughts[2] >= 20,
+        ],
+        103: [
+            () => 8,
+            (x) => `Complete first ${x} Quantum Challenges`,
+            (x) => tmp.qc_completions >= 9,
+        ],
     },
 }
 
@@ -360,7 +401,7 @@ function getTSTierStyle(t,id) {
     if (t == 2) {
         if (id >= 31 && id <= 36) s = `width: 140px; font-size: 0.57rem; margin: 7px 0px;`;
         else if (id >= 51 && id <= 53) s = `font-size: 0.58rem;`
-        else if (id == 81) s = `width: 200px; font-size: 0.58rem;`
+        else if (id == 81 || id == 92 || id == 101) s = `width: 200px; font-size: 0.58rem;`
     }
     return s
 }
@@ -374,6 +415,8 @@ const TS_UNLS = {
         if (hasTSTier(2,62)) s.push(63,71)
 
         if (hasTSTier(2,71)) s.push(81,82,83,91,92,93)
+
+        if (hasTSTier(2,92)) s.push(101,102,103)
 
         return s
     },
@@ -483,14 +526,14 @@ function canBuyTSTier(t,id) {
         break
     }
 
-    return bought && player.timestudy.theorem >= tmp.ts_tier.cost[t][id]
+    return bought && player.timestudy.theorem.gte(tmp.ts_tier.cost[t][id])
 }
 
 function buyTSTier(t,id) {
     if (hasTSTier(t,id)) return
 
     if (canBuyTSTier(t,id)) {
-        player.timestudy.theorem -= tmp.ts_tier.cost[t][id]
+        player.timestudy.theorem = player.timestudy.theorem.sub(tmp.ts_tier.cost[t][id])
         player.ts_tier[t-2].push(id)
 
         if (t == 2 && id >= 51 && id <= 53) {
@@ -505,6 +548,11 @@ function buyTSTier(t,id) {
         if (t == 2 && id == 71) {
             showTab('quantum')
             showQuantumTab('atoms_tab')
+        }
+
+        if (t == 2 && id == 92) {
+            showTab("challenges")
+            showChallengesTab("quantumchallenges")
         }
 
         updateTSTierCosts(t)
@@ -531,11 +579,13 @@ function updateTSTierCosts(t) {
     let cost_mult = {}
     for (let i = 0; i < pts.length; i++) {
         let id = pts[i]
+        let inc = datas[id][3]??1
+
         cost_mult[id] = mult
-        mult *= datas[id][3]||1
+        mult = inc == 0 ? 1 : mult * inc
     }
     tmp.ts_tier.mult[t] = mult
-    //console.log(cost_mult)
+    // console.log(cost_mult)
     for (let id in datas) {
         id = parseInt(id)
         let data = datas[id]

@@ -162,6 +162,24 @@ button {
     position: relative;
 }
 
+.quantumchallengediv {
+    display:table;
+    text-align:center;
+    width: 350px;
+    height: 200px !important;
+    color: #32c832;
+    background: #0a640a;
+    font-weight: bold;
+    font-family: Typewriter;
+    border: 3px solid #32c832;
+    border-radius: 10px;
+    font-size: 10px;
+    transition-duration: 0.2s;
+    padding: 2px;
+    margin: 3px 8px;
+    position: relative;
+}
+
 .completedchallengesbtn {
   width:150px;
   height: 30px;
@@ -793,15 +811,7 @@ button {
 
 }
 
-#replauto1 {
-    margin-top: 3px;
-}
-
-#replauto2 {
-    margin-top: 3px;
-}
-
-#replauto3 {
+#replauto1, #replauto2, #replauto3, #replauto4 {
     margin-top: 3px;
 }
 

@@ -42,6 +42,7 @@
         </div>
         
         <div id="coinsPerSec">You are getting 0 antimatter per second.</div>
+        <div id="AM_deflation"></div>
 
         <tr id="tickSpeedRow" style="visibility: hidden">
             <div id="tickLabel" style="visibility: hidden">Make the game 10% faster.</div>
@@ -974,7 +975,7 @@
                     <p>You have <span id="metaAntimatter" style="font-size:35px; color: black">0</span> meta-antimatter.</p>
                     <p>
                         Your best meta-antimatter for next layer was <span id="bestMA1" style="font-size:35px; color: black">0</span>.
-                        Raising them by <span id="MDEffectPower" style="font-size:35px; color: black">5.0</span>, translated to <span id="MDEffect" style="font-size:35px; color: black">1.0</span>x extra multiplier per Dimension Boost.
+                        Raising them by <span id="MDEffectPower" style="font-size:35px; color: black">5.0</span>, translated to <span id="MDEffect">1.0</span>
                     </p>
                 </div><div id="MAGain">
                     You are getting 0.0 meta-antimatter per second.
@@ -1070,7 +1071,7 @@
             <br><div style="display: none;"><textarea id="exportOutput" style="color:black; width: 200px; height: 55px;"></textarea></div>
             <p>Hotkeys: 1-8 for buy 10 dimension, shift+1-8 for buy 1 dimension, T to buy max tickspeed, shift+T to buy one tickspeed, M for max all<br>S for sacrifice, D for dimension boost, G for galaxy, C for crunch, A for toggle autobuyers, R for replicanti galaxies, E for eternity.<br>You can hold shift while buying time studies to buy all up until that point, see each study's number, and save study trees.<br>Hotkeys do not work while holding control.</p>
             <p>
-                Antimatter Dimensions: NG+3 Classic Reloaded v1.2 - Made by MrRedShark77
+                Antimatter Dimensions: NG+3 Classic Reloaded v1.3 - Made by MrRedShark77
             </p>
             <div id="footercontainer">
                 <table id="footer">
@@ -1562,7 +1563,25 @@
                         </td><td>
                             <div id="Quantum Fission" class="achievement achievementlocked" style="background-image: url(images/new/ap13.png)" ach-tooltip="Go Quantum under 30 seconds. Reward: Your EP boosts Quarks gain."><br></div>
                         </td><td>
+                            <div id="Stellar Time" class="achievement achievementlocked" style="background-image: url(images/new/ap16.png)" ach-tooltip="Reach ??? antimatter."><br></div>
+                        </td><td>
+                            <div id="There's no way what I get rid of you." class="achievement achievementlocked" style="background-image: url(images/new/ap17.png)" ach-tooltip="Reach ??? antimatter."><br></div>
+                        </td>
+                    </tr><tr id="achRow16">
+                        <td>
+                            <div id="I ran out of energy" class="achievement achievementlocked" style="background-image: url(images/new/ap20.png)" ach-tooltip="Start the Antimatter Deflation. Reward: Antimatter boosts quarks gain slightly."><br></div>
+                        </td><td>
+                            <div id="Theorem of Everything" class="achievement achievementlocked" style="background-image: url(images/new/ap19.png)" ach-tooltip="???"><br></div>
+                        </td><td>
                             <div class="achievement achievementlocked" style="opacity: 0;"><br></div>
+                        </td><td>
+                            <div class="achievement achievementlocked" style="opacity: 0;"><br></div>
+                        </td><td>
+                            <div id="Spicy Challenges" class="achievement achievementlocked" style="background-image: url(images/new/ap18.png)" ach-tooltip="???"><br></div>
+                        </td><td>
+                            <div class="achievement achievementlocked" style="opacity: 0;"><br></div>
+                        </td><td>
+                            <div id="Exploration of Endless Time" class="achievement achievementlocked" style="background-image: url(images/new/ap21.png)" ach-tooltip="???"><br></div>
                         </td><td>
                             <div class="achievement achievementlocked" style="opacity: 0;"><br></div>
                         </td>
@@ -1702,6 +1721,7 @@
                     <td><button class="secondarytabbtn" onclick="showChallengesTab('challenges')">Challenges</button></td>
                     <td><button class="secondarytabbtn" onclick="showChallengesTab('breakchallenges')">Infinity Challenges</button></td>
                     <td><button id="eterctabbtn" class="secondarytabbtn" onclick="showChallengesTab('eternitychallenges')">Eternity Challenges</button></td>
+                    <td><button id="qctabbtn" class="secondarytabbtn" onclick="showChallengesTab('quantumchallenges')">Quantum Challenges</button></td>
                 </tr>
             </table>
             <div id="nextchall"></div>
@@ -2221,6 +2241,12 @@
                     </tr>
                 </table>
             </div>
+            <div id="quantumchallenges" class="challengeTab">
+                <p>In Quantum Challenges, you cannot gain Protons & Electrons.</p>
+                <table id="qcs_table" class="table" style="margin: 0 auto">
+                    
+                </table>
+            </div>
             <table id="footer">
                 <tr>
                     <td>
@@ -2723,10 +2749,12 @@
                     <button class="storebtn" id="replicantichance" onclick="upgradeReplicantiChance()" style="width:180px; height: 50px; font-size: 10px">Replicate chance: 1%<br>+1% Costs: 1e6969 IP</button>
                     <button class="storebtn" id="replicantiinterval" onclick="upgradeReplicantiInterval()" style="width:180px; height: 50px; font-size: 10px">Interval: 1000ms<br>-> 900 Costs: 1e6969 IP</button>
                     <button class="storebtn" id="replicantimax" onclick="upgradeReplicantiGalaxy()" style="width:180px; height: 50px; font-size: 10px">Max Replicanti galaxies: 0<br>+1 Costs: 1e6969 IP</button>
+                    <button class="storebtn" id="replicantimultiplier" onclick="buyReplicantiUpgrade4()" style="width:180px; height: 50px; font-size: 10px">Replicate Amount: 1x<br>2x Costs: 1e6969 IP</button>
                     <br>
                     <button class="storebtn" id="replauto1" onclick="toggleReplAuto('chance')" style="width:180px; font-size: 10px; visibility: hidden">Auto: ON</button>
                     <button class="storebtn" id="replauto2" onclick="toggleReplAuto('interval')" style="width:180px; font-size: 10px; visibility: hidden">Auto: ON</button>
                     <button class="storebtn" id="replauto3" onclick="toggleReplAuto('galaxy')" style="width:180px; font-size: 10px; visibility: hidden">Auto: ON</button>
+                    <button class="storebtn" id="replauto4" onclick="toggleReplAuto('amount')" style="width:180px; font-size: 10px; visibility: hidden">Auto: ON</button>
                     <br><br><br>
                     <p id="replicantiapprox"></p>
                     <br>
@@ -2867,6 +2895,12 @@
                 <table id="atom_table">
                     <tr>
                         <td>
+                            <button id='autoproton' class="storebtn" onclick='player.quantum.autoProton = !player.quantum.autoProton' style="width:200px">Auto Proton: ON</button>
+                        </td><td>
+                            <button id='autoelectron' class="storebtn" onclick='player.quantum.autoElectron = !player.quantum.autoElectron' style="width:200px">Auto Electron: ON</button>
+                        </td>
+                    </tr><tr>
+                        <td>
                             <p>You have <span style="font-size: 35px;" id="proton_amt">0</span> protons.</p>
                             <p>Gain <b id="proton_mult">1</b> protons per <b>1,000,000</b> purchased 8th infinity dimensions.</p>
                         </td><td>
@@ -2889,8 +2923,13 @@
                         </td>
                     </tr><tr>
                         <td colspan=2>
+                            <button id='autoneutron' class="storebtn" onclick='player.quantum.autoNeutron = !player.quantum.autoNeutron' style="width:200px">Auto Neutron: ON</button>
+                        </td>
+                    </tr><tr>
+                        <td colspan=2>
                             <p>You have <span style="font-size: 35px;" id="neutron_amt">0</span> neutrons.</p>
                             <p>Gain <b>1</b> neutrons per <b>10,000</b> Xs. (X = multiplication of protons and electrons)</p>
+                            <p id="neutron_reduction"></p>
                         </td>
                     </tr><tr>
                         <td colspan=2>
@@ -3020,6 +3059,7 @@
 <script type="text/javascript" src="javascripts/core/quantum/speedrun.js"></script>
 <script type="text/javascript" src="javascripts/core/quantum/quarks_gluons.js"></script>
 <script type="text/javascript" src="javascripts/core/quantum/atom.js"></script>
+<script type="text/javascript" src="javascripts/core/quantum/qc.js"></script>
 
 <script type="text/javascript" src="javascripts/core/html.js"></script>
 <script type="text/javascript" src="javascripts/core/prestige_resets.js"></script>

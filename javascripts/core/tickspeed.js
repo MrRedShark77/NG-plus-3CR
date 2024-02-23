@@ -5,6 +5,7 @@ function canBuyTickSpeed() {
 
 function getTickSpeedMultiplier() {
   if (player.currentChallenge == "postc3") return 1;
+  if (inQC(2)) return E(0.89)
   if (player.galaxies + player.replicanti.galaxies + player.dilation.freeGalaxies < 3) {
       let baseMultiplier = 0.9;
       if (player.galaxies == 0) baseMultiplier = 0.89
@@ -67,6 +68,7 @@ document.getElementById("tickSpeed").onclick = function () {
 };
 
 function getTickSpeedCostMultiplierIncrease() {
+	if (inQC(7)) return Number.MAX_VALUE
 	let ret = player.tickSpeedMultDecrease;
 	let exp = .9 - .02 * ECTimesCompleted("eterc11")
 	if (player.currentChallenge === 'postcngmm_2') ret = Math.pow(ret, .5)

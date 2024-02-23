@@ -6,6 +6,7 @@ function quarksGain() {
     if (x.lt(1)) return E(0)
 
     if (player.achievements.includes('r156')) x = x.mul((player.eternityPoints.add(1).l/500000+1)**0.75)
+    if (player.achievements.includes('r162')) x = x.mul((player.money.add(1).l/1e9+1)**0.75)
 
     return x.floor()
 }
@@ -48,10 +49,23 @@ function getQuantumSave() {
         protons: 0,
         electrons: 0,
         neutrons: 0,
+        autoProton: true,
+        autoElectron: true,
+        autoNeutron: true,
         atom_upg: [
             [0,0],
             [0,0],
         ],
+        chal: {
+            unlocked: 1,
+            active: 0,
+        },
+    }
+    for (let i = 1; i <= 8; i++) {
+        s.chal["qc" + i] = {
+            completed: false,
+            best: 999999999,
+        }
     }
     return s
 }
@@ -90,8 +104,11 @@ function updateQuantumHTML() {
     el('qu_buttons_div').style.display = unl ? "" : 'none'
 
     if (unl) {
-        el('quantumbtn').style.display = player.quantum.reached ? '' : 'none';
-        el('quantumbtn').innerHTML = player.quantum.unlocked
+        el('quantumbtn').style.display = (player.quantum.chal.active > 0 ? player.money.l >= QUANTUM_CHALLENGES[player.quantum.chal.active].goal : player.quantum.reached) ? '' : 'none';
+
+        el('quantumbtn').innerHTML = player.quantum.chal.active > 0
+        ? `We have enough energy to form the Challenge... I need to go Quantum.`
+        : player.quantum.unlocked
         ? `Form the Protoverse for ${shortenDimensions(tmp.quarksGain)} quarks.`
         : `We have enough energy to form the Protoverse... I need to go Quantum.`
 
@@ -108,6 +125,12 @@ function updateQuantumHTML() {
         if (el('quarks_tab').style.display !== 'none') updateQuarksHTML()
         if (el('gluons_tab').style.display !== 'none') updateGluonsHTML()
         if (el('atoms_tab').style.display !== 'none') updateAtomsHTML()
+    }
+
+    if (el('challenges').style.display !== 'none') {
+        el('qctabbtn').style.display = hasTSTier(2,92) ? '' : 'none'
+        
+        if (el('quantumchallenges').style.display !== 'none') updateQuantumChallenges()
     }
 }
 
@@ -169,17 +192,31 @@ function quantumReset(force,auto) {
 
     drawStudyTree(1)
     updateTimeStudyButtons()
+    updateQuantumChallenges()
 
     document.getElementById("epmult").className = player.eternityPoints.gte(player.epmultCost) ? "eternityupbtn" : "eternityupbtnlocked"
     document.getElementById("epmult").innerHTML = "You gain 5 times more EP<p>Currently: "+shortenDimensions(player.epmult)+"x<p>Cost: "+shortenDimensions(player.epmultCost)+" EP"
 }
 
 function quantum() {
-    if (tmp.quarksGain.gte(1)) {
-        if (player.options.quantumconfirm && !confirm(`Quantum will reset everything up to and including Eternity features will be reset, in exchange of quarks. Ready?`)) return;
+    let qca = player.quantum.chal.active
+    let chal = qca>0
+    let qc_reached = chal && player.money.l >= QUANTUM_CHALLENGES[qca].goal
 
-        if (player.options.animations.quantum) dev.quantumAnimation(quantumReset)
-        else quantumReset()
+    if (qc_reached || tmp.quarksGain.gte(1)) {
+        if (qca == 0 && player.options.quantumconfirm && !confirm(`Quantum will reset everything up to and including Eternity features will be reset, in exchange of quarks. Ready?`)) return;
+
+        if (qc_reached) {
+            var data = player.quantum.chal["qc"+qca]
+            data.completed = true
+            data.best = Math.min(data.best,player.quantum.time)
+
+            if (qca >= player.quantum.chal.unlocked) player.quantum.chal.unlocked = qca + 1
+            player.quantum.chal.active = 0
+        }
+
+        if (player.options.animations.quantum) dev.quantumAnimation(()=>quantumReset(chal))
+        else quantumReset(chal)
     }
 }
 
@@ -206,9 +243,15 @@ function quantumTick(dt) {
     }
 
     if (hasTSTier(2,71)) {
-        player.quantum.electrons = Math.max(player.quantum.electrons,Math.floor(Math.floor(tmp.totalGalaxies/10)*tmp.atom.total_mult[1]))
-        player.quantum.protons = Math.max(player.quantum.protons,Math.floor(Math.floor(player.infinityDimension8.baseAmount/1e7)*tmp.atom.total_mult[0]))
+        if (inQC(0)) {
+            if (player.quantum.autoElectron) player.quantum.electrons = Math.max(player.quantum.electrons,Math.floor(Math.floor(tmp.totalGalaxies/10)*tmp.atom.total_mult[1]))
+            if (player.quantum.autoProton) player.quantum.protons = Math.max(player.quantum.protons,Math.floor(Math.floor(player.infinityDimension8.baseAmount/1e7)*tmp.atom.total_mult[0]))
+        }
         
-        player.quantum.neutrons = Math.max(player.quantum.neutrons,Math.floor(player.quantum.protons*player.quantum.electrons/1e4))
+        var neutrons = player.quantum.protons*player.quantum.electrons/1e4
+
+        if (neutrons > 100) neutrons = Math.sqrt(neutrons/100)*100
+
+        if (player.quantum.autoNeutron) player.quantum.neutrons = Math.max(player.quantum.neutrons,Math.floor(neutrons))
     }
 }

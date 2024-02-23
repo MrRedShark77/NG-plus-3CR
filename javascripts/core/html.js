@@ -15,12 +15,14 @@ function setupAllHTMLs() {
     metaDimensionSetupHTML()
     setupTSTiersHTML()
     setupQUSpeedrunHTML()
+    setupQuantumChallengesHTML()
 }
 
 function updateHTMLOnLoad() {
     updateQUSpeedrunHTML()
     updateAutoMD()
     updateAssortPercentage()
+    updateQuantumChallenges()
 
     el('autoTT').style.display = player.quantum.speedruns>1 ? '' : 'none'
     el('autoTT').textContent = player.timestudy.auto?'Auto: ON':'Auto: OFF'

@@ -165,7 +165,7 @@ function updateMetaDimensionsHTML() {
         el('bestMA1').textContent = shortenMoney(pm.best1)
 
         el('MDEffectPower').textContent = tmp.meta.pow.toFixed(1)
-        el('MDEffect').textContent = shortenMoney(tmp.meta.effect)
+        el('MDEffect').innerHTML = `<span style="font-size:35px; color: black">${shortenMoney(tmp.meta.effect)}</span>x ` + (inQC(3) ? `multiplier on all infinity dimensions.` : `extra multiplier per Dimension Boost.`)
         el('MAGain').textContent = `You are getting ${shortenMoney(getMetaDimensionProduction(1))} meta-antimatter per second.`
 
         for (let x = 1; x <= 8; x++) {
@@ -218,19 +218,22 @@ function getMDBulk(i) {
     return Math.floor(x)+1
 }
 
-function getMDMultIncrease() {
-    let x = 2 // Multiplier Increase
+function getMPMDPower() {
+    let x = 2
 
-    let y = 2 // Meta-Boost Increase
+    if (player.dilation.upgrades.includes(14)) x *= getDU14Effect()
 
-    if (player.dilation.upgrades.includes(14)) {
-        let e = getDU14Effect()
+    return x
+}
 
-        x *= e
-        y *= e
-    }
+function getMDBPower() {
+    if (inQC(8)) return 1
 
-    return [x, y]
+    let x = 2
+
+    if (player.dilation.upgrades.includes(14)) x *= getDU14Effect()
+
+    return x
 }
 
 function getMDMult(i) {
@@ -251,6 +254,8 @@ function getMDMult(i) {
 
     if (hasGluonUpg('br4')) x = x.mul(gluonUpgEff('br4'))
 
+    if (inQC(6)) x = dilates(x)
+
     return x
 }
 
@@ -261,16 +266,29 @@ function getMDEffect() {
 }
 
 function getMDResetReq(x) {
-    return Math.ceil(2+Math.max(0,x-4)*1.5)
+    if (x > 249) x = (x/250)**2*250
+    x = Math.ceil(2+Math.max(0,x-4)*1.5)
+    return x
 }
 
 function updateMDTemp() {
     let mtmp = tmp.meta
 
-    mtmp.pow = (player.dilation.upgrades.includes(15) ? 6 : 5) + ECTimesCompleted('eterc13')/5
-    if (hasTSTier(2,83)) mtmp.pow += TSTierEffect(2,83,0)
+    let p = 5
 
-    mtmp.mult_inc = getMDMultIncrease()
+    if (inQC(1) || inQC(7)) p = 0
+    else if (inQC(3)) {
+        p = Math.pow(player.meta.antimatter.log10() / 8, 2)
+        if (p > 1e8) p = Math.pow(p * 1e6, 4/7)
+    } else {
+        if (player.dilation.upgrades.includes(15)) p ++
+        p += ECTimesCompleted('eterc13')/5
+        if (hasTSTier(2,83)) p += TSTierEffect(2,83,0)
+    }
+
+    mtmp.pow = p
+
+    mtmp.mult_inc = [getMPMDPower(), getMDBPower()]
     mtmp.effect = getMDEffect()
 
     mtmp.reset_req = getMDResetReq(player.meta.reset)

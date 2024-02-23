@@ -11,7 +11,7 @@ function getTimeDimensionPower(tier) {
   ret = ret.times(kongAllDimMult)
 
   if (player.eternityUpgrades.includes(4)) ret = ret.times(player.achPow)
-  if (player.eternityUpgrades.includes(5)) ret = ret.times(Math.max(player.timestudy.theorem, 1))
+  if (player.eternityUpgrades.includes(5)) ret = ret.times(Decimal.max(player.timestudy.theorem, 1))
   if (player.eternityUpgrades.includes(6)) ret = ret.times(player.totalTimePlayed / 10 / 60 / 60 / 24)
   if (player.timestudy.studies.includes(73) && tier == 3) ret = ret.times(tmp.sacPow.pow(0.005).min(E("1e1300")))
   if (player.timestudy.studies.includes(93)) ret = ret.times(Decimal.pow(player.totalTickGained, 0.25).max(1))
@@ -35,13 +35,7 @@ function getTimeDimensionPower(tier) {
 
   if (hasTSTier(2,23)) ret = ret.pow(1.025)
 
-  if (player.dilation.active || inEC(15)) {
-    ret = Decimal.pow(10, Math.pow(ret.log10(), getDilationPenalty()))
-    if (player.dilation.upgrades.includes(11)) {
-      ret = Decimal.pow(10, Math.pow(ret.log10(), 1.05))
-    }
-  }
-
+  ret = dilates(ret)
 
   return ret
 
@@ -72,7 +66,7 @@ function toggleAllTimeDims() {
 
 
 function getTimeDimensionProduction(tier) {
-  if (player.currentEternityChall == "eterc10" || inEC(14)) return E(0)
+  if (player.currentEternityChall == "eterc10" || inEC(14) || inQC(8)) return E(0)
   var dim = player["timeDimension"+tier]
   if (player.currentEternityChall == "eterc11") return dim.amount
   var ret = dim.amount

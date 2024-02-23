@@ -7,6 +7,9 @@ function setupTemp() {
         dimBoostReq: { tier: 1/0, amount: 1/0, mult: 1 },
         galaxyReq: 1/0,
 
+        AM_gain: E(0),
+        AM_deflation: 1,
+
         ndPower: E(2),
 
         dimBoostPower: E(1),
@@ -14,6 +17,7 @@ function setupTemp() {
 
         TP_exponent: 1.5,
         TP_mult: E(1),
+        tachyonGain: E(0),
 
         EP_DIL_upg: [1,1,1],
 
@@ -75,6 +79,7 @@ function setupTemp() {
         sacPow: E(1),
 
         gluon_eff: {},
+        qc_completions: 0,
 
         atom: {
             proton_eff: [1,2e6],
@@ -108,6 +113,27 @@ function getReplicantEffect() {
     if (player.timestudy.studies.includes(102)) replmult = replmult.times(Decimal.pow(5, player.replicanti.galaxies))
 
     return replmult
+}
+
+function antimatterGain() {
+    let x = getDimensionProductionPerSecond(1)
+
+    if (player.currentChallenge == "challenge3" || player.currentChallenge == "postc1") x = x.times(player.chall3Pow)
+
+    if (player.currentChallenge == "challenge7") x = x.plus(getDimensionProductionPerSecond(2))
+
+    let s_log = 1e12
+
+    if (QCCompleted(5)) s_log *= QUANTUM_CHALLENGES[5].effect()
+    if (inQC(5)) s_log = 1e6
+
+    if (x.l > s_log) {
+        let sx = x
+        x = Decimal.pow(10,Math.pow(x.l/s_log,0.75)*s_log)
+        tmp.AM_deflation = sx.l/x.l
+    } else tmp.AM_deflation = 1
+
+    return x
 }
 
 function getReplicantSpeed() {
@@ -145,6 +171,8 @@ function getExtraReplicatedGalaxies() {
 
     if (player.quantum.unlocked) x *= tmp.chargeEffect.g
 
+    if (QCCompleted(8) && x > 100) x = (x-100)*3+100
+
     return Math.round(x)
 }
 
@@ -178,10 +206,16 @@ function calcNextTickUpg(offset=0) {
 
     let base = player.timestudy.studies.includes(171) ? 1.25 : 1.33
 
+    if (QCCompleted(7)) base **= 0.75
+
     return Decimal.pow(base,t)
 }
 
 function updateTemp() {
+    tmp.qc_completions = 0
+
+    for (let x = 1; x <= 8; x++) if (player.quantum.chal["qc"+x].completed) tmp.qc_completions++
+
     updateReplicantiTemp()
 
     tmp.nextTickUpg = calcNextTickUpg()
@@ -217,7 +251,7 @@ function updateTemp() {
     tmp.dimBoostPower = getDimensionBoostPower()
 
     tmp.inf_bought_cap = tmp.atom.proton_eff[1]
-    tmp.ndPower = tmp.atom.electron_eff[1]
+    tmp.ndPower = inQC(4) || inQC(7) ? E(1) : tmp.atom.electron_eff[1]
 
     for (let x = 1; x <= 8; x++) {
         tmp.finalNDmult[x-1] = getDimensionFinalMultiplier(x)
@@ -225,13 +259,23 @@ function updateTemp() {
 
     tmp.TP_exponent = getTachyonGainExponent()
     tmp.TP_mult = getTachyonGainMultiplier()
+    tmp.tachyonGain = player.dilation.active ? Decimal.pow(Decimal.log10(player.money) / 400, tmp.TP_exponent).mul(tmp.TP_mult) : E(0)
 
     tmp.EP_DIL_upg = eterUpgDilEff()
 
-    tmp.dil_nextThresholdMult = 1.35 + 3.65 * Math.pow(0.8, player.dilation.rebuyables[2])
+    tmp.dil_nextThresholdMult = getDilNextThresholdMult()
     tmp.dil_nextThreshold = Decimal.pow(tmp.dil_nextThresholdMult,player.dilation.freeGalaxies/(player.dilation.upgrades.includes(5)?2:1)).mul(1e3)
 
     tmp.tsReduce = getTickSpeedMultiplier()
+    tmp.AM_gain = antimatterGain()
+}
+
+function getDilNextThresholdMult() {
+    var x = inQC(4) ? Math.pow(10, 2.8) : 1.35 + 3.65 * Math.pow(0.8, player.dilation.rebuyables[2])
+
+    if (player.achievements.includes("r167")) x -= 0.1
+
+    return x
 }
 
 function updateMultDecreases() {
@@ -264,6 +308,7 @@ function updateReplicantiTemp() {
 	data.chance = player.replicanti.chance
 	data.speeds = getReplicantSpeed()
 	data.interval = getReplicantiFinalInterval()
+    data.mult = Decimal.pow(2,player.replicanti.mult)
 
     /*
 	if (tmp.ngp3 && player.masterystudies.includes("t273")) {
@@ -282,6 +327,6 @@ function updateReplicantiTemp() {
     data.freq = 0
 	if (data.chance.gte("1e9999998")) data.freq = exp.times(Math.log10(player.replicanti.chance + 1) / Math.log10(2))
 
-	data.est = Decimal.div((data.freq ? data.freq.times(Math.log10(2) / Math.log10(Math.E) * 1e3) : Decimal.add(data.chance, 1).log(Math.E) * 1e3), data.interval)
+	data.est = Decimal.div((data.freq ? data.freq.times(Math.log10(2) / Math.log10(Math.E) * 1e3) : Decimal.add(data.chance, 1).log(Math.E) * 1e3), data.interval).mul(data.mult)
 	data.estLog = data.est.times(Math.log10(Math.E))
 }

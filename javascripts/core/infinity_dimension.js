@@ -54,16 +54,8 @@ function DimensionProduction(tier) {
   var ret = dim.amount
   if (player.currentEternityChall == "eterc11") return ret
   if (player.currentEternityChall == "eterc7") ret = ret.dividedBy(player.tickspeed.dividedBy(1000))
-  if (player.challenges.includes("postc6")) {
-      let tick = E(player.tickspeed)
-      if (player.dilation.active || inEC(15)) {
-        tick = Decimal.pow(10, Math.pow(Math.abs(tick.log10()), getDilationPenalty()))
-        if (player.dilation.upgrades.includes(11)) {
-          tick = Decimal.pow(10, Math.pow(Math.abs(tick.log10()), 1.05))
-        }
-      }
-      tick = E(1).dividedBy(tick)
-      return ret.times(DimensionPower(tier)).times(tick.times(1000).pow(0.0005))
+  if (player.challenges.includes("postc6") && !inQC(3)) {
+    return ret.times(DimensionPower(tier)).times(dilates(Decimal.div(1000,player.tickspeed),"tick").pow(0.0005))
   }
   else return ret.times(DimensionPower(tier))
 }
@@ -71,7 +63,8 @@ function DimensionProduction(tier) {
 function DimensionPower(tier) {
   var dim = player["infinityDimension"+tier]
   if (player.currentEternityChall == "eterc11") return E(1)
-  if (player.currentEternityChall == "eterc2" || inEC(14)) return E(0)
+  if (player.currentEternityChall == "eterc2" || inEC(14) || inQC(8)) return E(0)
+  if (inQC(3)) return tmp.meta.effect
   var mult = dim.power
 
   mult = mult.times(infDimPow)
@@ -109,12 +102,7 @@ function DimensionPower(tier) {
 
   if (hasTSTier(2,22)) mult = mult.pow(1.025)
 
-  if (player.dilation.active || inEC(15)) {
-    mult = Decimal.pow(10, Math.pow(mult.log10(), getDilationPenalty()))
-    if (player.dilation.upgrades.includes(11)) {
-      mult = Decimal.pow(10, Math.pow(mult.log10(), 1.05))
-    }
-  }
+  mult = dilates(mult)
 
   return mult
 }

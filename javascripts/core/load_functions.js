@@ -221,11 +221,12 @@ function getPlayerData() {
             gal: 0,
             galaxies: 0,
             galCost: E(1e170),
-            auto: [false, false, false]
+            auto: [false, false, false, false],
+            mult: 0,
         },
         timestudy: {
             auto: false,
-            theorem: 0,
+            theorem: E(0),
             amcost: E("1e20000"),
             ipcost: E(1),
             epcost: E(1),
@@ -479,6 +480,7 @@ function onLoad() {
     if (!player.replicanti.auto[0]) document.getElementById("replauto1").textContent = "Auto: OFF"
     if (!player.replicanti.auto[1]) document.getElementById("replauto2").textContent = "Auto: OFF"
     if (!player.replicanti.auto[2]) document.getElementById("replauto3").textContent = "Auto: OFF"
+    if (!player.replicanti.auto[3]) document.getElementById("replauto4").textContent = "Auto: OFF"
 
     loadAutoBuyerSettings();
     updateLastTenRuns()

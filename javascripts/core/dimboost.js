@@ -13,7 +13,7 @@ function getDimensionBoostPower() {
   if (player.timestudy.studies.includes(83)) ret = Decimal.pow(1.0004, player.totalTickGained).min(1e30).times(ret);
   if (player.timestudy.studies.includes(231)) ret = Decimal.pow(player.resets, 0.3).times(ret)
 
-  if (metaUnlocked()) ret = ret.mul(tmp.meta.effect)
+  if (metaUnlocked() && !inQC(3)) ret = ret.mul(tmp.meta.effect)
 
   if (player.achievements.includes("r151")) ret = ret.mul(100)
 
@@ -90,12 +90,14 @@ if (player.currentChallenge == "postc2") {
 }
 
 function getSupersonicStart() {
+  if (inQC(4)) return 0
 	let r = 1e5
   if (hasGluonUpg('rg3')) r += gluonUpgEff('rg3',0)
 	return r
 }
 
 function getSupersonicMultIncrease() {
+  if (inQC(4)) return 20
 	let r = 4
 	return r
 }
