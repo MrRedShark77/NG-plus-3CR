@@ -401,7 +401,7 @@ function checkAchievements() {
     && player.meta[1].amount <= 0 && !player.meta.firstDBought
   && player.dilation.active && player.infinityPoints.e >= 200000 && player.quantum.protons == 0 && player.quantum.electrons == 0) giveAchievement('r158',true)
 
-  if (player.money.gte(Decimal.pow(10,1e12))) giveAchievement('r161',true)
+  if (player.money.gte(Decimal.pow(10,inQC(5) ? 1e6 : 1e12))) giveAchievement('r161',true)
   if (player.timestudy.theorem.gte(1e60)) giveAchievement('r162',true)
   if (player.dilation.totalTachyonParticles.gte(1e100)) giveAchievement('r167',true)
 
