@@ -1,6 +1,9 @@
 function updateAtomTemp() {
     let ta = tmp.atom
 
+    ta.mult = 0.25
+    if (QCCompleted(1)) ta.mult += tmp.qc_modifiers[1] * 0.05
+
     let m = player.quantum.protons/10+1
 
     ta.proton_eff = [m, m * 2e6]

@@ -49,11 +49,11 @@ function updateInfinityDimensions() {
 }
 
 function DimensionProduction(tier) {
-  if (player.currentEternityChall == "eterc10") return E(0)
+  if (inEC(10)) return E(0)
   var dim = player["infinityDimension"+tier]
   var ret = dim.amount
-  if (player.currentEternityChall == "eterc11") return ret
-  if (player.currentEternityChall == "eterc7") ret = ret.dividedBy(player.tickspeed.dividedBy(1000))
+  if (inEC(11)) return ret
+  if (inEC(7)) ret = ret.dividedBy(player.tickspeed.dividedBy(1000))
   if (player.challenges.includes("postc6") && !inQC(3)) {
     return ret.times(DimensionPower(tier)).times(dilates(Decimal.div(1000,player.tickspeed),"tick").pow(0.0005))
   }
@@ -62,8 +62,8 @@ function DimensionProduction(tier) {
 
 function DimensionPower(tier) {
   var dim = player["infinityDimension"+tier]
-  if (player.currentEternityChall == "eterc11") return E(1)
-  if (player.currentEternityChall == "eterc2" || inEC(14) || inQC(8)) return E(0)
+  if (inEC(11)) return E(1)
+  if (inEC(2) || inEC(14) || inQC(8)) return E(0)
   if (inQC(3)) return tmp.meta.effect
   var mult = dim.power
 
@@ -180,7 +180,7 @@ function getIDPowerMult(i) {
 }
 
 function buyManyInfinityDimension(tier) {
-  if (player.eterc8ids <= 0 && player.currentEternityChall == "eterc8") return false
+  if (player.eterc8ids <= 0 && inEC(8)) return false
   var dim = player["infinityDimension"+tier]
   if (dim.baseAmount >= tmp.inf_bought_cap*10 && tier < 8) return false
   if (player.infinityPoints.lt(dim.cost)) return false
@@ -196,7 +196,7 @@ function buyManyInfinityDimension(tier) {
   dim.power = dim.power.times(getIDPowerMult(tier))
   dim.baseAmount = tier < 8 ? Math.min(dim.baseAmount+10,tmp.inf_bought_cap*10) : dim.baseAmount+10
 
-  if (player.currentEternityChall == "eterc8") player.eterc8ids-=1
+  if (inEC(8)) player.eterc8ids-=1
   document.getElementById("eterc8ids").textContent = "You have "+player.eterc8ids+" purchases left."
   return true
 }

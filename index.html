@@ -1071,7 +1071,7 @@
             <br><div style="display: none;"><textarea id="exportOutput" style="color:black; width: 200px; height: 55px;"></textarea></div>
             <p>Hotkeys: 1-8 for buy 10 dimension, shift+1-8 for buy 1 dimension, T to buy max tickspeed, shift+T to buy one tickspeed, M for max all<br>S for sacrifice, D for dimension boost, G for galaxy, C for crunch, A for toggle autobuyers, R for replicanti galaxies, E for eternity.<br>You can hold shift while buying time studies to buy all up until that point, see each study's number, and save study trees.<br>Hotkeys do not work while holding control.</p>
             <p>
-                Antimatter Dimensions: NG+3 Classic Reloaded v1.3 - Made by MrRedShark77
+                Antimatter Dimensions: NG+3 Classic Reloaded v1.3.1 - Made by MrRedShark77
             </p>
             <div id="footercontainer">
                 <table id="footer">
@@ -1575,9 +1575,9 @@
                         </td><td>
                             <div class="achievement achievementlocked" style="opacity: 0;"><br></div>
                         </td><td>
-                            <div class="achievement achievementlocked" style="opacity: 0;"><br></div>
+                            <div id="Spicy Challenge" class="achievement achievementlocked" style="background-image: url(images/new/ap18.png)" ach-tooltip="Complete any Quantum Challenge with two or more Eternity Challenges modified."><br></div>
                         </td><td>
-                            <div id="Spicy Challenges" class="achievement achievementlocked" style="background-image: url(images/new/ap18.png)" ach-tooltip="???"><br></div>
+                            <div class="achievement achievementlocked" style="opacity: 0;"><br></div>
                         </td><td>
                             <div class="achievement achievementlocked" style="opacity: 0;"><br></div>
                         </td><td>
@@ -2243,9 +2243,40 @@
             </div>
             <div id="quantumchallenges" class="challengeTab">
                 <p>In Quantum Challenges, you cannot gain Protons & Electrons.</p>
-                <table id="qcs_table" class="table" style="margin: 0 auto">
-                    
-                </table>
+                <table id="qcs_table" class="table" style="margin: 0 auto"></table>
+                <div id="ec_modification_div">
+                    <h2>Eternity Challenge Modification</h2>
+                    <table class="table" style="margin: 0 auto">
+                        <tr>
+                            <td>
+                                <div class="quantumchallengediv" style="height: 120px;">
+                                    <span id="qcec_desc">EC Modified Quantum Challenge ?: Both Eternity Challenge ? is applied.</span>
+                                    <div class="outer">
+                                        <button id="qcec_choose_button" class="challengesbtn" onclick="chooseQCMMode()">Choose</button>
+                                        <button id="qcec_button" class="lockedchallengesbtn" onclick="startModifiedQC()">Locked</button>
+                                        <br>
+                                        <span id="qcec_goal">Goal: ???</span><br>
+                                        <span id="qcec_reward">Reward: ???</span>
+                                    </div>
+                                </div>
+                            </td><td>
+                                <table id="ecmodifiertable">
+                                    <tr>
+                                        <td><button class="ecmodifierbutton" id="ecmodifierbutton1" onclick="switchECModifier(1)">EC1</button></td>
+                                        <td><button class="ecmodifierbutton" id="ecmodifierbutton3" onclick="switchECModifier(3)">EC3</button></td>
+                                        <td><button class="ecmodifierbutton" id="ecmodifierbutton5" onclick="switchECModifier(5)">EC5</button></td>
+                                        <td><button class="ecmodifierbutton" id="ecmodifierbutton6" onclick="switchECModifier(6)">EC6</button></td>
+                                    </tr><tr>
+                                        <td><button class="ecmodifierbutton" id="ecmodifierbutton11" onclick="switchECModifier(11)">EC11</button></td>
+                                        <td><button class="ecmodifierbutton" id="ecmodifierbutton13" onclick="switchECModifier(13)">EC13</button></td>
+                                        <td><button class="ecmodifierbutton" id="ecmodifierbutton14" onclick="switchECModifier(14)">EC14</button></td>
+                                        <td><button class="ecmodifierbutton" id="ecmodifierbutton15" onclick="switchECModifier(15)">EC15</button></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
             <table id="footer">
                 <tr>

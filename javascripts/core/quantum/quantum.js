@@ -59,12 +59,17 @@ function getQuantumSave() {
         chal: {
             unlocked: 1,
             active: 0,
+
+            choosedQCM: 0,
+            modified: false,
         },
     }
     for (let i = 1; i <= 8; i++) {
         s.chal["qc" + i] = {
             completed: false,
             best: 999999999,
+            modified: [],
+            currentModifier: [],
         }
     }
     return s
@@ -95,6 +100,14 @@ function updateQuantumTemp() {
             if (gu[1]) tmp.gluon_eff[mix+i] = gu[1]()
         }
     }
+
+    let sum = 0
+    for (let x = 1; x <= 8; x++) {
+        let q = player.quantum.chal["qc" + x]
+
+        sum += tmp.qc_modifiers[x] = q.modified.length
+    }
+    tmp.qc_total_modifiers = sum
 }
 
 function updateQuantumHTML() {
@@ -213,6 +226,14 @@ function quantum() {
 
             if (qca >= player.quantum.chal.unlocked) player.quantum.chal.unlocked = qca + 1
             player.quantum.chal.active = 0
+
+            if (player.quantum.chal.modified && data.currentModifier.length >= 2) giveAchievement("r164",true)
+            if (player.quantum.chal.modified && data.currentModifier.length >= data.modified.length) {
+                data.modified = []
+                for (let x of data.currentModifier) data.modified.push(x)
+            }
+
+            player.quantum.chal.modified = false
         }
 
         if (player.options.animations.quantum) dev.quantumAnimation(()=>quantumReset(chal))

@@ -48,7 +48,7 @@ function unlockDilation() {
     if (player.timestudy.theorem.lt(5000)) return
     if (ECTimesCompleted("eterc12") !== 5) return
     if (ECTimesCompleted("eterc11") !== 5) return
-    player.timestudy.theorem = player.timestudy.theorem.sub(5000)
+    player.timestudy.theorem = player.timestudy.theorem.sub(5000).round()
     document.getElementById("dilationunlock").className = "dilationupgbought"
     updateTimeStudyButtons()
     showEternityTab("dilation")
@@ -133,7 +133,11 @@ function getRDUCost(id,bought=player.dilation.rebuyables[id]) {
 
     let x = Decimal.pow(DIL_UPG_COSTS[id][1],lvl).mul(DIL_UPG_COSTS[id][0])
 
-    if (id >= 3 && x.gte(1e100)) x = x.pow(((x.l/100)**2.5-1)/10+1)
+    if (id >= 3 && x.gte(1e100)) {
+        let p = 2.5
+        if (QCCompleted(6)) p -= tmp.qc_modifiers[6] / 16
+        x = x.pow(((x.l/100)**p-1)/10+1)
+    }
 
     return x
 }

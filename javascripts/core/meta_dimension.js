@@ -175,7 +175,7 @@ function updateMetaDimensionsHTML() {
 
             if (!unl) continue;
 
-            el('MD'+x).textContent = (player.meta[x].bought >= 110-10*x ? "Scaled " : "")+DISPLAY_NAMES[x]+" Meta-Dimension x"+shortenMoney(tmp.meta.mult[x])
+            el('MD'+x).textContent = (player.meta[x].bought >= 1625-125*x ? "Superscaled " : player.meta[x].bought >= 110-10*x+(tmp.atom.neutron_eff||0) ? "Scaled " : "")+DISPLAY_NAMES[x]+" Meta-Dimension x"+shortenMoney(tmp.meta.mult[x])
             el('MDAmount'+x).textContent = getMetaDimensionDescription(x)
             el('MDCost'+x).textContent = "Cost: "+shortenCosts(tmp.meta.cost[x])+" MA"
 
@@ -203,17 +203,21 @@ function getR154Reward() {
 }
 
 function getMDCost(i, p = player.meta[i].bought) {
-    q = 110 - 10*i + tmp.atom.neutron_eff||0
+    var q1 = 110 - 10*i + (tmp.atom.neutron_eff||0)
+    var q2 = 1625 - 125*i
 
-    if (p>=q) p = (p/q)**2*q
+    if (p>=q2) p = (p/q2)**3*q2
+    if (p>=q1) p = (p/q1)**2*q1
 
     return Decimal.pow(costMults[i],p).mul(STARTING_COST[i])
 }
 
 function getMDBulk(i) {
-    let x = player.meta.antimatter.div(STARTING_COST[i]).log(costMults[i]), q = 110 - 10*i + tmp.atom.neutron_eff||0
+    var x = player.meta.antimatter.div(STARTING_COST[i]).log(costMults[i]), q1 = 110 - 10*i + (tmp.atom.neutron_eff||0)
+    var q2 = 1625 - 125*i
 
-    if (x >= q) x = Math.pow(x/q,1/2)*q
+    if (x >= q1) x = Math.pow(x/q1,1/2)*q1
+    if (x >= q2) x = Math.pow(x/q2,1/3)*q2
 
     return Math.floor(x)+1
 }
@@ -232,6 +236,7 @@ function getMDBPower() {
     let x = 2
 
     if (player.dilation.upgrades.includes(14)) x *= getDU14Effect()
+    if (QCCompleted(8)) x *= 1+tmp.qc_modifiers[8]/8
 
     return x
 }

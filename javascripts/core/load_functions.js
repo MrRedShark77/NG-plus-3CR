@@ -412,6 +412,12 @@ function onLoad() {
         updateMultDecreases()
     }
 
+    if (player.version<13.004) {
+        player.version = 13.004
+        
+        player.timestudy.theorem = player.timestudy.theorem.round()
+    }
+
     setTheme(player.options.theme);
 
     sliderText.textContent = "Update rate: " + player.options.updateRate + "ms";

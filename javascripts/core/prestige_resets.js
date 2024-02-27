@@ -67,7 +67,7 @@ function doCrunchResetStuff(){
 	player.money = new Decimal(10)
 	player.tickSpeedCost = new Decimal(1000)
 	player.sacrificed = new Decimal(0)
-	player.bestInfinityTime = (player.currentEternityChall !== "eterc12") ? Math.min(player.bestInfinityTime, player.thisInfinityTime) : player.bestInfinityTime
+	player.bestInfinityTime = (!inEC(12)) ? Math.min(player.bestInfinityTime, player.thisInfinityTime) : player.bestInfinityTime
 	player.thisInfinityTime = 0
 	player.resets = 0
 	player.interval = null

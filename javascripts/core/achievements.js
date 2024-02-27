@@ -150,7 +150,7 @@ const allAchievements = {
   r161 : `I ran out of energy`,
   r162 : `Theorem of Everything`,
   //
-  //
+  r164 : `Spicy Challenge`,
   //
   //
   r167 : `Exploration of Endless Time`,

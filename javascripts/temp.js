@@ -80,6 +80,8 @@ function setupTemp() {
 
         gluon_eff: {},
         qc_completions: 0,
+        qc_modifiers: [null,0,0,0,0,0,0,0,0],
+        qc_total_modifiers: 0,
 
         atom: {
             proton_eff: [1,2e6],
@@ -138,6 +140,8 @@ function antimatterGain() {
 
 function getReplicantSpeed() {
     let inc = .2
+    if (QCCompleted(2)) inc -= 0.02 * tmp.qc_modifiers[2]
+
     let exp = 308
 
     if (hasGluonUpg('gb2')) exp *= 2
@@ -171,7 +175,10 @@ function getExtraReplicatedGalaxies() {
 
     if (player.quantum.unlocked) x *= tmp.chargeEffect.g
 
-    if (QCCompleted(8) && x > 100) x = (x-100)*3+100
+    if (QCCompleted(8) && x > 100) {
+        x = (x-100)*3+100
+        if (x > 2000) x = (x-2000)/3+2000
+    }
 
     return Math.round(x)
 }
@@ -202,7 +209,11 @@ function getIPMultiplierFromUpgrade() {
 function calcNextTickUpg(offset=0) {
     let t = player.totalTickGained + offset
 
-    if (t > 1.5e7) t = (t/1.5e7)**2*1.5e7
+    let s = 1.5e7
+
+    if (QCCompleted(7)) s *= Math.pow(2, tmp.qc_modifiers[7]/2)
+
+    if (t > s) t = (t/s)**2*s
 
     let base = player.timestudy.studies.includes(171) ? 1.25 : 1.33
 

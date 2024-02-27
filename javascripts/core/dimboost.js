@@ -115,7 +115,7 @@ function getShiftRequirement(bulk) {
   if (tier == maxTier) amount += Math.max(resetNum + 4 - maxTier, 0) * mult
 
   var costStart = getSupersonicStart()
-  if (player.currentEternityChall == "eterc5") {
+  if (inEC(5)) {
     amount += Math.pow(resetNum, 3) + resetNum
   } else if (resetNum >= costStart) {
 		var multInc = getSupersonicMultIncrease()
@@ -141,7 +141,7 @@ function getShiftRequirement(bulk) {
 	if (player.aarexModifications.ngmX > 3 && player.pSac == undefined) amount = 10
 	if (tier == maxTier) amount += Math.max(resetNum + (player.galacticSacrifice && player.tickspeedBoosts === undefined && player.galacticSacrifice.upgrades.includes(21) ? 2 : 4) - maxTier, 0) * mult
 	var costStart = getSupersonicStart()
-	if (player.currentEternityChall == "eterc5") {
+	if (inEC(5)) {
 		amount += Math.pow(resetNum, 3) + resetNum
 	} else if (resetNum >= costStart) {
 		var multInc = getSupersonicMultIncrease()
