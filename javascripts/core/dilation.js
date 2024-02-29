@@ -144,7 +144,7 @@ function getRDUCost(id,bought=player.dilation.rebuyables[id]) {
 
 function buyDilationUpgrade(id, auto) {
     if (id > 4) { // Not rebuyable
-        if (player.dilation.dilatedTime < DIL_UPG_COSTS[id]) return // Not enough dilated time
+        if (player.dilation.dilatedTime.lt(DIL_UPG_COSTS[id])) return // Not enough dilated time
         if (player.dilation.upgrades.includes(id)) return // Has the upgrade
         if (player.quantum.speedruns <= 19) player.dilation.dilatedTime = player.dilation.dilatedTime.minus(DIL_UPG_COSTS[id])
         player.dilation.upgrades.push(id)
@@ -210,7 +210,7 @@ function updateDilationUpgradeButtons() {
         } else if (player.dilation.upgrades.includes(i)) {
             document.getElementById("dil"+i).className = "dilationupgbought"
         } else {
-            document.getElementById("dil"+i).className = ( DIL_UPG_COSTS[i] > player.dilation.dilatedTime ) ? "dilationupglocked" : "dilationupg";
+            document.getElementById("dil"+i).className = ( player.dilation.dilatedTime.lt(DIL_UPG_COSTS[i]) ) ? "dilationupglocked" : "dilationupg";
         }
     }
     document.getElementById("dil4desc").textContent = "Currently: ^1.5 -> ^"+(getTachyonGainExponent().toFixed(2))

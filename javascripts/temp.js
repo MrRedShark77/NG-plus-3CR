@@ -170,16 +170,19 @@ function getRemoteGalaxyStarting() {
 function getExtraReplicatedGalaxies() {
     let x = 0
 
-    if (player.timestudy.studies.includes(225)) x += Math.floor(player.replicanti.amount.e / 1000)
-    if (player.timestudy.studies.includes(226)) x += Math.floor(player.replicanti.gal / 15)
-
-    if (player.quantum.unlocked) x *= tmp.chargeEffect.g
-
-    if (QCCompleted(8) && x > 100) {
-        x = (x-100)*3+100
-        if (x > 2000) x = (x-2000)/3+2000
+    let speed = QCCompleted(8) ? 6 : 2
+    if (player.timestudy.studies.includes(225)) {
+        let a = Math.floor(player.replicanti.amount.e / 1000)
+        if (a>299) a = Math.floor(Math.sqrt(0.25 + (a - 299) * speed) + 298.5)
+        x += a
+    }
+    if (player.timestudy.studies.includes(226)) {
+        let a = Math.floor(player.replicanti.gal / 15)
+        if (a>99) a = Math.floor(Math.sqrt(0.25 + (a - 99) * speed) + 98.5)
+        x += a
     }
 
+    if (player.quantum.unlocked) x *= tmp.chargeEffect.g
     return Math.round(x)
 }
 

@@ -3970,7 +3970,7 @@ function gameLoop(diff) {
         else document.getElementById("timeMax"+tier).className = "unavailablebtn"
     }
 
-    if (player.dilation.studies.includes(1)) player.dilation.dilatedTime = player.dilation.dilatedTime.plus(getDilatedTimeGain() * diff / 10)
+    if (player.dilation.studies.includes(1)) player.dilation.dilatedTime = player.dilation.dilatedTime.plus(getDilatedTimeGain().mul(diff / 10))
 
     if (tmp.dil_nextThreshold.lte(player.dilation.dilatedTime)) {
         let fg = Math.floor(player.dilation.dilatedTime.div(1e3).log(tmp.dil_nextThresholdMult))+1
