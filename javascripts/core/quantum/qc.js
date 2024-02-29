@@ -46,7 +46,7 @@ const QUANTUM_CHALLENGES = [
         get em_reward() { return `Increase the starting of scaled free tickspeed upgrade.` },
     },{
         get desc() { return `Infinity and Time Dimensions are disabled, and Meta-Dimension Boosts have no effect.` },
-        get reward() { return `You gain extra replicated galaxies faster after 100, until 2000.` },
+        get reward() { return `You gain extra replicated galaxies faster after getting softcapped.` },
         goal: 20e9,
 
         get em_reward() { return `Strengthen meta-dimension boosts.` },
