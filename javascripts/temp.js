@@ -6,12 +6,14 @@ function setupTemp() {
     let s = {
         dimBoostReq: { tier: 1/0, amount: 1/0, mult: 1 },
         galaxyReq: 1/0,
+        distantGalaxySpeed: 1,
 
         AM_gain: E(0),
         AM_deflation: 1,
 
         ndPower: E(2),
 
+        extraDimBoost: 0,
         dimBoostPower: E(1),
         finalNDmult: [E(1),E(1),E(1),E(1),E(1),E(1),E(1),E(1)],
 
@@ -35,6 +37,7 @@ function setupTemp() {
         totalGalaxies: 0,
 
         infGain: 1,
+        eterGain: 1,
 
         meta: {
             mult: [null],
@@ -144,6 +147,8 @@ function getReplicantSpeed() {
 
     let exp = 308
 
+    if (hasTSTier(2,122)) exp += TSTierEffect(2,122,0)
+
     if (hasGluonUpg('gb2')) exp *= 2
 
     return {inc: inc+1, exp: exp}
@@ -163,6 +168,8 @@ function getRemoteGalaxyStarting() {
     if (hasTSTier(2,32)) x += TSTierEffect(2,32,0)
     if (hasTSTier(2,33)) x += TSTierEffect(2,33,0)
     if (hasTSTier(2,36)) x += TSTierEffect(2,36,0)
+
+    if (hasTSTier(2,121)) x += TSTierEffect(2,121,0)
 
     return x
 }
@@ -197,6 +204,15 @@ function getInfinitedGain() {
 
     if (player.thisInfinityTime > 50 && player.achievements.includes("r87")) x = 250;
     if (player.timestudy.studies.includes(32)) x *= Math.max(player.resets,1);
+    if (hasTSTier(2,151)) x *= TSTierEffect(2,151)[0] ?? 1
+
+    return x
+}
+
+function getEternitedGain() {
+    let x = player.achievements.includes('r151')?25:1
+
+    if (hasTSTier(2,152)) x *= TSTierEffect(2,152)[0] ?? 1
 
     return x
 }
@@ -246,6 +262,7 @@ function updateTemp() {
     tmp.inf_mult_base = 2 + ECTimesCompleted('eterc14')/5
 
     tmp.infGain = getInfinitedGain()
+    tmp.eterGain = getEternitedGain()
 
     updateQuantumTemp()
     updateTSTiersTemp()
@@ -260,8 +277,11 @@ function updateTemp() {
     tmp.remoteGalaxyStart = getRemoteGalaxyStarting()
 
     tmp.dimBoostReq = getShiftRequirement(0)
+
+    tmp.distantGalaxySpeed = distantGalaxySpeed()
     tmp.galaxyReq = getGalaxyRequirement()
 
+    tmp.extraDimBoost = extraDimensionBoosts()
     tmp.dimBoostPower = getDimensionBoostPower()
 
     tmp.inf_bought_cap = tmp.atom.proton_eff[1]
@@ -292,6 +312,16 @@ function getDilNextThresholdMult() {
     return x
 }
 
+function distantGalaxySpeed() {
+    let x = 1
+
+    if (hasGluonUpg("rg5")) x *= 0.75
+    if (hasGluonUpg("gb5")) x *= gluonUpgEff("gb5")
+    if (hasGluonUpg("br5")) x *= gluonUpgEff("br5")
+
+    return x
+}
+
 function updateMultDecreases() {
     player.dimensionMultDecrease = parseFloat((10 - Math.round(Math.log(player.dimensionMultDecreaseCost/1e8)/Math.log(5000)) - 0.2*ECTimesCompleted("eterc6")).toFixed(1))
     player.tickSpeedMultDecrease = parseFloat((10 - Math.round(Math.log(player.tickSpeedMultDecreaseCost/3e6)/Math.log(5)) - 0.07*ECTimesCompleted("eterc11")).toFixed(2))
@@ -312,6 +342,14 @@ function getReplicantiFinalInterval() {
 	let x = getReplicantiInterval()
 	if (player.replicanti.amount.gt(Number.MAX_VALUE)) x = Decimal.pow(tmp.rep.speeds.inc, Math.max(player.replicanti.amount.log10() - tmp.rep.speeds.exp, 0)/tmp.rep.speeds.exp).times(x)
 	return x
+}
+
+function extraDimensionBoosts() {
+    let x = 0
+
+    if (hasTSTier(2,131)) x += TSTierEffect(2,131,0) 
+
+    return x
 }
 
 function updateReplicantiTemp() {

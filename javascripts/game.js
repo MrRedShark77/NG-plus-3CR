@@ -146,11 +146,22 @@ function updateCoinPerSec() {
 
 function getInfinitied() {return Math.max(player.infinitied + player.infinitiedBank, 0)}
 
+function getInfinitiedBankMult() {
+    let x = 0
 
+    if (player.timestudy.studies.includes(191)) x += 0.05
+    if (player.achievements.includes("r131")) x += 0.05
 
+    return x
+}
 
+function getEternitiedBankMult() {
+    let x = 0
 
+    if (hasTSTier(2,152)) x += 0.05
 
+    return x
+}
 
 function getGalaxyCostScalingStart() {
     var n = 100 + ECTimesCompleted("eterc5")*5
@@ -170,7 +181,7 @@ function getGalaxyRequirement(offset = 0, display) {
         amount += Math.pow(g, 2) + g
     }
     else if (g >= galaxyCostScalingStart) {
-        amount += Math.pow((g)-(galaxyCostScalingStart-1),2)+(g)-(galaxyCostScalingStart-1)
+        amount += getDistantAdd(g-galaxyCostScalingStart+1)*tmp.distantGalaxySpeed
     }
     if (g >= tmp.remoteGalaxyStart) {
         amount = Math.floor(amount * Math.pow(hasGluonUpg('rg1')?1.001:1.002, (g-tmp.remoteGalaxyStart+1)))
@@ -180,6 +191,10 @@ function getGalaxyRequirement(offset = 0, display) {
     if (player.challenges.includes("postc5")) amount -= 1;
 
     return amount;
+}
+
+function getDistantAdd(x) {
+    return (x+1)*x
 }
 
 function getETA(cost) {
@@ -264,7 +279,20 @@ function updateDimensions() {
         }
         else {
             let s = player.resets >= getSupersonicStart() ? "Supersonic" : "Boost"
-            document.getElementById("resetLabel").textContent = 'Dimension '+s+' ('+ getFullExpansion(player.resets) +'): requires ' + getFullExpansion(shiftRequirement.amount) + " " + DISPLAY_NAMES[shiftRequirement.tier] + " Dimensions"
+
+            let ss = getFullExpansion(player.resets)
+            let extra = tmp.extraDimBoost
+            let total = player.resets + extra
+            let bonus = false
+
+            if (extra > 0) {
+                ss += " + " + getFullExpansion(extra)
+                bonus = true
+            }
+
+            if (bonus) ss += " = " + getFullExpansion(total)
+
+            document.getElementById("resetLabel").textContent = 'Dimension '+s+' ('+ ss +'): requires ' + getFullExpansion(shiftRequirement.amount) + " " + DISPLAY_NAMES[shiftRequirement.tier] + " Dimensions"
         }
 
         if (player.currentChallenge == "challenge4" ? player.resets > 2 : player.resets > 3) {
@@ -2414,6 +2442,10 @@ document.getElementById("bigcrunch").onclick = function () {
             if (gainedInfinityPoints().gte(1e200) && player.thisInfinityTime <= 20) giveAchievement("Ludicrous Speed")
             if (gainedInfinityPoints().gte(1e250) && player.thisInfinityTime <= 200) giveAchievement("I brake for nobody")
         }
+        if (player.timestudy.studies.length == 0
+            && player.ts_tier[0].filter(x => !TS_DIL[2].includes(x)).length == 0
+            && inQC(6) && inEC(15)
+            && gainedInfinityPoints().gte(1e50)) giveAchievement('r168',true);
         if (!player.achievements.includes("r111") && player.lastTenRuns[9][1] != 1) {
             var n = 0;
             for (i=0; i<9; i++) {
@@ -2580,7 +2612,7 @@ function eternity(force, auto, noGain) {
         if (!noGain) {
             player.eternityPoints = player.eternityPoints.plus(gainedEternityPoints())
             addEternityTime(player.thisEternity, gainedEternityPoints())
-            player.eternities += player.achievements.includes('r151')?25:1
+            player.eternities = Math.round(player.eternities + tmp.eterGain)
         }
         if (player.currentEternityChall !== "") {
             if (player.eternityChalls[player.currentEternityChall] === undefined) {
@@ -2601,8 +2633,7 @@ function eternity(force, auto, noGain) {
         for (var i=0; i<player.challenges.length; i++) {
             if (!player.challenges[i].includes("post") && player.eternities > 1) temp.push(player.challenges[i])
         }
-        if (player.timestudy.studies.includes(191)) player.infinitiedBank += Math.floor(player.infinitied*0.05)
-        if (player.achievements.includes("r131")) player.infinitiedBank += Math.floor(player.infinitied*0.05)
+        player.infinitiedBank += Math.floor(player.infinitied*getInfinitiedBankMult())
         if (player.infinitiedBank > 5000000000) giveAchievement("No ethical consumption");
         if (player.dilation.active && (!force || player.infinityPoints.gte(Number.MAX_VALUE))) {
             const tachyonGain = Decimal.max(tmp.tachyonGain.sub(player.dilation.totalTachyonParticles), 0)
@@ -3566,7 +3597,22 @@ setInterval(function() {
     }
 
     document.getElementById("infinitiedBank").style.display = (player.infinitiedBank > 0) ? "block" : "none"
-    document.getElementById("infinitiedBank").textContent = "You have " + player.infinitiedBank.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " banked infinities."
+    document.getElementById("infinitiedBank").textContent = "You have " + getFullExpansion(player.infinitiedBank) + " banked infinities."
+
+    var banked = Math.floor(player.infinitied*getInfinitiedBankMult())
+
+    if (player.quantum.speedruns > 23) banked = Math.round(banked + getInfinitedGain())
+
+    document.getElementById("nextInfinitiedBank").style.display = banked > 0 ? "block" : "none"
+    document.getElementById("nextInfinitiedBank").textContent = "You will gain " + getFullExpansion(banked) + " banked infinities on next Eternity."
+
+    document.getElementById("eternitiedBank").style.display = (player.eternitiedBank > 0) ? "block" : "none"
+    document.getElementById("eternitiedBank").textContent = "You have " + getFullExpansion(player.eternitiedBank) + " banked eternities."
+
+    banked = Math.floor(player.eternities*getEternitiedBankMult())
+
+    document.getElementById("nextEternitiedBank").style.display = banked > 0 ? "block" : "none"
+    document.getElementById("nextEternitiedBank").textContent = "You will gain " + getFullExpansion(banked) + " banked eternities on next Quantum."
 
     if (infchallengeTimes < 7.5) giveAchievement("Never again")
     if (player.infinityPoints.gte(E("1e22000")) && player.timestudy.studies.length == 0) giveAchievement("What do I have to do to get rid of you")
@@ -3726,6 +3772,7 @@ function gameLoop(diff) {
     updateAllTick(diff)
 
     setAchieveTooltip()
+    fastCheckAchievements()
 
     document.getElementById("dimTabButtons").style.display = "none"
 
@@ -4448,14 +4495,11 @@ function inNC(x, n) {
 	return player.currentChallenge == "challenge" + x
 }
 
-function getEternitied() {
-	let total = player.eternities
-	return total
-}
+function getEternitied() {return Math.max(player.eternities + player.eternitiedBank, 0)}
 
 var timer = 0
 function autoBuyerTick() {
-    if (player.quantum.speedruns > 20 && player.quantum.buyer.isOn && tmp.quarksGain.gte(player.quantum.buyer.limit) && (player.quantum.chal.active == 0 || player.money.l >= QUANTUM_CHALLENGES[player.quantum.chal.active].goal)) quantumReset(false,true)
+    if (player.quantum.speedruns > 20 && player.quantum.buyer.isOn && tmp.quarksGain.gte(player.quantum.buyer.limit) && (player.quantum.chal.active == 0 || player.money.l >= getQCGoalLog(player.quantum.chal.active,player.quantum.chal.modified))) quantumReset(false,true)
 
     if (player.eternities >= 100 && player.eternityBuyer.isOn && gainedEternityPoints().gte(player.eternityBuyer.limit)) eternity(false, true)
 

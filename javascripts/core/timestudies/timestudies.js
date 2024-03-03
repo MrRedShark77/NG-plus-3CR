@@ -421,7 +421,7 @@ function importStudyTree(input) {
     if (input.split("|")[2]) {
         studiesToBuy = input.split("|")[2].split(",");
         for (i=0; i<studiesToBuy.length; i++) {
-            buyTSTier(2,parseInt(studiesToBuy[i]))
+            buyTSTier(2,parseInt(studiesToBuy[i]),true)
         }
     }
     if (parseInt(input.split("|")[1]) !== 0) {

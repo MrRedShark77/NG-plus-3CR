@@ -149,12 +149,12 @@ const allAchievements = {
 
   r161 : `I ran out of energy`,
   r162 : `Theorem of Everything`,
-  //
+  r163 : `One lego can beat anything`,
   r164 : `Spicy Challenge`,
-  //
-  //
+  r165 : `Nevermind, it has stopped...`,
+  r166 : `I finally broke with this cap!`,
   r167 : `Exploration of Endless Time`,
-  //
+  r168 : `Teach me how I get rid of you.`,
 
   s41 : "That dimension doesn’t exist",
   // s42,
@@ -374,7 +374,10 @@ function updateAchievementsTooltip() {
   el(allAchievements.r158).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e200000'))} IP without having TS Tiers 1–2, Meta Dimensions, Protons, and Electrons while dilated in the quantum run.`)
 
   el(allAchievements.r162).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e60'))} Time Theorems. Reward: Weaken the softcap of 12th dilation upgrade.`)
+  el(allAchievements.r165).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e200000'))} replicanti under one second in the quantum run.`)
+  el(allAchievements.r166).setAttribute('ach-tooltip',`Purchase at least ${getFullExpansion(1e10)} first infinity dimensions.`)
   el(allAchievements.r167).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e100'))} Tachyon Particles. Reward: Further reduce free galaxy threshold.`)
+  el(allAchievements.r168).setAttribute('ach-tooltip',`Big Crunch for ${shortenCosts(E('1e50'))} IP without having TS Tiers 1-2 in QC6 with EC15 modified. Reward: Time Theorems no longer get reset by Quantum.`)
 }
 
 // CHECKING
@@ -403,9 +406,14 @@ function checkAchievements() {
 
   if (player.money.gte(Decimal.pow(10,inQC(5) ? 1e6 : 1e12))) giveAchievement('r161',true)
   if (player.timestudy.theorem.gte(1e60)) giveAchievement('r162',true)
+  if (player.infinityDimension1.baseAmount/10>=1e10) giveAchievement('r166',true)
   if (player.dilation.totalTachyonParticles.gte(1e100)) giveAchievement('r167',true)
 
   // Secret
 
   if (player.options.notation == "Blind" && blindTime >= 36000) giveAchievement('s44',true)
+}
+
+function fastCheckAchievements() {
+  if (player.quantum.time < 10 && player.replicanti.amount.gte('1e200000')) giveAchievement('r165',true)
 }

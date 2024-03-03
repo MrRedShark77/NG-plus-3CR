@@ -98,6 +98,8 @@ function DimensionPower(tier) {
 
   if (ECTimesCompleted("eterc9") !== 0) mult = mult.times(player.timeShards.pow(ECTimesCompleted("eterc9")*0.1).plus(1).min(E("1e400")))
 
+  
+
   if (mult.lt(1)) mult = E(1)
 
   if (hasTSTier(2,22)) mult = mult.pow(1.025)

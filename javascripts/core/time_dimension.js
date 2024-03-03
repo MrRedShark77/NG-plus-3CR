@@ -30,6 +30,7 @@ function getTimeDimensionPower(tier) {
   if (player.replicanti.unl && player.dilation.upgrades.includes(6)) ret = ret.times(tmp.repEff.root(10))
 
   if (hasTSTier(2,35)) ret = ret.mul(TSTierEffect(2,35))
+  
 
   if (ret.lt(1)) ret = E(1)
 
@@ -44,7 +45,7 @@ function getTimeDimensionPower(tier) {
 function getInfinityTimeReward() {
   let x = player.tickspeed.div(1000).pow(-0.000005)
 
-  if (x.gte('1e25000')) x = Decimal.pow(10,softcap(x.l,25000,0.5,0))
+  x = Decimal.pow(10,softcap(x.l,hasTSTier(2,132) ? 50000 : 25000,0.5,0))
 
   return x
 }

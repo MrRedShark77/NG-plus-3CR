@@ -205,6 +205,7 @@ function getR154Reward() {
 function getMDCost(i, p = player.meta[i].bought) {
     var q1 = 110 - 10*i + (tmp.atom.neutron_eff||0)
     var q2 = 1625 - 125*i
+    if (hasTSTier(2,133)) q2 += 100
 
     if (p>=q2) p = (p/q2)**3*q2
     if (p>=q1) p = (p/q1)**2*q1
@@ -215,6 +216,7 @@ function getMDCost(i, p = player.meta[i].bought) {
 function getMDBulk(i) {
     var x = player.meta.antimatter.div(STARTING_COST[i]).log(costMults[i]), q1 = 110 - 10*i + (tmp.atom.neutron_eff||0)
     var q2 = 1625 - 125*i
+    if (hasTSTier(2,133)) q2 += 100
 
     if (x >= q1) x = Math.pow(x/q1,1/2)*q1
     if (x >= q2) x = Math.pow(x/q2,1/3)*q2
@@ -237,6 +239,7 @@ function getMDBPower() {
 
     if (player.dilation.upgrades.includes(14)) x *= getDU14Effect()
     if (QCCompleted(8)) x *= 1+tmp.qc_modifiers[8]/8
+    if (hasTSTier(2,123)) x *= 1.25
 
     return x
 }

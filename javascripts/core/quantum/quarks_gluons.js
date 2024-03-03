@@ -87,6 +87,8 @@ function updateQuarksHTML() {
 function getColorPowerProduction(color) {
 	let x = player.quantum.color[color]
 
+	if (color == "r" && hasGluonUpg("rg6") || color == "g" && hasGluonUpg("gb6") || color == "b" && hasGluonUpg("br6")) x = x.pow(1.5)
+
 	if (hasTSTier(2,61)) x = x.mul(TSTierEffect(2,61))
 
 	return x
@@ -122,7 +124,7 @@ function generateGluons(mix) {
 	updateQuarksHTML()
 }
 
-var gluonUpgCosts = [null,20,40,100,1500]
+var gluonUpgCosts = [null,20,40,100,1500,1e33,1e40]
 
 var gluonUpgs = {
 	rg: [
@@ -151,6 +153,12 @@ var gluonUpgs = {
 		[
 			`14th dilation upgrade is 10% stronger.`,
 		],
+		[
+			`Slow down the Distant Antimatter Galaxy cost scaling by 25%.`,
+		],
+		[
+			`Improve red power's production better.`,
+		],
 	],
 	gb: [
 		null,
@@ -176,6 +184,18 @@ var gluonUpgs = {
 				return Decimal.max(Math.log10(player.replicanti.chance + 1), 1).pow(intensity)
 			},
 			x => "^"+shorten(x),
+		],
+		[
+			`Infinity power slows down the Distant Antimatter Galaxy cost scaling.`,
+			() => {
+				let x = 1/(Math.log10(player.infinityPower.l+1)/10+1)
+
+				return x
+			},
+			x => shortenReduction(x),
+		],
+		[
+			`Improve green power's production better.`,
 		],
 	],
 	br: [
@@ -210,6 +230,18 @@ var gluonUpgs = {
 			},
 			x => shorten(x)+"x",
 		],
+		[
+			`Meta-Dimension boosts slow down the Distant Antimatter Galaxy cost scaling.`,
+			() => {
+				let x = 1/(player.meta.reset/500+1)
+
+				return x
+			},
+			x => shortenReduction(x),
+		],
+		[
+			`Improve blue power's production better.`,
+		],
 	],
 }
 
@@ -224,13 +256,21 @@ function buyGluonUpg(mix,i) {
 }
 
 function updateGluonsHTML() {
+	let upgs_unl = 4
+
+	if (hasTSTier(2,103)) upgs_unl = 6
+
 	for (let mix in player.quantum.gluons) {
 		let g = player.quantum.gluons[mix]
 		el('generate'+mix.toUpperCase()+'GluonsAmount').textContent = shortenDimensions(player.quantum.color[mix[0]])
         el(mix).textContent = shortenDimensions(g)
 
 		for (let i = 1; i < gluonUpgCosts.length; i++) {
-			let upg_el = el(mix+"upg"+i), upg = gluonUpgs[mix][i]||["Placeholder."], h = upg[0]
+			let upg_el = el(mix+"upg"+i)
+
+			upg_el.style.display = i <= upgs_unl ? "" : "none"
+			
+			let upg = gluonUpgs[mix][i]||["Placeholder."], h = upg[0]
 			if (upg[2]) h += `<br>Effect: ${upg[2](tmp.gluon_eff[mix+i])}`
 			if (!hasGluonUpg(mix+i)) h += `<br>Cost: ${shortenDimensions(gluonUpgCosts[i])} ${mix.toUpperCase()} gluons`
 			upg_el.innerHTML = h

@@ -3,7 +3,7 @@ function doDimBoostReset(bulk) {
     player.tickSpeedCost = E(1000)
     player.tickspeed = E(1000)
     completelyResetNormalDimensions()
-    player.sacrificed = E(0)
+    if (!player.achievements.includes("r161")) player.sacrificed = E(0)
     player.costMultipliers = [E(1e3), E(1e4), E(1e5), E(1e6), E(1e8), E(1e10), E(1e12), E(1e15)]
     player.tickspeedMultiplier = E(10)
     player.chall3Pow = E(0.01)
@@ -50,7 +50,7 @@ function doGalaxyResetStuff(bulk){
 	if (!player.achievements.includes('r145')) player.resets = 0
 	player.interval = null
 	player.galaxies += bulk
-	player.sacrificed = E(0)
+	if (!player.achievements.includes("r161")) player.sacrificed = E(0)
     player.costMultipliers = [E(1e3), E(1e4), E(1e5), E(1e6), E(1e8), E(1e10), E(1e12), E(1e15)]
     player.tickspeedMultiplier = E(10)
     player.chall3Pow = E(0.01)
@@ -303,7 +303,7 @@ function doQuantumResetStuff() {
 	completelyResetNormalDimensions()
 	player.currentChallenge = ""
 	player.infinitied = 0
-	player.infinitiedBank = 0
+	if (!hasTSTier(2,152)) player.infinitiedBank = 0
 	player.bestInfinityTime = 9999999999
 	player.thisInfinityTime = 0
 	player.interval = null
@@ -352,7 +352,7 @@ function doQuantumResetStuff() {
 		galaxybuyer: player.replicanti.galaxybuyer,
 		mult: 0,
 	}
-	player.timestudy = false ? player.timestudy : {
+	player.timestudy = player.achievements.includes("r168") ? player.timestudy : {
 		theorem: E(0),
 		amcost: new Decimal("1e20000"),
 		ipcost: new Decimal(1),

@@ -57,6 +57,8 @@ function getDimensionFinalMultiplier(tier) {
   if (player.timestudy.studies.includes(161)) multiplier = multiplier.times(E("1e616"))
   if (player.timestudy.studies.includes(234) && tier == 1) multiplier = multiplier.times(tmp.sacPow)
 
+  multiplier = multiplier.times(tmp.dimBoostPower.pow(tmp.extraDimBoost))
+
   multiplier = multiplier.times(player.postC3Reward)
   if (player.challenges.includes("postc8") && tier < 8 && tier > 1) multiplier = multiplier.times(mult18);
 

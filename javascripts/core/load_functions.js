@@ -93,6 +93,7 @@ function getPlayerData() {
         postC3Reward: E(1),
         eternityPoints: E(0),
         eternities: 0,
+        eternitiedBank: 0,
         thisEternity: 0,
         bestEternity: 9999999999,
         eternityUpgrades: [],

@@ -8,6 +8,9 @@ function quarksGain() {
     if (player.achievements.includes('r156')) x = x.mul((player.eternityPoints.add(1).l/500000+1)**0.75)
     if (player.achievements.includes('r162')) x = x.mul((player.money.add(1).l/1e9+1)**0.75)
 
+    if (hasTSTier(2,151)) x = x.mul(TSTierEffect(2,151)[1] ?? 1)
+    if (hasTSTier(2,152)) x = x.mul(TSTierEffect(2,152)[1] ?? 1)
+
     return x.floor()
 }
 
@@ -117,7 +120,7 @@ function updateQuantumHTML() {
     el('qu_buttons_div').style.display = unl ? "" : 'none'
 
     if (unl) {
-        el('quantumbtn').style.display = (player.quantum.chal.active > 0 ? player.money.l >= QUANTUM_CHALLENGES[player.quantum.chal.active].goal : player.quantum.reached) ? '' : 'none';
+        el('quantumbtn').style.display = (player.quantum.chal.active > 0 ? player.money.l >= getQCGoalLog(player.quantum.chal.active,player.quantum.chal.modified) : player.quantum.reached) ? '' : 'none';
 
         el('quantumbtn').innerHTML = player.quantum.chal.active > 0
         ? `We have enough energy to form the Challenge... I need to go Quantum.`
@@ -147,8 +150,10 @@ function updateQuantumHTML() {
     }
 }
 
-function quantumReset(force,auto) {
+function quantumReset(force,auto,challenge) {
     if (!force && tmp.quarksGain.lt(1)) return;
+
+    if (hasTSTier(2,152)) player.eternitiedBank = Math.round(player.eternitiedBank + player.eternities*getEternitiedBankMult())
 
     player.meta.firstDBought = false
 
@@ -176,6 +181,8 @@ function quantumReset(force,auto) {
     eternity(true,true,true)
     updateMultDecreases()
     setInitialDimensionPower()
+
+    if (challenge) player.dilation.dilatedTime = E(0)
 
     for (var i=1; i<9; i++) {
         document.getElementById("infauto"+i).textContent = "Auto: "+(player.infDimBuyers[i-1]?"ON":"OFF")
@@ -214,7 +221,7 @@ function quantumReset(force,auto) {
 function quantum() {
     let qca = player.quantum.chal.active
     let chal = qca>0
-    let qc_reached = chal && player.money.l >= QUANTUM_CHALLENGES[qca].goal
+    let qc_reached = chal && player.money.l >= getQCGoalLog(qca,player.quantum.chal.modified)
 
     if (qc_reached || tmp.quarksGain.gte(1)) {
         if (qca == 0 && player.options.quantumconfirm && !confirm(`Quantum will reset everything up to and including Eternity features will be reset, in exchange of quarks. Ready?`)) return;
@@ -235,6 +242,13 @@ function quantum() {
 
             player.quantum.chal.modified = false
         }
+
+        var total_md_bought = 0
+        for (var i = 1; i < 9; i++) {
+            total_md_bought += player.meta[i].bought
+        }
+        console.log("total_md_bought",total_md_bought)
+        if (total_md_bought == 1 && player.meta[8].bought == 1 && player.meta.reset <= 4) giveAchievement("r163",true)
 
         if (player.options.animations.quantum) dev.quantumAnimation(()=>quantumReset(chal))
         else quantumReset(chal)

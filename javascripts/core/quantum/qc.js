@@ -63,7 +63,7 @@ function startQuantumChallenge(i) {
     } else if (player.quantum.chal.unlocked >= i) {
         player.quantum.chal.active = i
 
-        quantumReset(true)
+        quantumReset(true,false,true)
     }
 }
 function startModifiedQC() {
@@ -72,7 +72,7 @@ function startModifiedQC() {
         player.quantum.chal.active = qm
         player.quantum.chal.modified = true
 
-        quantumReset(true)
+        quantumReset(true,false,true)
     }
 }
 function switchECModifier(ec) {
@@ -93,6 +93,14 @@ function inQC(i) { return player.quantum.chal.active == i }
 function inEC(x) { return player.currentEternityChall == 'eterc'+x || player.quantum.chal.modified && player.quantum.chal["qc"+player.quantum.chal.active].currentModifier.includes(x) }
 
 function QCCompleted(i) { return player.quantum.chal["qc"+i].completed }
+
+function getQCGoalLog(i,mod) {
+    let log = QUANTUM_CHALLENGES[i].goal
+
+    if (mod && player.achievements.includes("r164")) log *= 0.95
+
+    return log
+}
 
 function updateQuantumChallenges() {
     var qm = player.quantum.chal.choosedQCM
@@ -131,7 +139,7 @@ function updateQuantumChallenges() {
         }
 
         el('qcec_desc').innerHTML = `EC Modified Quantum Challenge ${qm || "?"}: Both Eternity Challenge(s) ${qm_and_more_ec ? player.quantum.chal["qc"+qm].currentModifier.sort((x,y)=>x-y).join(", ") : "?"} is(are) applied.`
-        el('qcec_goal').innerHTML = `Goal: ${qm > 0 ? shortenCosts(Decimal.pow(10,QUANTUM_CHALLENGES[qm].goal)) : "???"}`
+        el('qcec_goal').innerHTML = `Goal: ${qm > 0 ? shortenCosts(Decimal.pow(10,getQCGoalLog(qm,true))) : "???"}`
         el('qcec_reward').innerHTML = `Reward: ${qm > 0 ? QUANTUM_CHALLENGES[qm].em_reward ?? "Boost the reward." : "???"}`
     }
 }

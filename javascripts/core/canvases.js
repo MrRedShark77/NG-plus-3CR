@@ -193,7 +193,13 @@ function drawTSName(id,tier) {
         if (tier == 1) txt = id
         else {
             let mult = TS_TIERS[tier][id][3]??1
-            txt = tier+"-"+id+(mult>1?" (" + (mult>1e3?shorten(mult):mult) + "x)":mult<=0?" (reset)":"")
+            let row = Math.floor(id/10), col = id%10
+
+            txt = tier+"-"+id
+            if ((row==12||row==13) && col <= 3) txt += ['R','G','B'][col-1]
+            
+            if (mult>1) txt += " (" + (mult>1e3?shorten(mult):mult) + "x)"
+            else if (mult <= 0) txt += " (reset)"
         }
         ctx.strokeText(txt, x1 - start.width / 2, y1 - start.height / 2 - 1);
         ctx.fillText(txt, x1 - start.width / 2, y1 - start.height / 2 - 1);

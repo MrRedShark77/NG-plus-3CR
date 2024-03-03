@@ -54,7 +54,7 @@ function buyTickSpeed() {
 	if (costIncreaseActive(player.tickSpeedCost)) player.tickspeedMultiplier = player.tickspeedMultiplier.times(getTickSpeedCostMultiplierIncrease())
 	if (inNC(2) || player.currentChallenge == "postc1") player.chall2Pow = 0
 	player.tickspeed = player.tickspeed.times(tmp.tsReduce)
-	if (player.challenges.includes("postc3") || player.currentChallenge == "postc3" || isIC3Trapped()) player.postC3Reward = player.postC3Reward.times(getPostC3Mult())
+	if (player.challenges.includes("postc3") || player.currentChallenge == "postc3") player.postC3Reward = player.postC3Reward.times(getPostC3Mult())
 	player.postC8Mult = new Decimal(1)
 	player.why = player.why + 1
 	tmp.tickUpdate = true

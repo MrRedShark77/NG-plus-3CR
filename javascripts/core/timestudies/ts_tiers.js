@@ -14,7 +14,9 @@ const TS_TIERS_MAP = [
         [82,81,83],
         [91,92,93],
         [102,101,103],
-        [111],
+        [131,121,111,123,133],
+        [141,122,142],
+        [151,132,152],
     ],
 ]
 
@@ -171,7 +173,7 @@ const TS_TIERS = [
             4,
         ],
         92: [
-            "Unlock Quantum Challenges. (NYI)",
+            "Unlock Quantum Challenges.",
             [81],
             0,
             1,
@@ -196,7 +198,7 @@ const TS_TIERS = [
             1,
         ],
         103: [
-            "Unlock ECs Modification. (NYI)",
+            "Unlock ECs Modification.",
             [101],
             0,
             1,
@@ -207,7 +209,75 @@ const TS_TIERS = [
             [103],
             1e72,
             1,
-        ]
+        ],
+
+        121: [
+            "Remote galaxy scaling starts 1 galaxy later per 4 extra replicated galaxies.",
+            [111],
+            1e74,
+            1e4,
+            "red",
+        ],
+        131: [
+            "Time shards give extra dimension boosts at a reduced rate.",
+            [121],
+            1e76,
+            1,
+            "red",
+        ],
+        122: [
+            "Replicanti makes replicate interval increase slower.",
+            [111],
+            1e74,
+            1e4,
+            "green",
+        ],
+        132: [
+            `Weaken the softcap of the "Infinite Time" multiplier.`,
+            [122],
+            1e76,
+            1,
+            "green",
+        ],
+        123: [
+            "Meta-dimension boosts are 25% stronger.",
+            [111],
+            1e74,
+            1e4,
+            "blue",
+        ],
+        133: [
+            "Superscaled meta-dimensions start 100 later.",
+            [123],
+            1e76,
+            1,
+            "blue",
+        ],
+
+        141: [
+            "Tickspeed boosts DT production at greatly reduced rate.",
+            [111],
+            1e75,
+            10,
+        ],
+        142: [
+            "4th rebuyable dilation upgrade is stronger slightly.",
+            [111],
+            1e75,
+            10,
+        ],
+        151: [
+            "Gain more infinities based on your eternities, and they boost quarks.",
+            [141],
+            1e82,
+            10,
+        ],
+        152: [
+            "You permanently keep your banked Infinities, and bank 5% of your Eternities on Quantum. Quantum times boost them, and they boost quarks.",
+            [142],
+            1e82,
+            10,
+        ],
 
         /*
         11: [
@@ -336,6 +406,56 @@ const TS_TIERS_EFF = [
             },
             x=>shorten(x)+"x",
         ],
+        121: [
+            ()=>{
+                let x = Math.floor(tmp.extraRG/4)
+
+                return x
+            },
+            x=>"+"+getFullExpansion(x),
+        ],
+        122: [
+            ()=>{
+                let x = Math.pow(Math.log10(player.replicanti.amount.add(1).l+1),2.5)
+
+                return x
+            },
+            x=>"+"+getFullExpansion(Math.floor(x))+" OoMs",
+        ],
+        131: [
+            ()=>{
+                let x = player.timeShards.add(1).l**0.8 / Math.log(1.5)
+
+                x = softcap(x,!inQC(0) ? 1e5 : 1e6,0.5,0)
+
+                return Math.floor(x)
+            },
+            x=>"+"+getFullExpansion(x),
+        ],
+        141: [
+            ()=>{
+                let log = Math.sqrt(Math.max(3-player.tickspeed.log10(),0))/2e4
+
+                return Decimal.pow(10,log)
+            },
+            x=>shorten(x)+"x",
+        ],
+        151: [
+            ()=>{
+                let x = [getEternitied() + 1, Math.pow(getInfinitied() + 1, 0.15)]
+
+                return x
+            },
+            x=>getFullExpansion(x[0])+"x to infinities, "+shorten(x[1])+"x to quarks",
+        ],
+        152: [
+            ()=>{
+                let x = [player.quantum.times + 1, Math.pow(getEternitied() + 1, 0.4)]
+
+                return x
+            },
+            x=>getFullExpansion(x[0])+"x to eternities, "+shorten(x[1])+"x to quarks",
+        ],
     },
 ]
 
@@ -401,14 +521,19 @@ const TS_BUTTON_TYPE = {
     normal: ['timestudy','timestudylocked','timestudybought'],
     ec: ['eternitychallengestudy','eternitychallengestudylocked','eternitychallengestudybought'],
     dil: ['dilationupg','timestudylocked','dilationupgbought'],
+
+    red: ['timestudy redsplit','timestudylocked','timestudybought redsplit'],
+    green: ['timestudy greensplit','timestudylocked','timestudybought greensplit'],
+    blue: ['timestudy bluesplit','timestudylocked','timestudybought bluesplit'],
 }
 
 function getTSTierStyle(t,id) {
     let s = ""
     if (t == 2) {
         if (id >= 31 && id <= 36) s = `width: 140px; font-size: 0.57rem; margin: 7px 0px;`;
-        else if (id >= 51 && id <= 53 || id == 103) s = `font-size: 0.58rem;`
+        else if (id >= 51 && id <= 53 || [103,121,122,123].includes(id)) s = `font-size: 0.58rem;`
         else if (id == 81 || id == 92 || id == 101) s = `width: 200px; font-size: 0.58rem;`
+        else if (id == 151 || id == 152) s = `width: 250px; font-size: 0.51rem;`
     }
     return s
 }
@@ -423,7 +548,7 @@ const TS_UNLS = {
 
         if (hasTSTier(2,71)) s.push(81,82,83,91,92,93)
 
-        if (hasTSTier(2,92)) s.push(101,102,103,111)
+        if (hasTSTier(2,92)) s.push(101,102,103,111,121,122,123,131,132,133,141,142,151,152)
 
         return s
     },
@@ -508,7 +633,10 @@ function TSTierEffect(t,id,def=1) { return tmp.ts_tier.effect[t][id] || def }
 function canBuyTSTier(t,id) {
     if (!ts_unlocked[t].includes(id)) return false
 
-    if (t == 2 && id == 81 && !hasTSTier(2,63)) return false
+
+    if (t == 2 && id == 111 && !hasTSTier(2,101)) return false
+    else if (t == 2 && id == 101 && !hasTSTier(2,81)) return false
+    else if (t == 2 && id == 81 && !hasTSTier(2,63)) return false
     else if (t == 2 && id == 63 && !hasTSTier(2,61)) return false
     else if (t == 2 && id == 61 && !(ECTimesCompleted('eterc13') || ECTimesCompleted('eterc14') || ECTimesCompleted('eterc15'))) return false
     else if (!player.quantum.unlocked && t == 2 && id > 60) return false
@@ -536,7 +664,7 @@ function canBuyTSTier(t,id) {
     return bought && player.timestudy.theorem.gte(tmp.ts_tier.cost[t][id])
 }
 
-function buyTSTier(t,id) {
+function buyTSTier(t,id,update) {
     if (hasTSTier(t,id)) return
 
     if (canBuyTSTier(t,id)) {
@@ -563,6 +691,7 @@ function buyTSTier(t,id) {
         }
 
         updateTSTierCosts(t)
+        if (update) updateTSTiersTemp()
         drawStudyTree()
     }
 }
@@ -583,20 +712,44 @@ function updateTSTierCosts(t) {
     let datas = TS_TIERS[t]
     let pts = player.ts_tier[t-2]
     let mult = 1
+    let rgb_mult = [null,1,1,1]
     let cost_mult = {}
     for (let i = 0; i < pts.length; i++) {
         let id = pts[i]
-        let inc = datas[id][3]??1
 
-        cost_mult[id] = mult
-        mult = inc == 0 ? 1 : mult * inc
+        if (cost_mult[id]) continue
+
+        let inc = datas[id][3]??1
+        let row = Math.floor(id/10)
+        let col = id%10
+
+        if ((row == 12 || row == 13) && col <= 3) {
+            cost_mult[id] = mult * rgb_mult[col]
+            if (row == 12) cost_mult[id+10] = mult * rgb_mult[col]
+
+            rgb_mult[col%3+1] *= inc
+            rgb_mult[(col+1)%3+1] *= inc
+        } else {
+            cost_mult[id] = mult
+            mult = inc == 0 ? 1 : mult * inc
+        }
     }
     tmp.ts_tier.mult[t] = mult
     // console.log(cost_mult)
     for (let id in datas) {
         id = parseInt(id)
         let data = datas[id]
-        tmp.ts_tier.cost[t][id] = data[2] * (TS_NO_MULT_INCREASE[t].includes(id) ? 1 : cost_mult[id]||mult)
+        let row = Math.floor(id/10)
+        let col = id%10
+
+        let cost = data[2]
+
+        if (!TS_NO_MULT_INCREASE[t].includes(id)) {
+            cost *= cost_mult[id]||mult
+            if ((row == 12 || row == 13) && col <= 3 && !cost_mult[id]) cost = cost * rgb_mult[col]
+        }
+
+        tmp.ts_tier.cost[t][id] = cost
     }
 }
 

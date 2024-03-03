@@ -71,8 +71,11 @@ function getTachyonGainMultiplier() {
 function getTachyonGainExponent() {
     let x = 1.5 + player.dilation.rebuyables[4] * .2
 
-    if (x >= 5) x = (x/5)**.5*5
-    if (x >= 6) x = (x/6)**.5*6
+    let pow = .5
+    if (hasTSTier(2,142)) pow = .6
+
+    if (x >= 5) x = (x/5)**pow*5
+    if (x >= 6) x = (x/6)**pow*6
 
     return x
 }
@@ -95,6 +98,7 @@ function getDilatedTimeGain() {
     if (hasGluonUpg('br2')) dtGain = dtGain.mul(gluonUpgEff('br2'))
 
     if (hasTSTier(2,91)) dtGain = dtGain.mul(TSTierEffect(2,91))
+    if (hasTSTier(2,141)) dtGain = dtGain.mul(TSTierEffect(2,141))
 
     return dtGain;
 }

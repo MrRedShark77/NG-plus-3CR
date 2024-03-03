@@ -897,6 +897,48 @@ button {
     animation: studyGlowIn 7s infinite;
 }
 
+.timestudy.redsplit {
+    color: #ff1313;
+    border: 1px solid #ff1313;
+    animation: none;
+
+    &:hover {
+        background: darkred;
+    }
+}
+.timestudybought.redsplit {
+    border: 1px solid darkred;
+    background: #ff1313;
+}
+
+.timestudy.greensplit {
+    color: limegreen;
+    border: 1px solid limegreen;
+    animation: none;
+
+    &:hover {
+        background: darkgreen;
+    }
+}
+.timestudybought.greensplit {
+    border: 1px solid green;
+    background: lime;
+}
+
+.timestudy.bluesplit {
+    color: #0099ff;
+    border: 1px solid #09f;
+    animation: none;
+
+    &:hover {
+        background: darkblue;
+    }
+}
+.timestudybought.bluesplit {
+    border: 1px solid blue;
+    background: #1ea5ff;
+}
+
 .small {
     margin: 1px;
     width: 120px;

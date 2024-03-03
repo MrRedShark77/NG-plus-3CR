@@ -703,6 +703,13 @@ shortenND = function (money) {
 	return formatValue(player.options.notation, money, 2, player.aarexModifications.ngmX > 3 ? Math.min(Math.max(3 - money.exponent, 0), 3) : 0)
 }
 
+shortenPercent = function (x) {
+    return shorten(Decimal.mul(x,100))+"%"
+}
+
+shortenReduction = function (x) {
+    return shorten(Decimal.sub(1,x).mul(100))+"%"
+}
 
 function timeDisplay(time) {
   time = time / 10
