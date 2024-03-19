@@ -97,6 +97,8 @@ function QCCompleted(i) { return player.quantum.chal["qc"+i].completed }
 function getQCGoalLog(i,mod) {
     let log = QUANTUM_CHALLENGES[i].goal
 
+    if (mod && i!=6 && player.quantum.chal["qc"+i].currentModifier.includes(15) && player.achievements.includes("r171")) log **= 0.5
+
     if (mod && player.achievements.includes("r164")) log *= 0.95
 
     return log

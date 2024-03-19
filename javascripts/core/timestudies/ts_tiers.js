@@ -17,6 +17,8 @@ const TS_TIERS_MAP = [
         [131,121,111,123,133],
         [141,122,142],
         [151,132,152],
+        [161],
+        [172,171,173],
     ],
 ]
 
@@ -138,7 +140,7 @@ const TS_TIERS = [
         63: [
             "You can buy all Time Studies in all 3-way splits.",
             [62],
-            1e52,
+            1e48,
             2,
         ],
         71: [
@@ -277,6 +279,31 @@ const TS_TIERS = [
             [142],
             1e82,
             10,
+        ],
+        161: [
+            "Unlock Replicants.",
+            [151,152],
+            0,
+            1,
+            'dil',
+        ],
+        171: [
+            "Replicantis affect preons gain at a reduced rate.",
+            [161],
+            1e88,
+            1,
+        ],
+        172: [
+            "Normal replicant multiplier is equal to non-produced replicants.",
+            [171],
+            1e86,
+            100,
+        ],
+        173: [
+            "Dimension Supersonic scaling starts 240,000 later, and the cost increase is reduced by 3.",
+            [171],
+            1e86,
+            100,
         ],
 
         /*
@@ -456,15 +483,23 @@ const TS_TIERS_EFF = [
             },
             x=>getFullExpansion(x[0])+"x to eternities, "+shorten(x[1])+"x to quarks",
         ],
+        171: [
+            ()=>{
+                let x = Math.pow(player.replicanti.amount.add(1).l+1,0.5)
+
+                return x
+            },
+            x=>shorten(x)+"x",
+        ],
     },
 ]
 
 const TS_NO_MULT_INCREASE = {
-    2: [51,52,53,62],
+    2: [51,52,53,62,171],
 }
 
 const TS_DIL = {
-    2: [62,71,92,103],
+    2: [62,71,92,103,161],
 }
 
 const TS_REQS = {
@@ -514,6 +549,11 @@ const TS_REQS = {
             (x) => `Complete first ${x[0]} Quantum Challenges, and ${shortenCosts(x[1])} Quarks Worth (${shortenDimensions(tmp.quarksWorth)}/${shortenCosts(x[1])})`,
             (x) => tmp.qc_completions >= x[0] && tmp.quarksWorth.gte(x[1]),
         ],
+        161: [
+            () => [20,1e49],
+            (x) => `${x[0]} total EC modifiers, and ${shortenCosts(x[1])} Quarks Worth (${shortenDimensions(tmp.quarksWorth)}/${shortenCosts(x[1])})`,
+            (x) => tmp.qc_total_modifiers >= x[0] && tmp.quarksWorth.gte(x[1]),
+        ],
     },
 }
 
@@ -531,7 +571,7 @@ function getTSTierStyle(t,id) {
     let s = ""
     if (t == 2) {
         if (id >= 31 && id <= 36) s = `width: 140px; font-size: 0.57rem; margin: 7px 0px;`;
-        else if (id >= 51 && id <= 53 || [103,121,122,123].includes(id)) s = `font-size: 0.58rem;`
+        else if (id >= 51 && id <= 53 || [103,121,122,123,173].includes(id)) s = `font-size: 0.58rem;`
         else if (id == 81 || id == 92 || id == 101) s = `width: 200px; font-size: 0.58rem;`
         else if (id == 151 || id == 152) s = `width: 250px; font-size: 0.51rem;`
     }
@@ -548,7 +588,9 @@ const TS_UNLS = {
 
         if (hasTSTier(2,71)) s.push(81,82,83,91,92,93)
 
-        if (hasTSTier(2,92)) s.push(101,102,103,111,121,122,123,131,132,133,141,142,151,152)
+        if (hasTSTier(2,92)) s.push(101,102,103,111,121,122,123,131,132,133,141,142,151,152,161)
+
+        if (hasTSTier(2,161)) s.push(171,172,173)
 
         return s
     },
@@ -661,33 +703,30 @@ function canBuyTSTier(t,id) {
         break
     }
 
-    return bought && player.timestudy.theorem.gte(tmp.ts_tier.cost[t][id])
+    return bought && Decimal.gte(player.timestudy.theorem,tmp.ts_tier.cost[t][id])
 }
 
 function buyTSTier(t,id,update) {
     if (hasTSTier(t,id)) return
 
     if (canBuyTSTier(t,id)) {
-        player.timestudy.theorem = player.timestudy.theorem.sub(tmp.ts_tier.cost[t][id]).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,tmp.ts_tier.cost[t][id])
         player.ts_tier[t-2].push(id)
 
         if (t == 2 && id >= 51 && id <= 53) {
             unlockEChall(id - 38)
-        }
-
-        if (t == 2 && id == 62) {
+        } else if (t == 2 && id == 62) {
             showTab('quantum')
             showQuantumTab('gluons_tab')
-        }
-
-        if (t == 2 && id == 71) {
+        } else if (t == 2 && id == 71) {
             showTab('quantum')
             showQuantumTab('atoms_tab')
-        }
-
-        if (t == 2 && (id == 92 || id == 103)) {
+        } else if (t == 2 && (id == 92 || id == 103)) {
             showTab("challenges")
             showChallengesTab("quantumchallenges")
+        } else if (t == 2 && id == 161) {
+            showTab("quantum")
+            showQuantumTab('replicants_tab')
         }
 
         updateTSTierCosts(t)

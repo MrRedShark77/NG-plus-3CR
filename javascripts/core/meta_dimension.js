@@ -257,6 +257,7 @@ function getMDMult(i) {
 
     if (player.achievements.includes('r153')) x = x.mul(player.achPow)
     if (player.achievements.includes('r154')) x = x.mul(getR154Reward())
+    if (player.achievements.includes('r175')) x = x.mul(Decimal.pow(10,tmp.qc_total_modifiers))
 
     if (hasTSTier(2,93)) x = x.mul(TSTierEffect(2,93))
 
@@ -294,7 +295,7 @@ function updateMDTemp() {
         if (hasTSTier(2,83)) p += TSTierEffect(2,83,0)
     }
 
-    mtmp.pow = p
+    mtmp.pow = p * (tmp.preonsEff[6]??1)
 
     mtmp.mult_inc = [getMPMDPower(), getMDBPower()]
     mtmp.effect = getMDEffect()

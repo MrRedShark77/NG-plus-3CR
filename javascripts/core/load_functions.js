@@ -227,7 +227,7 @@ function getPlayerData() {
         },
         timestudy: {
             auto: false,
-            theorem: E(0),
+            theorem: 0,
             amcost: E("1e20000"),
             ipcost: E(1),
             epcost: E(1),
@@ -416,7 +416,7 @@ function onLoad() {
     if (player.version<13.004) {
         player.version = 13.004
         
-        player.timestudy.theorem = player.timestudy.theorem.round()
+        // player.timestudy.theorem = player.timestudy.theorem.round()
     }
 
     setTheme(player.options.theme);

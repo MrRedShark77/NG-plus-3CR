@@ -45,10 +45,10 @@ function DilUnlocked() { return player.dilation.studies.includes(1) }
 
 function unlockDilation() {
     if (player.dilation.studies.includes(1)) return
-    if (player.timestudy.theorem.lt(5000)) return
+    if (Decimal.lt(player.timestudy.theorem,5000)) return
     if (ECTimesCompleted("eterc12") !== 5) return
     if (ECTimesCompleted("eterc11") !== 5) return
-    player.timestudy.theorem = player.timestudy.theorem.sub(5000).round()
+    player.timestudy.theorem = nS(player.timestudy.theorem,5000)
     document.getElementById("dilationunlock").className = "dilationupgbought"
     updateTimeStudyButtons()
     showEternityTab("dilation")

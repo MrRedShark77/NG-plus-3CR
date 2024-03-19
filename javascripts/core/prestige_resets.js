@@ -353,7 +353,7 @@ function doQuantumResetStuff() {
 		mult: 0,
 	}
 	player.timestudy = player.achievements.includes("r168") ? player.timestudy : {
-		theorem: E(0),
+		theorem: 0,
 		amcost: new Decimal("1e20000"),
 		ipcost: new Decimal(1),
 		epcost: new Decimal(1),
@@ -384,7 +384,7 @@ function doQuantumResetStuff() {
 		tachyonParticles: new Decimal(0),
 		totalTachyonParticles: new Decimal(0),
 		dilatedTime: new Decimal(spm>19?1e100:0),
-		//bestTP: Decimal.max(player.dilation.bestTP || 0, player.dilation.tachyonParticles),
+		bestTP: Decimal.max(player.dilation.bestTP ?? 0, player.dilation.tachyonParticles),
 		nextThreshold: new Decimal(1000),
 		freeGalaxies: 0,
 		upgrades: spm>13?player.dilation.upgrades:spm>4?[5,6,7,8,9,10,11]:[],

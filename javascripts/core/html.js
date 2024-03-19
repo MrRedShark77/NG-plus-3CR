@@ -37,6 +37,7 @@ function updateHTMLOnLoad() {
 function updateEverySecond() {
     if (player.timestudy.auto) maxTheorems()
     if (player.dilation.auto_upg) for (let i = 0; i < 4; i++) buyDilationUpgrade([4,3,1,2][i],true)
+    if (hasTSTier(2,161)) for (let i = 1; i < PREONS_EFF.length; i++) if (!player.quantum.replicant.unlocked.includes(i) && (!PREONS_EFF[i][2] || PREONS_EFF[i][2]())) player.quantum.replicant.unlocked.push(i)
 }
 
 function updateAllTick(dt) {

@@ -93,12 +93,14 @@ function getSupersonicStart() {
   if (inQC(4)) return 0
 	let r = 1e5
   if (hasGluonUpg('rg3')) r += gluonUpgEff('rg3',0)
+  if (hasTSTier(2,173)) r+=24e4
 	return r
 }
 
 function getSupersonicMultIncrease() {
   if (inQC(4)) return 20
 	let r = 4
+  if (hasTSTier(2,173)) r = 1
 	return r
 }
 

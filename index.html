@@ -489,7 +489,7 @@
                 <canvas id="dilationCanvas"></canvas>
                 <div>
                     <p>You have <span id="tachyonParticleAmount" style="font-size:35px; color: black">0</span> tachyon particles.</p>
-                </div>
+                </div><div id="bestQTP"></div>
                 <button id="enabledilation" class="dilationbtn" onclick="startDilatedEternity()">Dilate time.</button>
                 <p>You have <span id="dilatedTimeAmount" style="font-size:35px; color: black">0</span> dilated time <span id="dilatedTimePerSecond" style="font-size:25px; color: black">0</span></p>
                 <p>Next free galaxy at <span id="galaxyThreshold" style="font-size:25px; color: black">1000</span> dilated time, gained total of <span id="dilatedGalaxies" style="font-size:25px; color: black">0</span></p>
@@ -1071,7 +1071,7 @@
             <br><div style="display: none;"><textarea id="exportOutput" style="color:black; width: 200px; height: 55px;"></textarea></div>
             <p>Hotkeys: 1-8 for buy 10 dimension, shift+1-8 for buy 1 dimension, T to buy max tickspeed, shift+T to buy one tickspeed, M for max all<br>S for sacrifice, D for dimension boost, G for galaxy, C for crunch, A for toggle autobuyers, R for replicanti galaxies, E for eternity.<br>You can hold shift while buying time studies to buy all up until that point, see each study's number, and save study trees.<br>Hotkeys do not work while holding control.</p>
             <p>
-                Antimatter Dimensions: NG+3 Classic Reloaded v1.3.2 - Made by MrRedShark77
+                Antimatter Dimensions: NG+3 Classic Reloaded v1.4 - Made by MrRedShark77
             </p>
             <div id="footercontainer">
                 <table id="footer">
@@ -1587,6 +1587,24 @@
                             <div id="Exploration of Endless Time" class="achievement achievementlocked" style="background-image: url(images/new/ap21.png)" ach-tooltip="???"><br></div>
                         </td><td>
                             <div id="Teach me how I get rid of you." class="achievement achievementlocked" style="background-image: url(images/new/ap22.png)" ach-tooltip="???"><br></div>
+                        </td>
+                    </tr><tr id="achRow17">
+                        <td>
+                            <div id="INSERT MODIFIER OR SELECT PAYMENT TYPE" class="achievement achievementlocked" style="background-image: url(images/new/ap26.png)" ach-tooltip="Complete QC6 with at least three EC modifiers combined. Reward: While choosing EC15 as modifier, the exponent of QC’s goal is reduced by ^0.5, except QC6."><br></div>
+                        </td><td>
+                            <div class="achievement achievementlocked" style="background-image: url(images/achhidden.png)" ach-tooltip="???"><br></div>
+                        </td><td>
+                            <div class="achievement achievementlocked" style="background-image: url(images/achhidden.png)" ach-tooltip="???"><br></div>
+                        </td><td>
+                            <div class="achievement achievementlocked" style="background-image: url(images/achhidden.png)" ach-tooltip="???"><br></div>
+                        </td><td>
+                            <div id="I become death, the destroyer of quantum." class="achievement achievementlocked" style="background-image: url(images/new/ap27.png)" ach-tooltip="Have at least 32 total EC modifiers. Reward: Meta-dimensions are increased by x10 per total EC modifier."><br></div>
+                        </td><td>
+                            <div class="achievement achievementlocked" style="background-image: url(images/achhidden.png)" ach-tooltip="???"><br></div>
+                        </td><td>
+                            <div id="Society if dilation doesn’t exist" class="achievement achievementlocked" style="background-image: url(images/new/ap28.png)" ach-tooltip="???"><br></div>
+                        </td><td>
+                            <div class="achievement achievementlocked" style="background-image: url(images/achhidden.png)" ach-tooltip="???"><br></div>
                         </td>
                     </tr>
 
@@ -2822,6 +2840,7 @@
                 <td><button class="secondarytabbtn" onclick="showQuantumTab('speedrummilestone')">Speedrun Milestones</button></td>
                 <td><button id="gluonstabbtn" class="secondarytabbtn" onclick="showQuantumTab('gluons_tab')">Gluons</button></td>
                 <td><button id="atomstabbtn" class="secondarytabbtn" onclick="showQuantumTab('atoms_tab')">Atoms</button></td>
+                <td><button id="replicantsstabbtn" class="secondarytabbtn" onclick="showQuantumTab('replicants_tab')">Replicants</button></td>
             </tr>
             <div id="quarks_tab" class="quantumtab">
                 <table class='qtable'><tr>
@@ -2979,6 +2998,46 @@
                         </td>
                     </tr>
                 </table>
+            </div><div id="replicants_tab" class="quantumtab">
+                <p>You have <b id="replicant-replicanti">???</b> replicantis.</p>
+                <table class="qtable">
+                    <tr>
+                        <td>
+                            <p>You have <span style="font-size: 35px;" id="replicant-amt">0</span> normal replicants.</p>
+                            <p>They are gathering <span style="font-size: 25px;" id="preons-gain">0</span> perons per second.</p>
+                        </td><td>
+                            <p>You have <span style="font-size: 35px;" id="preons-amt">0</span> preons.</p>
+                        </td><td>
+                            <p>You have <span style="font-size: 35px;" id="workers-amt">0</span> total worker replicants.</p>
+                            <p>They are producing <span style="font-size: 25px;" id="replicant-gain">0</span> normal replicants per second.</p>
+                        </td>
+                    </tr><tr>
+                        <td>
+                            <button class="gluonupgrade locked" id="replicant-buyable1" onclick="purchaseRB(0,true)">Get one or more replicants.<br>Require: ??? replicantis</button>
+                        </td><td></td><td>
+                            <button class="gluonupgrade locked" id="replicant-buyable2" onclick="purchaseRB(1)">Get one worker replicant.<br>Cost: ??? QK</button>
+                            <br><button class="storebtn" style="width: 240px;" onclick="purchaseRB(1,true)">Get maximum worker replicant</button>
+                        </td>
+                    </tr>
+                </table><table>
+                    <tr>
+                        <td>
+                            <button class="preon-div locked" id="preon-1-effect">Placeholder.</button>
+                        </td><td>
+                            <button class="preon-div locked" id="preon-3-effect">Placeholder.</button>
+                        </td><td>
+                            <button class="preon-div locked" id="preon-5-effect">Placeholder.</button>
+                        </td>
+                    </tr><tr>
+                        <td>
+                            <button class="preon-div locked" id="preon-2-effect">Placeholder.</button>
+                        </td><td>
+                            <button class="preon-div locked" id="preon-4-effect">Placeholder.</button>
+                        </td><td>
+                            <button class="preon-div locked" id="preon-6-effect">Placeholder.</button>
+                        </td>
+                    </tr>
+                </table>
             </div><div>
                 <table id="footer">
                     <tr>
@@ -3102,6 +3161,7 @@
 <script type="text/javascript" src="javascripts/core/quantum/quarks_gluons.js"></script>
 <script type="text/javascript" src="javascripts/core/quantum/atom.js"></script>
 <script type="text/javascript" src="javascripts/core/quantum/qc.js"></script>
+<script type="text/javascript" src="javascripts/core/quantum/replicants.js"></script>
 
 <script type="text/javascript" src="javascripts/core/html.js"></script>
 <script type="text/javascript" src="javascripts/core/prestige_resets.js"></script>

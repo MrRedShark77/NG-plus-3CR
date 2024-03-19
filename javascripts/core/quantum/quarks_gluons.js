@@ -74,18 +74,20 @@ function updateQuarksHTML() {
     var colors = ['r','g','b'], colors2 = ['red','green','blue']
     el('assort_amount').textContent = shortenDimensions(player.quantum.quarks.mul(getAssortPercentage()/100))
 
+	var bonus = [0,tmp.preonsEff[1]*100]
+
     for (let c in colors) {
         el(colors2[c]+'Quarks').textContent = shortenDimensions(player.quantum.color[colors[c]])
         el(colors2[c]+'Power').textContent = shortenMoney(player.quantum.charge[colors[c]])
         el(colors[c]+'PowerRate').textContent = tmp.chargeRate[colors[c]].gt(0)?"+"+shortenMoney(tmp.chargeRate[colors[c]])+"/s":''
 
-        el(colors2[c]+'Translation').textContent = shortenMoney(c==2?tmp.chargeEffect.b:(tmp.chargeEffect[colors[c]]-1)*100)
+        el(colors2[c]+'Translation').textContent = shortenMoney(c==2?tmp.chargeEffect.b:(tmp.chargeEffect[colors[c]]-1)*100)+(bonus[c]>0?"+"+shortenMoney(bonus[c]):"")
         //if (c == 2) el('blueTranslationMD').textContent = shortenMoney(tmp.chargeEffect.b[1])
     }
 }
 
 function getColorPowerProduction(color) {
-	let x = player.quantum.color[color]
+	let x = player.quantum.color[color].pow(4/3)
 
 	if (color == "r" && hasGluonUpg("rg6") || color == "g" && hasGluonUpg("gb6") || color == "b" && hasGluonUpg("br6")) x = x.pow(1.5)
 

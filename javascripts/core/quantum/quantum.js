@@ -66,6 +66,15 @@ function getQuantumSave() {
             choosedQCM: 0,
             modified: false,
         },
+        replicant: {
+            amount: E(0),
+            preons: E(0),
+            worker: E(0),
+
+            buyables: [0,0],
+
+            unlocked: [1,2],
+        },
     }
     for (let i = 1; i <= 8; i++) {
         s.chal["qc" + i] = {
@@ -85,6 +94,7 @@ function toggleQuantumConf() {
 
 function updateQuantumTemp() {
     tmp.quarksGain = quarksGain()
+    updateReplicantsTemp()
     updateAtomTemp()
 
     let colors = ['r','g','b']
@@ -137,10 +147,12 @@ function updateQuantumHTML() {
 
         el('gluonstabbtn').style.display = hasTSTier(2,62)?'':'none'
         el('atomstabbtn').style.display = hasTSTier(2,71)?'':'none'
+        el('replicantsstabbtn').style.display = hasTSTier(2,161)?'':'none'
 
         if (el('quarks_tab').style.display !== 'none') updateQuarksHTML()
         if (el('gluons_tab').style.display !== 'none') updateGluonsHTML()
         if (el('atoms_tab').style.display !== 'none') updateAtomsHTML()
+        if (el('replicants_tab').style.display !== 'none') updateReplicantsHTML()
     }
 
     if (el('challenges').style.display !== 'none') {
@@ -167,6 +179,9 @@ function quantumReset(force,auto,challenge) {
     player.quantum.electrons = 0
     player.quantum.neutrons = 0
 
+    player.quantum.replicant.amount = E(0)
+    player.quantum.replicant.buyables[0] = 0
+
     for (let i = player.quantum.speedruns; i < QU_SPEEDRUN.length; i++) {
         if (player.quantum.best < QU_SPEEDRUN[i][1]*10) player.quantum.speedruns++
         else break
@@ -183,6 +198,11 @@ function quantumReset(force,auto,challenge) {
     setInitialDimensionPower()
 
     if (challenge) player.dilation.dilatedTime = E(0)
+
+    if (player.dilation.bestTP && player.achievements.includes("r177")) {
+        player.dilation.totalTachyonParticles = player.dilation.bestTP.root(2)
+        player.dilation.tachyonParticles = player.dilation.bestTP.root(2)
+    }
 
     for (var i=1; i<9; i++) {
         document.getElementById("infauto"+i).textContent = "Auto: "+(player.infDimBuyers[i-1]?"ON":"OFF")
@@ -234,10 +254,15 @@ function quantum() {
             if (qca >= player.quantum.chal.unlocked) player.quantum.chal.unlocked = qca + 1
             player.quantum.chal.active = 0
 
-            if (player.quantum.chal.modified && data.currentModifier.length >= 2) giveAchievement("r164",true)
-            if (player.quantum.chal.modified && data.currentModifier.length >= data.modified.length) {
-                data.modified = []
-                for (let x of data.currentModifier) data.modified.push(x)
+            if (player.quantum.chal.modified) {
+                var l = data.currentModifier.length
+
+                if (l >= 2) giveAchievement("r164",true)
+                if (l >= 3 && qca == 6) giveAchievement("r171",true)
+                if (l >= data.modified.length) {
+                    data.modified = []
+                    for (let x of data.currentModifier) data.modified.push(x)
+                }
             }
 
             player.quantum.chal.modified = false
@@ -289,4 +314,7 @@ function quantumTick(dt) {
 
         if (player.quantum.autoNeutron) player.quantum.neutrons = Math.max(player.quantum.neutrons,Math.floor(neutrons))
     }
+
+    player.quantum.replicant.amount = player.quantum.replicant.amount.add(tmp.replicantsGain.mul(dt))
+    player.quantum.replicant.preons = player.quantum.replicant.preons.add(tmp.preonsGain.mul(dt))
 }

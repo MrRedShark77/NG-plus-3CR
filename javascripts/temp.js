@@ -94,6 +94,9 @@ function setupTemp() {
 
             total_mult: [1,1],
         },
+
+        preonsGain: E(0),
+        preonsEff: [],
     }
 
     for (let x = 1; x <= 8; x++) {
@@ -145,7 +148,7 @@ function getReplicantSpeed() {
     let inc = .2
     if (QCCompleted(2)) inc -= 0.02 * tmp.qc_modifiers[2]
 
-    let exp = 308
+    let exp = 308 + (tmp.preonsEff[2]??0)
 
     if (hasTSTier(2,122)) exp += TSTierEffect(2,122,0)
 
@@ -189,7 +192,7 @@ function getExtraReplicatedGalaxies() {
         x += a
     }
 
-    if (player.quantum.unlocked) x *= tmp.chargeEffect.g
+    if (player.quantum.unlocked) x *= tmp.chargeEffect.g + (tmp.preonsEff[1]??0)
     return Math.round(x)
 }
 
@@ -234,6 +237,8 @@ function calcNextTickUpg(offset=0) {
 
     if (t > s) t = (t/s)**2*s
 
+    t /= tmp.preonsEff[5]??1
+
     let base = player.timestudy.studies.includes(171) ? 1.25 : 1.33
 
     if (QCCompleted(7)) base **= 0.75
@@ -271,6 +276,7 @@ function updateTemp() {
     tmp.inf_pow = 7
     if (hasTSTier(2,34)) tmp.inf_pow += TSTierEffect(2,34,0)
     if (hasTSTier(2,82)) tmp.inf_pow += TSTierEffect(2,82,0)
+    tmp.inf_pow *= tmp.preonsEff[4]??1
 
     tmp.inf_eff = player.infinityPower.add(1).pow(tmp.inf_pow)
 
@@ -328,13 +334,14 @@ function updateMultDecreases() {
 }
 
 function getReplicantiInterval() {
-	let interval = E(player.replicanti.interval)
+	let interval = Decimal.pow(player.replicanti.interval,(tmp.preonsEff[3]??0)+1)
     if (player.timestudy.studies.includes(62)) interval = interval.div(3)
     if (player.timestudy.studies.includes(133) || player.replicanti.amount.gt(Number.MAX_VALUE)) interval = interval.mul(10)
     if (player.timestudy.studies.includes(213)) interval = interval.div(20)
     if (player.replicanti.amount.lt(Number.MAX_VALUE) && player.achievements.includes("r134")) interval = interval.div(2)
     if (player.dilation.upgrades.includes(8)) interval = interval.div(player.dilation.dilatedTime.max(1).pow(0.05))
     if (hasGluonUpg('gb1')) interval = interval.div(gluonUpgEff('gb1'))
+    // if (hasTSTier(2,173)) interval = interval.div(TSTierEffect(2,173))
 	return interval
 }
 

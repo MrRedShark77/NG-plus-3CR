@@ -1520,6 +1520,35 @@ button {
 	transition-duration: 0.2s
 }
 
+.preon-div {
+    width: 300px;
+    height: 80px;
+    background-color: #333;
+    color: #777;
+    text-shadow: #777 0px 0px 2px, #777 0px 0px 2px;
+    border: none;
+    border-radius: 4px;
+    animation: preon-glow 4s infinite;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.preon-div.locked {
+    background-color: #222;
+    color: #555;
+    text-shadow: #555 0px 0px 2px, #555 0px 0px 2px;
+    animation:none;
+}
+
+@keyframes preon-glow {
+    0%, 100% {
+        text-shadow: #777 0px 0px 2px, #777 0px 0px 2px;
+    }
+    50% {
+        text-shadow: #777 0px 0px 6px, #777 0px 0px 6px;
+    }
+}
+
 .glyph {
     display:flex;
     justify-content:center;

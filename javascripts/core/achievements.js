@@ -156,6 +156,15 @@ const allAchievements = {
   r167 : `Exploration of Endless Time`,
   r168 : `Teach me how I get rid of you.`,
 
+  r171 : `INSERT MODIFIER OR SELECT PAYMENT TYPE`,
+
+
+
+  r175 : `I become death, the destroyer of quantum.`,
+
+  r177 : `Society if dilation doesn’t exist`,
+
+
   s41 : "That dimension doesn’t exist",
   // s42,
   // s43,
@@ -378,6 +387,8 @@ function updateAchievementsTooltip() {
   el(allAchievements.r166).setAttribute('ach-tooltip',`Purchase at least ${getFullExpansion(1e10)} first infinity dimensions.`)
   el(allAchievements.r167).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e100'))} Tachyon Particles. Reward: Further reduce free galaxy threshold.`)
   el(allAchievements.r168).setAttribute('ach-tooltip',`Big Crunch for ${shortenCosts(E('1e50'))} IP without having TS Tiers 1-2 in QC6 with EC15 modified. Reward: Time Theorems no longer get reset by Quantum.`)
+
+  el(allAchievements.r177).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e2000000'))} replicanti without having Tachyon particles. Reward: Start with the same amount of Tachyon particles as the square root of your best TP on quantum.`)
 }
 
 // CHECKING
@@ -405,9 +416,12 @@ function checkAchievements() {
   && player.dilation.active && player.infinityPoints.e >= 200000 && player.quantum.protons == 0 && player.quantum.electrons == 0) giveAchievement('r158',true)
 
   if (player.money.gte(Decimal.pow(10,inQC(5) ? 1e6 : 1e12))) giveAchievement('r161',true)
-  if (player.timestudy.theorem.gte(1e60)) giveAchievement('r162',true)
+  if (Decimal.gte(player.timestudy.theorem,1e60)) giveAchievement('r162',true)
   if (player.infinityDimension1.baseAmount/10>=1e10) giveAchievement('r166',true)
   if (player.dilation.totalTachyonParticles.gte(1e100)) giveAchievement('r167',true)
+
+  if (tmp.qc_total_modifiers>=32) giveAchievement('r175',true)
+  if (player.replicanti.amount.l>=2e6 && player.dilation.totalTachyonParticles.lte(0)) giveAchievement('r177',true)
 
   // Secret
 

@@ -2891,7 +2891,7 @@ function canUnlockEC(idx, cost, study, study2) {
     study2 = (study2 !== undefined) ? study2 : 0;
     if (player.eternityChallUnlocked !== 0) return false
     if (!player.timestudy.studies.includes(study) && (player.study2 == 0 || !player.timestudy.studies.includes(study2))) return false
-    if (player.timestudy.theorem.lt(cost)) return false
+    if (Decimal.lt(player.timestudy.theorem,cost)) return false
     if (player.etercreq == idx && idx !== 11 && idx !== 12) return true
 
     switch(idx) {
@@ -3024,7 +3024,7 @@ function updateECUnlockButtons() {
 document.getElementById("ec1unl").onclick = function() {
     if (canUnlockEC(1, 30, 171)) {
         unlockEChall(1)
-        player.timestudy.theorem = player.timestudy.theorem.sub(30).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,30)
         updateTheoremButtons()
         updateTimeStudyButtons()
         drawStudyTree()
@@ -3034,7 +3034,7 @@ document.getElementById("ec1unl").onclick = function() {
 document.getElementById("ec2unl").onclick = function() {
     if (canUnlockEC(2, 35, 171)) {
         unlockEChall(2)
-        player.timestudy.theorem = player.timestudy.theorem.sub(35).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,35)
         updateTheoremButtons()
         updateTimeStudyButtons()
         drawStudyTree()
@@ -3044,7 +3044,7 @@ document.getElementById("ec2unl").onclick = function() {
 document.getElementById("ec3unl").onclick = function() {
     if (canUnlockEC(3, 40, 171)) {
         unlockEChall(3)
-        player.timestudy.theorem = player.timestudy.theorem.sub(40).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,40)
         updateTheoremButtons()
         updateTimeStudyButtons()
         drawStudyTree()
@@ -3054,7 +3054,7 @@ document.getElementById("ec3unl").onclick = function() {
 document.getElementById("ec4unl").onclick = function() {
     if (canUnlockEC(4, 70, 143)) {
         unlockEChall(4)
-        player.timestudy.theorem = player.timestudy.theorem.sub(70).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,70)
         updateTheoremButtons()
         updateTimeStudyButtons()
         drawStudyTree()
@@ -3064,7 +3064,7 @@ document.getElementById("ec4unl").onclick = function() {
 document.getElementById("ec5unl").onclick = function() {
     if (canUnlockEC(5, 130, 42)) {
         unlockEChall(5)
-        player.timestudy.theorem = player.timestudy.theorem.sub(130).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,35)
         updateTheoremButtons()
         updateTimeStudyButtons()
         drawStudyTree()
@@ -3074,7 +3074,7 @@ document.getElementById("ec5unl").onclick = function() {
 document.getElementById("ec6unl").onclick = function() {
     if (canUnlockEC(6, 85, 121)) {
         unlockEChall(6)
-        player.timestudy.theorem = player.timestudy.theorem.sub(185).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,185)
         updateTheoremButtons()
         updateTimeStudyButtons()
         drawStudyTree()
@@ -3084,7 +3084,7 @@ document.getElementById("ec6unl").onclick = function() {
 document.getElementById("ec7unl").onclick = function() {
     if (canUnlockEC(7, 115, 111)) {
         unlockEChall(7)
-        player.timestudy.theorem = player.timestudy.theorem.sub(115).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,115)
         updateTheoremButtons()
         updateTimeStudyButtons()
         drawStudyTree()
@@ -3094,7 +3094,7 @@ document.getElementById("ec7unl").onclick = function() {
 document.getElementById("ec8unl").onclick = function() {
     if (canUnlockEC(8, 115, 123)) {
         unlockEChall(8)
-        player.timestudy.theorem = player.timestudy.theorem.sub(115).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,115)
         updateTheoremButtons()
         updateTimeStudyButtons()
         drawStudyTree()
@@ -3104,7 +3104,7 @@ document.getElementById("ec8unl").onclick = function() {
 document.getElementById("ec9unl").onclick = function() {
     if (canUnlockEC(9, 415, 151)) {
         unlockEChall(9)
-        player.timestudy.theorem = player.timestudy.theorem.sub(415).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,415)
         updateTheoremButtons()
         updateTimeStudyButtons()
         drawStudyTree()
@@ -3114,7 +3114,7 @@ document.getElementById("ec9unl").onclick = function() {
 document.getElementById("ec10unl").onclick = function() {
     if (canUnlockEC(10, 550, 181)) {
         unlockEChall(10)
-        player.timestudy.theorem = player.timestudy.theorem.sub(550).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,550)
         updateTheoremButtons()
         updateTimeStudyButtons()
         drawStudyTree()
@@ -3124,7 +3124,7 @@ document.getElementById("ec10unl").onclick = function() {
 document.getElementById("ec11unl").onclick = function() {
     if (canUnlockEC(11, 1, 231, 232)) {
         unlockEChall(11)
-        player.timestudy.theorem = player.timestudy.theorem.sub(1).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,1)
         updateTheoremButtons()
         updateTimeStudyButtons()
         drawStudyTree()
@@ -3134,7 +3134,7 @@ document.getElementById("ec11unl").onclick = function() {
 document.getElementById("ec12unl").onclick = function() {
     if (canUnlockEC(12, 1, 233, 234)) {
         unlockEChall(12)
-        player.timestudy.theorem = player.timestudy.theorem.sub(1).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,1)
         updateTheoremButtons()
         updateTimeStudyButtons()
         drawStudyTree()
@@ -3316,6 +3316,7 @@ function updateTimeShards() {
 function updateDilation() {
     if (document.getElementById("dilation").style.display == "block" && document.getElementById("eternitystore").style.display == "block") {
         document.getElementById("tachyonParticleAmount").textContent = shortenMoney(player.dilation.tachyonParticles)
+        el("bestQTP").innerHTML = player.dilation.bestTP ? `<p>Your best-in-quantum tachyon particles is <b>${shortenMoney(player.dilation.bestTP)}</b></p>` : ""
         document.getElementById("dilatedTimeAmount").textContent = shortenMoney(player.dilation.dilatedTime)
         document.getElementById("dilatedTimePerSecond").textContent = "+" + shortenMoney(getDilatedTimeGain()) + "/s"
         document.getElementById("galaxyThreshold").textContent = shortenMoney(tmp.dil_nextThreshold)
@@ -4343,9 +4344,9 @@ function gameLoop(diff) {
     if (isNaN(player.totalmoney)) player.totalmoney = E(10)
     if (player.timestudy.studies.includes(181)) player.infinityPoints = player.infinityPoints.plus(gainedInfinityPoints().times(diff/1000))
     if (player.dilation.upgrades.includes(12)) {
-        player.timestudy.theorem = player.timestudy.theorem.add(getDU12Effect().mul(diff/10))
+        player.timestudy.theorem = nA(player.timestudy.theorem,getDU12Effect().mul(diff/10))
         if (document.getElementById("timestudies").style.display != "none" && document.getElementById("eternitystore").style.display != "none") {
-            if (player.timestudy.theorem.gte(99999)) document.getElementById("timetheorems").innerHTML = "You have <span style='display:inline' class=\"TheoremAmount\">"+shortenMoney(player.timestudy.theorem)+"</span> Time "+"Theorems."
+            if (Decimal.gte(player.timestudy.theorem,99999)) document.getElementById("timetheorems").innerHTML = "You have <span style='display:inline' class=\"TheoremAmount\">"+shortenMoney(player.timestudy.theorem)+"</span> Time "+"Theorems."
             else document.getElementById("timetheorems").innerHTML = "You have <span style='display:inline' class=\"TheoremAmount\">"+player.timestudy.theorem.toFixed(0)+"</span> Time "+ (player.timestudy.theorem == 1 ? "Theorem." : "Theorems.")
             updateTimeStudyButtons()
         }

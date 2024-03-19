@@ -4,7 +4,7 @@ function buyWithAntimatter() {
   if (player.money.gte(player.timestudy.amcost)) {
       player.money = player.money.minus(player.timestudy.amcost)
       player.timestudy.amcost = player.timestudy.amcost.times(E("1e20000"))
-      player.timestudy.theorem = player.timestudy.theorem.plus(1).round()
+      player.timestudy.theorem = nA(player.timestudy.theorem,1)
       updateTheoremButtons()
       updateTimeStudyButtons()
       return true
@@ -15,7 +15,7 @@ function buyWithIP() {
   if (player.infinityPoints.gte(player.timestudy.ipcost)) {
       player.infinityPoints = player.infinityPoints.minus(player.timestudy.ipcost)
       player.timestudy.ipcost = player.timestudy.ipcost.times(1e100)
-      player.timestudy.theorem = player.timestudy.theorem.plus(1).round()
+      player.timestudy.theorem = nA(player.timestudy.theorem,1)
       updateTheoremButtons()
       updateTimeStudyButtons()
       return true
@@ -30,7 +30,7 @@ function buyWithEP() {
   if (player.eternityPoints.gte(player.timestudy.epcost)) {
       player.eternityPoints = player.eternityPoints.minus(player.timestudy.epcost)
       player.timestudy.epcost = player.timestudy.epcost.times(2)
-      player.timestudy.theorem = player.timestudy.theorem.plus(1).round()
+      player.timestudy.theorem = nA(player.timestudy.theorem,1)
       updateTheoremButtons()
       updateTimeStudyButtons()
       updateEternityUpgrades()
@@ -45,21 +45,21 @@ function canBuyTTWithEP() {
 function maxTheorems() {
     var gainTT = Math.floor((player.money.log10() - player.timestudy.amcost.log10()) / 20000 + 1)
 	if (gainTT > 0) {
-		player.timestudy.theorem = player.timestudy.theorem.plus(gainTT).round()
+		player.timestudy.theorem = nA(player.timestudy.theorem,gainTT)
 		player.timestudy.amcost = player.timestudy.amcost.times(Decimal.pow("1e20000", gainTT))
 		player.money = player.money.sub(player.timestudy.amcost.div("1e20000"))
 	}
 	
 	gainTT = Math.floor((player.infinityPoints.log10() - player.timestudy.ipcost.log10()) / 100 + 1)
 	if (gainTT > 0) {
-		player.timestudy.theorem = player.timestudy.theorem.plus(gainTT).round()
+		player.timestudy.theorem = nA(player.timestudy.theorem,gainTT)
 		player.timestudy.ipcost = player.timestudy.ipcost.times(Decimal.pow("1e100", gainTT))
 		player.infinityPoints = player.infinityPoints.sub(player.timestudy.ipcost.div("1e100"))
 	}
 	
 	gainTT = Math.floor(player.eternityPoints.div(player.timestudy.epcost).plus(1).log2())
 	if (gainTT > 0 && canBuyTTWithEP()) {
-		player.timestudy.theorem = player.timestudy.theorem.plus(gainTT).round()
+		player.timestudy.theorem = nA(player.timestudy.theorem,gainTT)
 		player.eternityPoints = player.eternityPoints.sub(Decimal.pow(2, gainTT).sub(1).times(player.timestudy.epcost))
 		if (!break_infinity_js && isNaN(player.eternityPoints.logarithm)) player.eternityPoints = new Decimal(0)
 		player.timestudy.epcost = player.timestudy.epcost.times(Decimal.pow(2, gainTT))
@@ -82,9 +82,9 @@ function updateTheoremButtons() {
 
 function buyTimeStudy(name, cost, check) {
   if (shiftDown && check === undefined) studiesUntil(name);
-  else if (player.timestudy.theorem.gte(cost) && canBuyStudy(name) && !player.timestudy.studies.includes(name)) {
+  else if (Decimal.gte(player.timestudy.theorem,cost) && canBuyStudy(name) && !player.timestudy.studies.includes(name)) {
       player.timestudy.studies.push(name)
-      player.timestudy.theorem  = player.timestudy.theorem.sub(cost)
+      player.timestudy.theorem = nS(player.timestudy.theorem,cost)
       if (name == 71 || name == 81 || name == 91 || name == 101) {
           document.getElementById(""+name).className = "timestudybought normaldimstudy"
       } else if (name == 72 || name == 82 || name == 92 || name == 102) {
@@ -115,7 +115,7 @@ function buyTimeStudy(name, cost, check) {
 }
 
 function buyDilationStudy(name, cost) {
-    if (player.timestudy.theorem.gte(cost) && canBuyDilationStudy(name) && !player.dilation.studies.includes(name)) {
+    if (Decimal.gte(player.timestudy.theorem,cost) && canBuyDilationStudy(name) && !player.dilation.studies.includes(name)) {
         if (name === 1) {
             showEternityTab("dilation")
             document.getElementById("dilstudy1").innerHTML = "Unlock time dilation<span>Cost: 5000 Time Theorems"
@@ -130,7 +130,7 @@ function buyDilationStudy(name, cost) {
             },1000)
         }
         player.dilation.studies.push(name)
-        player.timestudy.theorem = player.timestudy.theorem.sub(cost).round()
+        player.timestudy.theorem = nS(player.timestudy.theorem,cost)
         document.getElementById("dilstudy"+name).className = "dilationupgbought"
         updateTheoremButtons()
         updateTimeStudyButtons()
@@ -310,58 +310,58 @@ function respecTimeStudies(tier=ts_tier_tab) {
     if (tier == 1) {
         for (var i=0; i<all.length; i++) {
             if (player.timestudy.studies.includes(all[i])) {
-                player.timestudy.theorem = player.timestudy.theorem.add(studyCosts[i]).round()
+                player.timestudy.theorem = nA(player.timestudy.theorem,studyCosts[i])
             }
         }
         if (player.timestudy.studies.length === 0) giveAchievement("You do know how these work, right?")
         player.timestudy.studies = []
         switch(player.eternityChallUnlocked) {
           case 1:
-          player.timestudy.theorem = player.timestudy.theorem.add(30).round()
+          player.timestudy.theorem = nA(player.timestudy.theorem,30)
           break;
     
           case 2:
-          player.timestudy.theorem = player.timestudy.theorem.add(35).round()
+          player.timestudy.theorem = nA(player.timestudy.theorem,35)
           break;
     
           case 3:
-          player.timestudy.theorem = player.timestudy.theorem.add(40).round()
+          player.timestudy.theorem = nA(player.timestudy.theorem,40)
           break;
     
           case 4:
-          player.timestudy.theorem = player.timestudy.theorem.add(70).round()
+          player.timestudy.theorem = nA(player.timestudy.theorem,70)
           break;
     
           case 5:
-          player.timestudy.theorem = player.timestudy.theorem.add(130).round()
+          player.timestudy.theorem = nA(player.timestudy.theorem,130)
           break;
     
           case 6:
-          player.timestudy.theorem = player.timestudy.theorem.add(85).round()
+          player.timestudy.theorem = nA(player.timestudy.theorem,85)
           break;
     
           case 7:
-          player.timestudy.theorem = player.timestudy.theorem.add(115).round()
+          player.timestudy.theorem = nA(player.timestudy.theorem,115)
           break;
     
           case 8:
-          player.timestudy.theorem = player.timestudy.theorem.add(115).round()
+          player.timestudy.theorem = nA(player.timestudy.theorem,115)
           break;
     
           case 9:
-          player.timestudy.theorem = player.timestudy.theorem.add(415).round()
+          player.timestudy.theorem = nA(player.timestudy.theorem,415)
           break;
     
           case 10:
-          player.timestudy.theorem = player.timestudy.theorem.add(550).round()
+          player.timestudy.theorem = nA(player.timestudy.theorem,550)
           break;
     
           case 11:
-          player.timestudy.theorem = player.timestudy.theorem.add(1).round()
+          player.timestudy.theorem = nA(player.timestudy.theorem,1)
           break;
     
           case 12:
-          player.timestudy.theorem = player.timestudy.theorem.add(1).round()
+          player.timestudy.theorem = nA(player.timestudy.theorem,1)
           break;
         }
 
@@ -373,7 +373,7 @@ function respecTimeStudies(tier=ts_tier_tab) {
 
         for (let i = 0; i < pts.length; i++) {
             if (TS_DIL[tier].includes(pts[i])) k.push(pts[i])
-            player.timestudy.theorem = player.timestudy.theorem.add(costs[pts[i]]).round()
+            player.timestudy.theorem = nA(player.timestudy.theorem,costs[pts[i]])
         }
 
         player.ts_tier[tier-2] = k
