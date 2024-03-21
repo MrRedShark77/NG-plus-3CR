@@ -869,12 +869,12 @@ button {
     border: 1px solid black;
     font-weight: bold;
     font-family: Typewriter;
-    width: 170px;
-    height: 80px;
+    width: 180px;
+    height: 100px;
     transition-duration: 0.2s;
     cursor: pointer;
     border-radius: 4px;
-    font-size: 0.65rem;
+    font-size: 10px;
     vertical-align: top;
     margin:7px;
     animation: eternityChallengeGlowIn 7s infinite;
@@ -886,12 +886,12 @@ button {
     border: 1px solid #b341e0;
     font-weight: bold;
     font-family: Typewriter;
-    width: 170px;
-    height: 80px;
     transition-duration: 0.2s;
     cursor: pointer;
     border-radius: 4px;
-    font-size: 0.65rem;
+    width: 180px;
+    height: 100px;
+    font-size: 10px;
     vertical-align: top;
     margin:7px;
     animation: studyGlowIn 7s infinite;
@@ -942,7 +942,7 @@ button {
 .small {
     margin: 1px;
     width: 120px;
-    font-size: 0.6rem;
+    font-size: 8.5px;
     padding: 3px;
 }
 
@@ -1058,11 +1058,11 @@ button {
     font-weight: bold;
     font-family: Typewriter;
     border: 1px solid #691fa5;
-    width: 170px;
-    height: 80px;
+    width: 180px;
+    height: 100px;
     transition-duration: 0.2s;
     border-radius: 4px;
-    font-size: 0.65rem;
+    font-size: 10px;
     vertical-align: top;
     margin:7px;
 }
@@ -1078,11 +1078,11 @@ button {
     font-weight: bold;
     font-family: Typewriter;
     border: 1px solid #691fa5;
-    width: 170px;
-    height: 80px;
+    width: 180px;
+    height: 100px;
     transition-duration: 0.2s;
     border-radius: 4px;
-    font-size: 0.65rem;
+    font-size: 10px;
     vertical-align: top;
     margin:7px;
 }
@@ -1093,11 +1093,11 @@ button {
     font-weight: bold;
     font-family: Typewriter;
     border: 1px solid black;
-    width: 170px;
-    height: 80px;
+    width: 180px;
+    height: 100px;
     transition-duration: 0.2s;
     border-radius: 4px;
-    font-size: 0.65rem;
+    font-size: 10px;
     vertical-align: top;
     margin:7px;
 }
@@ -1316,10 +1316,10 @@ button {
     color: #64DD17;
     background: black;
     font-weight: bold;
-    font-size: 0.65rem;
+    font-size: 10px;
     border: 1px solid #64DD17;
-    width: 170px;
-    height: 80px;
+    width: 180px;
+    height: 100px;
     transition-duration: 0.2s;
     cursor: pointer;
     border-radius: 4px;
@@ -1333,10 +1333,10 @@ button {
     color: #64ddad;
     background: black;
     font-weight: bold;
-    font-size: 0.65rem;
+    font-size: 10px;
     border: 1px solid #64ddad;
-    width: 170px;
-    height: 80px;
+    width: 180px;
+    height: 100px;
     transition-duration: 0.2s;
     cursor: pointer;
     border-radius: 4px;
@@ -1352,11 +1352,11 @@ button {
     font-weight: bold;
     font-family: Typewriter;
     border: 1px solid black;
-    width: 170px;
-    height: 80px;
+    width: 180px;
+    height: 100px;
     transition-duration: 0.2s;
     border-radius: 4px;
-    font-size: 0.65rem;
+    font-size: 10px;
     vertical-align: top;
     margin:7px;
 }
@@ -1367,11 +1367,11 @@ button {
     font-weight: bold;
     font-family: Typewriter;
     border: 1px solid #64ddad;
-    width: 170px;
-    height: 80px;
+    width: 180px;
+    height: 100px;
     transition-duration: 0.2s;
     border-radius: 4px;
-    font-size: 0.65rem;
+    font-size: 10px;
     vertical-align: top;
     margin:7px;
 }
@@ -1382,11 +1382,11 @@ button {
     font-weight: bold;
     font-family: Typewriter;
     border: 1px solid #3e8a0f;
-    width: 170px;
-    height: 80px;
+    width: 180px;
+    height: 100px;
     transition-duration: 0.2s;
     border-radius: 4px;
-    font-size: 0.65rem;
+    font-size: 10px;
     vertical-align: top;
     margin:7px;
 }

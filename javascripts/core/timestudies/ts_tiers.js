@@ -570,10 +570,9 @@ const TS_BUTTON_TYPE = {
 function getTSTierStyle(t,id) {
     let s = ""
     if (t == 2) {
-        if (id >= 31 && id <= 36) s = `width: 140px; font-size: 0.57rem; margin: 7px 0px;`;
-        else if (id >= 51 && id <= 53 || [103,121,122,123,173].includes(id)) s = `font-size: 0.58rem;`
-        else if (id == 81 || id == 92 || id == 101) s = `width: 200px; font-size: 0.58rem;`
-        else if (id == 151 || id == 152) s = `width: 250px; font-size: 0.51rem;`
+        if (id >= 31 && id <= 36) s = `width: 140px; font-size: 9px; margin: 7px 0px;`;
+        else if ([].includes(id)) s = `font-size: 9px;`
+        else if (id == 151 || id == 152) s = `width: 250px; font-size: 9px;`
     }
     return s
 }
