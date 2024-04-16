@@ -103,6 +103,7 @@ function DimensionPower(tier) {
   if (mult.lt(1)) mult = E(1)
 
   if (hasTSTier(2,22)) mult = mult.pow(1.025)
+  if (hasTSTier(2,183)) mult = mult.pow(TSTierEffect(2,183))
 
   mult = dilates(mult)
 

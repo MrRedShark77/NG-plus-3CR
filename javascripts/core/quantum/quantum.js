@@ -75,6 +75,8 @@ function getQuantumSave() {
 
             unlocked: [1,2],
         },
+        emperor: [],
+        ach173allowed: true,
     }
     for (let i = 1; i <= 8; i++) {
         s.chal["qc" + i] = {
@@ -83,6 +85,10 @@ function getQuantumSave() {
             modified: [],
             currentModifier: [],
         }
+    }
+    for (let i = 1; i <= 8; i++) s.emperor[i] = {
+        amount: E(0),
+        bought: 0,
     }
     return s
 }
@@ -94,6 +100,7 @@ function toggleQuantumConf() {
 
 function updateQuantumTemp() {
     tmp.quarksGain = quarksGain()
+    updateEDTemp()
     updateReplicantsTemp()
     updateAtomTemp()
 
@@ -168,6 +175,7 @@ function quantumReset(force,auto,challenge) {
     if (hasTSTier(2,152)) player.eternitiedBank = Math.round(player.eternitiedBank + player.eternities*getEternitiedBankMult())
 
     player.meta.firstDBought = false
+    player.quantum.ach173allowed = true
 
     player.quantum.unlocked = true
     player.quantum.quarks = player.quantum.quarks.add(tmp.quarksGain)
@@ -317,4 +325,10 @@ function quantumTick(dt) {
 
     player.quantum.replicant.amount = player.quantum.replicant.amount.add(tmp.replicantsGain.mul(dt))
     player.quantum.replicant.preons = player.quantum.replicant.preons.add(tmp.preonsGain.mul(dt))
+
+    if (hasTSTier(2,181)) {
+        for (let x = 7; x >= 1; x--) player.quantum.emperor[x].amount = player.quantum.emperor[x].amount.add(getEmperorDimensionProduction(x+1).mul(dt/10))
+    
+        player.quantum.replicant.worker = player.quantum.replicant.worker.add(getEmperorDimensionProduction(1).mul(dt))
+    }
 }

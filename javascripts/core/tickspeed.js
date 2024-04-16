@@ -10,18 +10,13 @@ function getTickSpeedMultiplier() {
       let baseMultiplier = 0.9;
       if (player.galaxies == 0) baseMultiplier = 0.89
       if (player.currentChallenge == "challenge6" || player.currentChallenge == "postc1") baseMultiplier = 0.93;
-      let perGalaxy = 0.02;
+      let perGalaxy = 0.02 * tmp.galaxyPower;
       let galaxies = tmp.totalGalaxies
       if (player.timestudy.studies.includes(133)) galaxies += player.replicanti.galaxies/2
       if (player.timestudy.studies.includes(132)) galaxies += player.replicanti.galaxies*0.4
       galaxies += Math.min(player.replicanti.galaxies, player.replicanti.gal) * Math.max(Math.pow(Math.log10(player.infinityPower.plus(1).log10()+1), 0.03 * ECTimesCompleted("eterc8"))-1, 0)
-      if (player.infinityUpgrades.includes("galaxyBoost")) perGalaxy *= 2;
-      if (player.infinityUpgrades.includes("postGalaxy")) perGalaxy *= 1.5;
-      if (player.challenges.includes("postc5")) perGalaxy *= 1.1;
-      if (player.achievements.includes("r86")) perGalaxy *= 1.01;
-      if (player.timestudy.studies.includes(212)) perGalaxy *= Math.min(Math.pow(player.timeShards.max(2).log2(), 0.005), 1.1)
 
-      return E(baseMultiplier-(player.galaxies*perGalaxy));
+      return E(baseMultiplier-(galaxies*perGalaxy));
   } else {
       let baseMultiplier = 0.8
       if (player.currentChallenge == "challenge6" || player.currentChallenge == "postc1") baseMultiplier = 0.83
@@ -31,17 +26,8 @@ function getTickSpeedMultiplier() {
       if (player.timestudy.studies.includes(133)) galaxies += player.replicanti.galaxies/2
       if (player.timestudy.studies.includes(132)) galaxies += player.replicanti.galaxies*0.4
       galaxies +=  Math.min(player.replicanti.galaxies, player.replicanti.gal) * Math.max(Math.pow(Math.log10(player.infinityPower.plus(1).log10()+1), 0.03 * ECTimesCompleted("eterc8"))-1, 0)
-      if (player.infinityUpgrades.includes("galaxyBoost")) galaxies *= 2;
-      if (player.infinityUpgrades.includes("postGalaxy")) galaxies *= 1.5;
-      if (player.challenges.includes("postc5")) galaxies *= 1.1;
-      if (player.achievements.includes("r86")) galaxies *= 1.01
-      if (player.timestudy.studies.includes(212)) galaxies *= Math.min(Math.pow(player.timeShards.max(2).log2(), 0.005), 1.1)
-      if (player.timestudy.studies.includes(232)) galaxies *= Math.pow(1+player.galaxies/1000, 0.2)
 
-	  if (hasTSTier(2,31)) galaxies *= TSTierEffect(2,31)
-	  if (player.quantum.unlocked) galaxies *= tmp.chargeEffect.r
-
-      return Decimal.pow(perGalaxy, galaxies).mul(baseMultiplier)
+      return Decimal.pow(perGalaxy, galaxies * tmp.galaxyPower).mul(baseMultiplier)
   }
 }
 
@@ -58,6 +44,7 @@ function buyTickSpeed() {
 	player.postC8Mult = new Decimal(1)
 	player.why = player.why + 1
 	tmp.tickUpdate = true
+	player.quantum.ach173allowed = false
 	return true
 }
 
@@ -69,14 +56,7 @@ document.getElementById("tickSpeed").onclick = function () {
 
 function getTickSpeedCostMultiplierIncrease() {
 	if (inQC(7)) return Number.MAX_VALUE
-	let ret = player.tickSpeedMultDecrease;
-	let exp = .9 - .02 * ECTimesCompleted("eterc11")
-	if (player.currentChallenge === 'postcngmm_2') ret = Math.pow(ret, .5)
-	else if (player.challenges.includes('postcngmm_2')) {
-		var galeff = (1 + Math.pow(player.galaxies, 0.7) / 10)
-		if (player.aarexModifications.ngmX >= 4) galeff = Math.pow(galeff, .2)
-		ret = Math.pow(ret, exp / galeff)
-	}
+	let ret = tmp.tickMultDecrease;
 	return ret
 }
 
@@ -115,14 +95,15 @@ function buyMaxPostInfTickSpeed(mult) {
 	player.tickspeedMultiplier = player.tickspeedMultiplier.times(Decimal.pow(mi, buying-1))
   	player.tickspeed = player.tickspeed.mul(Decimal.pow(mult,buying))
 	if (player.money.gte(player.tickSpeedCost)) player.money = player.money.minus(player.tickSpeedCost)
-	else if (player.tickSpeedMultDecrease > 2) player.money = new Decimal(0)
+	else if (tmp.tickMultDecrease > 2) player.money = new Decimal(0)
 	player.tickSpeedCost = player.tickSpeedCost.times(player.tickspeedMultiplier)
 	player.tickspeedMultiplier = player.tickspeedMultiplier.times(mi)
 	player.postC8Mult = new Decimal(1)
+	player.quantum.ach173allowed = false
 }
 
 function cannotUsePostInfTickSpeed() {
-	return ((inNC(5) || player.currentChallenge == "postc5")) || !costIncreaseActive(player.tickSpeedCost) || (player.tickSpeedMultDecrease > 2 && player.tickspeedMultiplier.lt(Number.MAX_SAFE_INTEGER));
+	return ((inNC(5) || player.currentChallenge == "postc5")) || !costIncreaseActive(player.tickSpeedCost) || (tmp.tickMultDecrease > 2 && player.tickspeedMultiplier.lt(Number.MAX_SAFE_INTEGER));
 }
 
 function buyMaxTickSpeed() {
@@ -146,7 +127,7 @@ function buyMaxTickSpeed() {
 	var mult = tmp.tsReduce
 	if (inNC(2) || player.currentChallenge == "postc1" || player.pSac !== undefined) player.chall2Pow = 0
 	if (cannotUsePostInfTickSpeed()) {
-		while (player.money.gt(player.tickSpeedCost) && (player.tickSpeedCost.lt(Number.MAX_VALUE) || player.tickSpeedMultDecrease > 2 || (player.currentChallenge == "postc5"))) {
+		while (player.money.gt(player.tickSpeedCost) && (player.tickSpeedCost.lt(Number.MAX_VALUE) || tmp.tickMultDecrease > 2 || (player.currentChallenge == "postc5"))) {
 			player.money = player.money.minus(player.tickSpeedCost);
 			if (!inNC(5) && player.currentChallenge != "postc5") player.tickSpeedCost = player.tickSpeedCost.times(player.tickspeedMultiplier);
 			else multiplySameCosts(player.tickSpeedCost)
@@ -162,6 +143,7 @@ function buyMaxTickSpeed() {
 		buyMaxPostInfTickSpeed(mult);
 	}
 
+	player.quantum.ach173allowed = false
 	tmp.tickUpdate = true
 
 	updateTickSpeed()

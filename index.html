@@ -573,6 +573,7 @@
                     <td id="idtabbtn"><button class="secondarytabbtn" onclick="showDimTab('infinitydimensions')">Infinity Dimensions</button></td>
                     <td id="tdtabbtn"><button class="secondarytabbtn" onclick="showDimTab('timedimensions')">Time Dimensions</button></td>
                     <td id="metatabbtn"><button class="secondarytabbtn" onclick="showDimTab('metadimensions')">Meta-Dimensions</button></td>
+                    <td id="emperortabbtn"><button class="secondarytabbtn" onclick="showDimTab('emperordimensions')">Emperor Dimensions</button></td>
                     <td id="prodtabbtn"><button class="secondarytabbtn" onclick="showDimTab('production')">Production</button></td>
                 </tr>
             </table>
@@ -581,6 +582,7 @@
                 <input id="confirmation" type="checkbox" style="width:20px; height: 18px; display: none" ach-tooltip="No confirmation when doing Dimensional Sacrifice" onchange="sacrificeConf()">
                 <button id="sacrifice" class="storebtn" style="font-size:12px; width: 320px; display: none" ach-tooltip="">Dimensional Sacrifice</button>
                 <button id="maxall" class="storebtn" style="font-size: 12px">Max all (M)</Button>
+                <p id="ND-stats">Test</p>
                 <span id="chall2Pow"></span>
                 <span id="chall3Pow"></span>
                 <table class="table" >
@@ -1010,7 +1012,16 @@
                     </tr>
                 </table>
             </div>
-            <div id="production" class="dimtab">
+            <div id="emperordimensions" class="dimtab">
+                <p>You have <span id="gen-workers" style="font-size:35px; color: black">0</span> generated worker replicants.</p>
+                <div id="gen-workers-gain">
+                    You are generating 0.0 worker replicants per second.
+                </div><table class="table">
+                    <tbody id="emperor_parent">
+                        
+                    </tbody>
+                </table>
+            </div><div id="production" class="dimtab">
                 <b>seconds of history:</b>
                 <input type="number" value="10" onchange="updateChartValues()" id="chartDurationInput"></input>
                 <b>update rate (in ms):</b>
@@ -1071,7 +1082,7 @@
             <br><div style="display: none;"><textarea id="exportOutput" style="color:black; width: 200px; height: 55px;"></textarea></div>
             <p>Hotkeys: 1-8 for buy 10 dimension, shift+1-8 for buy 1 dimension, T to buy max tickspeed, shift+T to buy one tickspeed, M for max all<br>S for sacrifice, D for dimension boost, G for galaxy, C for crunch, A for toggle autobuyers, R for replicanti galaxies, E for eternity.<br>You can hold shift while buying time studies to buy all up until that point, see each study's number, and save study trees.<br>Hotkeys do not work while holding control.</p>
             <p>
-                Antimatter Dimensions: NG+3 Classic Reloaded v1.4 - Made by MrRedShark77
+                Antimatter Dimensions: NG+3 Classic Reloaded v1.5 - Made by MrRedShark77
             </p>
             <div id="footercontainer">
                 <table id="footer">
@@ -1276,7 +1287,7 @@
                     </tr>
                     <tr id="achRow4">
                         <td>
-                            <div id="Spreading Cancer" class="achievement achievementlocked" style="background-image: url(images/46.png)" ach-tooltip="Buy ten Galaxies in total while using cancer notation."><br></div>
+                            <div id="Rock, Paper, or Scissors?" class="achievement achievementlocked" style="background-image: url(images/46.png)" ach-tooltip="Complete a fourth Normal Challenge."><br></div>
                         </td>
                         <td>
                             <div id="Supersanic" class="achievement achievementlocked" style="background-image: url(images/26.png)" ach-tooltip="Have antimatter/sec exceed your current antimatter above 1 Tg (1e63)."><br></div>
@@ -1323,7 +1334,7 @@
                             <div id="Gift from the Gods" class="achievement achievementlocked" style="background-image: url(images/39.png)" ach-tooltip="Complete the Eighth Dimension Autobuyer challenge in 3 minutes or less. Reward: Dimensional sacrifices are a lot stronger."><br></div>
                         </td>
                         <td>
-                            <div id="Is this hell?" class="achievement achievementlocked" style="background-image: url(images/40.png)" ach-tooltip="Complete the Tickspeed Autobuyer challenge in 3 minutes or less. Reward: Boost per 10 dimensions +1%."><br></div>
+                            <div id="I’m telling god" class="achievement achievementlocked" style="background-image: url(images/40.png)" ach-tooltip="Complete the Tickspeed Autobuyer challenge in 3 minutes or less. Reward: Boost per 10 dimensions +1%."><br></div>
                         </td>
                     </tr>
                     <tr id="achRow6">
@@ -1363,7 +1374,7 @@
                                 <div id="This achievement doesn't exist" class="achievement achievementlocked" style="background-image: url(images/43.png)" ach-tooltip="Get 9.9999e9999 antimatter. Reward: Dimensions are more powerful the more unspent antimatter you have."><br></div>
                             </td>
                             <td>
-                                <div id="End me" class="achievement achievementlocked" style="background-image: url(images/44.png)" ach-tooltip="Get the sum of all best challenge times under 5 seconds. Reward: All dimensions 40% stronger, but only in challenges."><br></div>
+                                <div id="DA ROOK!!!" class="achievement achievementlocked" style="background-image: url(images/44.png)" ach-tooltip="Get the sum of all best challenge times under 5 seconds. Reward: All dimensions 40% stronger, but only in challenges."><br></div>
                             </td>
                             <td>
                                 <div id="NEW DIMENSIONS???" class="achievement achievementlocked" style="background-image: url(images/45.png)" ach-tooltip="Unlock the 4th Infinity Dimension. Reward: Your achievement bonus affects Infinity Dimensions."><br></div>
@@ -1380,7 +1391,7 @@
                     </tr>
                     <tr id="achRow8">
                             <td>
-                                <div id="Hevipelle did nothing wrong" class="achievement achievementlocked" style="background-image: url(images/49.png)" ach-tooltip="Beat Infinity Challenge 5 in 10 seconds or less."><br></div>
+                                <div id="Two choices are same..." class="achievement achievementlocked" style="background-image: url(images/49.png)" ach-tooltip="Beat Infinity Challenge 5 in 10 seconds or less."><br></div>
                             </td>
                             <td>
                                 <div id="Anti-antichallenged" class="achievement achievementlocked" style="background-image: url(images/50.png)" ach-tooltip="Complete 8 Infinity Challenges."><br></div>
@@ -1424,7 +1435,7 @@
                                 <div id="Time is relative" class="achievement achievementlocked" style="background-image: url(images/62.png)" ach-tooltip="Go Eternal."><br></div>
                             </td>
                             <td>
-                                <div id="Yes. This is hell." class="achievement achievementlocked" style="background-image: url(images/63.png)" ach-tooltip="Get the sum of Infinity Challenge times under 6.66 seconds."><br></div>
+                                <div id="My dog stepped on a bee" class="achievement achievementlocked" style="background-image: url(images/63.png)" ach-tooltip="Get the sum of Infinity Challenge times under 6.66 seconds."><br></div>
                             </td>
                             <td>
                                 <div id="0 degrees from infinity" class="achievement achievementlocked" style="background-image: url(images/64.png)" ach-tooltip="Unlock the 8th Infinity Dimension."><br></div>
@@ -1590,21 +1601,21 @@
                         </td>
                     </tr><tr id="achRow17">
                         <td>
-                            <div id="INSERT MODIFIER OR SELECT PAYMENT TYPE" class="achievement achievementlocked" style="background-image: url(images/new/ap26.png)" ach-tooltip="Complete QC6 with at least three EC modifiers combined. Reward: While choosing EC15 as modifier, the exponent of QC’s goal is reduced by ^0.5, except QC6."><br></div>
+                            <div id="ach-r171" class="achievement achievementlocked" style="background-image: url(images/new/ap26.png)" ach-tooltip="Complete QC6 with at least three EC modifiers combined. Reward: While choosing EC15 as modifier, the exponent of QC’s goal is reduced by ^0.5, except QC6."><br></div>
                         </td><td>
-                            <div class="achievement achievementlocked" style="background-image: url(images/achhidden.png)" ach-tooltip="???"><br></div>
+                            <div id="ach-r172" class="achievement achievementlocked" style="background-image: url(images/new/ap33.png)" ach-tooltip="???"><br></div>
                         </td><td>
-                            <div class="achievement achievementlocked" style="background-image: url(images/achhidden.png)" ach-tooltip="???"><br></div>
+                            <div id="ach-r173" class="achievement achievementlocked" style="background-image: url(images/new/ap29.png)" ach-tooltip="???"><br></div>
                         </td><td>
-                            <div class="achievement achievementlocked" style="background-image: url(images/achhidden.png)" ach-tooltip="???"><br></div>
+                            <div id="ach-r174" class="achievement achievementlocked" style="background-image: url(images/new/ap32.png)" ach-tooltip="Purchase a fourth Emperor Dimension."><br></div>
                         </td><td>
-                            <div id="I become death, the destroyer of quantum." class="achievement achievementlocked" style="background-image: url(images/new/ap27.png)" ach-tooltip="Have at least 32 total EC modifiers. Reward: Meta-dimensions are increased by x10 per total EC modifier."><br></div>
+                            <div id="ach-r175" class="achievement achievementlocked" style="background-image: url(images/new/ap27.png)" ach-tooltip="Have at least 32 total EC modifiers. Reward: Meta-dimensions are increased by x10 per total EC modifier."><br></div>
                         </td><td>
-                            <div class="achievement achievementlocked" style="background-image: url(images/achhidden.png)" ach-tooltip="???"><br></div>
+                            <div id="ach-r176" class="achievement achievementlocked" style="background-image: url(images/new/ap30.png)" ach-tooltip="???"><br></div>
                         </td><td>
-                            <div id="Society if dilation doesn’t exist" class="achievement achievementlocked" style="background-image: url(images/new/ap28.png)" ach-tooltip="???"><br></div>
+                            <div id="ach-r177" class="achievement achievementlocked" style="background-image: url(images/new/ap28.png)" ach-tooltip="???"><br></div>
                         </td><td>
-                            <div class="achievement achievementlocked" style="background-image: url(images/achhidden.png)" ach-tooltip="???"><br></div>
+                            <div id="ach-r178" class="achievement achievementlocked" style="background-image: url(images/new/ap31.png)" ach-tooltip="Big Crunch in QC6 with all ECs modified."><br></div>
                         </td>
                     </tr>
 
@@ -2951,6 +2962,14 @@
                         <td><button id='brupg5' class="gluonupgrade br locked" onclick='buyGluonUpg("br",5)'>???</button></td>
                         <td><button id='brupg6' class="gluonupgrade br locked" onclick='buyGluonUpg("br",6)'>???</button></td>
                     </tr>
+                    <tr>
+                        <td><button id='rgupg7' class="gluonupgrade rg locked" onclick='buyGluonUpg("rg",7)'>???</button></td>
+                        <td><button id='rgupg8' class="gluonupgrade rg locked" onclick='buyGluonUpg("rg",8)'>???</button></td>
+                        <td><button id='gbupg7' class="gluonupgrade gb locked" onclick='buyGluonUpg("gb",7)'>???</button></td>
+                        <td><button id='gbupg8' class="gluonupgrade gb locked" onclick='buyGluonUpg("gb",8)'>???</button></td>
+                        <td><button id='brupg7' class="gluonupgrade br locked" onclick='buyGluonUpg("br",7)'>???</button></td>
+                        <td><button id='brupg8' class="gluonupgrade br locked" onclick='buyGluonUpg("br",8)'>???</button></td>
+                    </tr>
                 </table>
             </div><div id="atoms_tab" class="quantumtab">
                 <table id="atom_table">
@@ -3027,6 +3046,8 @@
                             <button class="preon-div locked" id="preon-3-effect">Placeholder.</button>
                         </td><td>
                             <button class="preon-div locked" id="preon-5-effect">Placeholder.</button>
+                        </td><td>
+                            <button class="preon-div locked" id="preon-7-effect">Placeholder.</button>
                         </td>
                     </tr><tr>
                         <td>
@@ -3035,6 +3056,8 @@
                             <button class="preon-div locked" id="preon-4-effect">Placeholder.</button>
                         </td><td>
                             <button class="preon-div locked" id="preon-6-effect">Placeholder.</button>
+                        </td><td>
+                            <button class="preon-div locked" id="preon-8-effect">Placeholder.</button>
                         </td>
                     </tr>
                 </table>
@@ -3162,6 +3185,7 @@
 <script type="text/javascript" src="javascripts/core/quantum/atom.js"></script>
 <script type="text/javascript" src="javascripts/core/quantum/qc.js"></script>
 <script type="text/javascript" src="javascripts/core/quantum/replicants.js"></script>
+<script type="text/javascript" src="javascripts/core/quantum/emperor_dimension.js"></script>
 
 <script type="text/javascript" src="javascripts/core/html.js"></script>
 <script type="text/javascript" src="javascripts/core/prestige_resets.js"></script>

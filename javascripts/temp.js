@@ -12,6 +12,7 @@ function setupTemp() {
         AM_deflation: 1,
 
         ndPower: E(2),
+        galaxyPower: 1,
 
         extraDimBoost: 0,
         dimBoostPower: E(1),
@@ -60,6 +61,7 @@ function setupTemp() {
         },
 
         remoteGalaxyStart: 800,
+        remoteGalaxySpeed: 1,
 
         infMultUpg: E(1),
 
@@ -97,11 +99,18 @@ function setupTemp() {
 
         preonsGain: E(0),
         preonsEff: [],
+
+        dimMultDecrease: 10,
+        tickMultDecrease: 10,
+
+        emperor_mult: [null]
     }
 
     for (let x = 1; x <= 8; x++) {
         s.meta.cost[x] = E(STARTING_COST[x])
         s.meta.mult[x] = E(1)
+
+        s.emperor_mult[x] = E(1)
     }
 
     for (let t = 2; t < TS_TIERS.length; t++) {
@@ -165,6 +174,23 @@ function getQuarksWorth() {
     return x
 }
 
+function getGalaxyPower() {
+    var g = 1
+
+    if (player.infinityUpgrades.includes("galaxyBoost")) g *= 2;
+    if (player.infinityUpgrades.includes("postGalaxy")) g *= 1.5;
+    if (player.challenges.includes("postc5")) g *= 1.1;
+    if (player.achievements.includes("r86")) g *= 1.01
+    if (player.timestudy.studies.includes(212)) g *= Math.min(Math.pow(player.timeShards.max(2).log2(), 0.005), 1.1)
+    if (player.timestudy.studies.includes(232)) g *= Math.pow(1+player.galaxies/1000, 0.2)
+
+	if (hasTSTier(2,31)) g *= TSTierEffect(2,31)
+	if (player.quantum.unlocked) g *= tmp.chargeEffect.r
+    if (player.galaxies <= 1 && player.achievements.includes("r173")) g *= 1.5
+
+    return g
+}
+
 function getRemoteGalaxyStarting() {
     let x = 800
 
@@ -173,6 +199,16 @@ function getRemoteGalaxyStarting() {
     if (hasTSTier(2,36)) x += TSTierEffect(2,36,0)
 
     if (hasTSTier(2,121)) x += TSTierEffect(2,121,0)
+
+    return x
+}
+
+function getRemoteGalaxySpeed() {
+    let x = 1
+
+    if (hasGluonUpg('rg7')) x *= 0.85
+    if (hasGluonUpg('gb7')) x *= gluonUpgEff('gb7')
+    if (hasGluonUpg('br7')) x *= gluonUpgEff('br7')
 
     return x
 }
@@ -254,6 +290,7 @@ function updateTemp() {
     updateReplicantiTemp()
 
     tmp.nextTickUpg = calcNextTickUpg()
+    tmp.galaxyPower = getGalaxyPower()
     
     tmp.repEff = getReplicantEffect()
     tmp.sacPow = calcTotalSacrificeBoost()
@@ -281,6 +318,7 @@ function updateTemp() {
     tmp.inf_eff = player.infinityPower.add(1).pow(tmp.inf_pow)
 
     tmp.remoteGalaxyStart = getRemoteGalaxyStarting()
+    tmp.remoteGalaxySpeed = getRemoteGalaxySpeed()
 
     tmp.dimBoostReq = getShiftRequirement(0)
 
@@ -304,10 +342,21 @@ function updateTemp() {
     tmp.EP_DIL_upg = eterUpgDilEff()
 
     tmp.dil_nextThresholdMult = getDilNextThresholdMult()
-    tmp.dil_nextThreshold = Decimal.pow(tmp.dil_nextThresholdMult,player.dilation.freeGalaxies/(player.dilation.upgrades.includes(5)?2:1)).mul(1e3)
+    tmp.dil_nextThreshold = getNextDilThreshold()
+
+    tmp.dimMultDecrease = Math.pow(player.dimensionMultDecrease, tmp.preonsEff[7])
+    tmp.tickMultDecrease = Math.pow(player.tickSpeedMultDecrease, tmp.preonsEff[8])
 
     tmp.tsReduce = getTickSpeedMultiplier()
     tmp.AM_gain = antimatterGain()
+}
+
+function getNextDilThreshold(g=player.dilation.freeGalaxies) {
+    if (player.dilation.upgrades.includes(5)) g /= 2
+
+    if (g >= 1e4) g = (g/1e4)**2*1e4
+
+    return Decimal.pow(tmp.dil_nextThresholdMult,g).mul(1e3)
 }
 
 function getDilNextThresholdMult() {
@@ -348,6 +397,7 @@ function getReplicantiInterval() {
 function getReplicantiFinalInterval() {
 	let x = getReplicantiInterval()
 	if (player.replicanti.amount.gt(Number.MAX_VALUE)) x = Decimal.pow(tmp.rep.speeds.inc, Math.max(player.replicanti.amount.log10() - tmp.rep.speeds.exp, 0)/tmp.rep.speeds.exp).times(x)
+    // if (player.replicanti.amount.gt(E('1e10000000'))) x = Decimal.pow(1.5, Math.max(player.replicanti.amount.log10() - 1e7, 0)/100).times(x)
 	return x
 }
 
@@ -355,6 +405,8 @@ function extraDimensionBoosts() {
     let x = 0
 
     if (hasTSTier(2,131)) x += TSTierEffect(2,131,0) 
+
+    if (player.achievements.includes("r173")) x *= 2
 
     return x
 }

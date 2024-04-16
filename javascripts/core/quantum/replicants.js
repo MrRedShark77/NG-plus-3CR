@@ -139,5 +139,23 @@ const PREONS_EFF = [
         },
         ()=>player.quantum.neutrons==0&&player.meta.best1.l>=3333,
         ()=>`Reach ${shorten(Decimal.pow(10,3333))} meta-antimatter without gaining neutrons.`,
+    ],[
+        x=>`More further reduce the dimension cost multiplier to <span style="font-size: 16px">${Math.pow(player.dimensionMultDecrease,x).toFixed(2)}</span> from ${player.dimensionMultDecrease.toFixed(2)}.`,
+        p=>{
+            let x = 1/(p.add(1).log10()**0.5/25+1)
+
+            return x
+        },
+        ()=>player.replicanti.amount.gte('1e15000000'),
+        ()=>`Reach ${shorten(Decimal.pow(10,1.5e7))} replicantis.`,
+    ],[
+        x=>`More further reduce the tickspeed cost multiplier to <span style="font-size: 16px">${Math.pow(player.tickSpeedMultDecrease,x).toFixed(2)}</span> from ${player.tickSpeedMultDecrease.toFixed(2)}.`,
+        p=>{
+            let x = 1/(p.add(1).log10()**0.5/25+1)
+
+            return x
+        },
+        ()=>tmp.totalGalaxies>=5e4,
+        ()=>`Have at least ${getFullExpansion(5e4)} total galaxies.`,
     ],
 ]

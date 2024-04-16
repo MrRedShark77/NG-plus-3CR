@@ -184,7 +184,7 @@ function getGalaxyRequirement(offset = 0, display) {
         amount += getDistantAdd(g-galaxyCostScalingStart+1)*tmp.distantGalaxySpeed
     }
     if (g >= tmp.remoteGalaxyStart) {
-        amount = Math.floor(amount * Math.pow(hasGluonUpg('rg1')?1.001:1.002, (g-tmp.remoteGalaxyStart+1)))
+        amount = Math.floor(amount * Math.pow(hasGluonUpg('rg1')?1.001:1.002, (g-tmp.remoteGalaxyStart+1)*tmp.remoteGalaxySpeed))
     }
 
     if (player.infinityUpgrades.includes("resetBoost")) amount -= 9;
@@ -249,6 +249,14 @@ function sacrificeConf() {
 
 function updateDimensions() {
     if (document.getElementById("antimatterdimensions").style.display == "block" && document.getElementById("dimensions").style.display == "block") {
+
+        var h = [
+            `Buy 10 Dimension purchase multiplier: x${shorten(tmp.ndPower)}`,
+            `Dimension Boost multiplier: x${shorten(tmp.dimBoostPower)}`,
+            `Galaxy power: x${shorten(tmp.galaxyPower)}`,
+        ]
+
+        el("ND-stats").innerHTML = h.join(" | ")
 
         for (let tier = 1; tier <= 8; ++tier) {
             var name = TIER_NAMES[tier];
@@ -1352,6 +1360,7 @@ document.getElementById("secondSoftReset").onclick = function() {
     if (player.currentChallenge == "challenge4" ? player.sixthBought >= tmp.galaxyReq && bool : player.eightBought >= tmp.galaxyReq && bool) {
         if (player.eternities >= 7 && !shiftDown) maxBuyGalaxies(true);
         else galaxyReset(1);
+        player.quantum.ach173allowed = false
     }
 }
 
@@ -1391,7 +1400,6 @@ function galaxyReset(bulk) {
 
 
     if (player.options.notation == "Emojis") player.spreadingCancer+=bulk;
-    if (player.spreadingCancer >= 10) giveAchievement("Spreading Cancer")
     if (player.spreadingCancer >= 1000000) giveAchievement("Cancer = Spread")
     if (player.achievements.includes("r36")) player.tickspeed = player.tickspeed.times(0.98);
     if (player.achievements.includes("r45")) player.tickspeed = player.tickspeed.times(0.98);
@@ -2383,13 +2391,13 @@ function checkForEndMe() {
         temp += player.challengeTimes[i]
     }
     if (temp <= 1800) giveAchievement("Not-so-challenging")
-    if (temp <= 50) giveAchievement("End me")
+    if (temp <= 50) giveAchievement("r74",true)
     var temp2 = 0
     for (var i=0; i<8;i++) {
         temp2 += player.infchallengeTimes[i]
     }
     infchallengeTimes = temp2
-    if (temp2 <= 66.6) giveAchievement("Yes. This is hell.")
+    if (temp2 <= 66.6) giveAchievement("r97",true)
 }
 
 
@@ -2414,12 +2422,13 @@ document.getElementById("bigcrunch").onclick = function () {
         if (player.galaxies == 0 && player.resets == 0) giveAchievement("Zero Deaths")
         if (player.currentChallenge == "challenge2" && player.thisInfinityTime <= 1800) giveAchievement("Many Deaths")
         if (player.currentChallenge == "challenge11" && player.thisInfinityTime <= 1800) giveAchievement("Gift from the Gods")
-        if (player.currentChallenge == "challenge5" && player.thisInfinityTime <= 1800) giveAchievement("Is this hell?")
+        if (player.currentChallenge == "challenge5" && player.thisInfinityTime <= 1800) giveAchievement("r58",true)
+        if (player.currentChallenge == "challenge4") giveAchievement("r41",true)
         if (player.currentChallenge == "challenge3" && player.thisInfinityTime <= 100) giveAchievement("You did this again just for the achievement right?");
         if (player.firstAmount == 1 && player.resets == 0 && player.galaxies == 0 && player.currentChallenge == "challenge12") giveAchievement("ERROR 909: Dimension not found")
         if (player.currentChallenge != "" && player.challengeTimes[challNumber-2] > player.thisInfinityTime) player.challengeTimes[challNumber-2] = player.thisInfinityTime
         if (player.currentChallenge.includes("post") && player.infchallengeTimes[challNumber-1] > player.thisInfinityTime) player.infchallengeTimes[challNumber-1] = player.thisInfinityTime
-        if (player.currentChallenge == "postc5" && player.thisInfinityTime <= 100) giveAchievement("Hevipelle did nothing wrong")
+        if (player.currentChallenge == "postc5" && player.thisInfinityTime <= 100) giveAchievement("r81",true)
         if ((player.bestInfinityTime > 600 && !player.break) || (player.currentChallenge != "" && !player.options.retryChallenge)) showTab("dimensions")
         if (player.currentChallenge == "challenge5") {
             kong.submitStats('Challenge 9 time record (ms)', Math.floor(player.thisInfinityTime*100));
@@ -2446,6 +2455,7 @@ document.getElementById("bigcrunch").onclick = function () {
             && player.ts_tier[0].filter(x => !TS_DIL[2].includes(x)).length == 0
             && inQC(6) && inEC(15)
             && gainedInfinityPoints().gte(1e50)) giveAchievement('r168',true);
+        if (inQC(6) && player.quantum.chal.qc6.modified.length == 8 && player.quantum.chal.modified) giveAchievement('r178',true);
         if (!player.achievements.includes("r111") && player.lastTenRuns[9][1] != 1) {
             var n = 0;
             for (i=0; i<9; i++) {
@@ -3970,6 +3980,7 @@ function gameLoop(diff) {
     updateTimeShards()
     updateDilation()
     updateMetaDimensionsHTML()
+    updateEmperorDimensionsHTML()
     updateQuantumHTML()
     updateTSTiersHTML()
     if (getDimensionProductionPerSecond(1).gt(player.money) && !player.achievements.includes("r44")) {
@@ -4021,7 +4032,11 @@ function gameLoop(diff) {
     if (player.dilation.studies.includes(1)) player.dilation.dilatedTime = player.dilation.dilatedTime.plus(getDilatedTimeGain().mul(diff / 10))
 
     if (tmp.dil_nextThreshold.lte(player.dilation.dilatedTime)) {
-        let fg = Math.floor(player.dilation.dilatedTime.div(1e3).log(tmp.dil_nextThresholdMult))+1
+        let fg = player.dilation.dilatedTime.div(1e3).log(tmp.dil_nextThresholdMult)
+
+        if (fg >= 1e4) fg = (fg/1e4)**0.5*1e4
+
+        fg = Math.floor(fg)+1
 
         if (player.dilation.upgrades.includes(5)) fg *= 2
 
@@ -4470,6 +4485,7 @@ function maxBuyGalaxies(manual) {
     if (player.autobuyers[10].priority > player.galaxies || manual) {
         let amount=getAmount(inNC(4)?6:8)
 		galaxyReset(bulkNumberFromFunction(getGalaxyRequirement,amount))
+        player.quantum.ach173allowed = false
     }
 }
 

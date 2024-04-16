@@ -126,7 +126,7 @@ function generateGluons(mix) {
 	updateQuarksHTML()
 }
 
-var gluonUpgCosts = [null,20,40,100,1500,1e33,1e40]
+var gluonUpgCosts = [null,20,40,100,1500,1e33,1e40,1e70,1e100]
 
 var gluonUpgs = {
 	rg: [
@@ -161,6 +161,12 @@ var gluonUpgs = {
 		[
 			`Improve red power's production better.`,
 		],
+		[
+			`Slow down the Remote Antimatter Galaxy cost scaling by 15%.`,
+		],
+		[
+			`???.`,
+		],
 	],
 	gb: [
 		null,
@@ -188,7 +194,7 @@ var gluonUpgs = {
 			x => "^"+shorten(x),
 		],
 		[
-			`Infinity power slows down the Distant Antimatter Galaxy cost scaling.`,
+			`Infinity powers slow down the Distant Antimatter Galaxy cost scaling.`,
 			() => {
 				let x = 1/(Math.log10(player.infinityPower.l+1)/10+1)
 
@@ -198,6 +204,18 @@ var gluonUpgs = {
 		],
 		[
 			`Improve green power's production better.`,
+		],
+		[
+			`Infinity points slow down the Remote Antimatter Galaxy cost scaling.`,
+			() => {
+				let x = 1/(Math.log10(player.infinityPoints.l+1)**0.5/20+1)
+
+				return x
+			},
+			x => shortenReduction(x),
+		],
+		[
+			`???.`,
 		],
 	],
 	br: [
@@ -244,6 +262,18 @@ var gluonUpgs = {
 		[
 			`Improve blue power's production better.`,
 		],
+		[
+			`Eternity points slow down the Remote Antimatter Galaxy cost scaling.`,
+			() => {
+				let x = 1/(Math.log10(player.eternityPoints.l+1)**0.5/20+1)
+
+				return x
+			},
+			x => shortenReduction(x),
+		],
+		[
+			`???.`,
+		],
 	],
 }
 
@@ -261,6 +291,7 @@ function updateGluonsHTML() {
 	let upgs_unl = 4
 
 	if (hasTSTier(2,103)) upgs_unl = 6
+	if (hasTSTier(2,181)) upgs_unl = 7
 
 	for (let mix in player.quantum.gluons) {
 		let g = player.quantum.gluons[mix]

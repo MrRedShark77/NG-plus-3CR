@@ -150,14 +150,16 @@ function timeDimCost(tier,bought) { // timeDimCost(...args)
 	if (cost.gte("1e1300")) cost = Decimal.pow(timeDimCostMults[tier]*2.2, bought).times(timeDimStartCosts[tier])
 	if (tier > 4) cost = Decimal.pow(timeDimCostMults[tier]*100, bought).times(timeDimStartCosts[tier])
 
-  if (cost.gte("1e4000")) {
-    let ec = cost.log10()
-    cost = Decimal.pow(10+(ec-4000)/100,ec**1.01)
-  }
-
-  if (cost.gte("1e500000")) {
-    let ec = cost.log10()
-    cost = cost.pow((ec-5e5)/1e6+1)
+  if (!hasTSTier(2,184) || tier != 8) {
+    if (cost.gte("1e4000")) {
+      let ec = cost.log10()
+      cost = Decimal.pow(10+(ec-4000)/100,ec**1.01)
+    }
+  
+    if (cost.gte("1e500000")) {
+      let ec = cost.log10()
+      cost = cost.pow((ec-5e5)/1e6+1)
+    }
   }
 
 	return cost

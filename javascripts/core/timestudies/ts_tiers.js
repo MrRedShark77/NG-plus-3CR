@@ -19,6 +19,8 @@ const TS_TIERS_MAP = [
         [151,132,152],
         [161],
         [172,171,173],
+        [183,182,181,184,185],
+        [191],
     ],
 ]
 
@@ -305,6 +307,43 @@ const TS_TIERS = [
             1e86,
             100,
         ],
+        181: [
+            "Unlock Emperor Dimensions.",
+            [171],
+            0,
+            1,
+            'dil',
+        ],
+        182: [
+            "Preons will affect emperor dimensions at a reduced rate.",
+            [181],
+            1e92,
+            1e6,
+        ],
+        183: [
+            "Protons raise infinity dimensions at a greatly reduced rate.",
+            [182],
+            1e92,
+            1e6,
+        ],
+        184: [
+            "Remove the cost scaling of 8th time dimension above 1e4000 and above 1e500000.",
+            [181],
+            1e92,
+            1e6,
+        ],
+        185: [
+            "Electrons are more effective based on time shards at a reduced rate.",
+            [184],
+            1e92,
+            1e6,
+        ],
+        191: [
+            "Neutrons now delay superscaled meta-dimensions at a reduced rate.",
+            [183,185],
+            1e96,
+            1,
+        ],
 
         /*
         11: [
@@ -491,6 +530,38 @@ const TS_TIERS_EFF = [
             },
             x=>shorten(x)+"x",
         ],
+        182: [
+            ()=>{
+                let x = Decimal.pow(10,Math.pow(player.quantum.replicant.preons.add(1).l,1/3))
+
+                return x
+            },
+            x=>shorten(x)+"x",
+        ],
+        183: [
+            ()=>{
+                let x = Math.log10(player.quantum.protons+1)/100+1
+
+                return x
+            },
+            x=>"^"+shorten(x),
+        ],
+        185: [
+            ()=>{
+                let x = Math.log10(player.timeShards.add(1).l+1)/25+1
+
+                return x
+            },
+            x=>shortenPercent(x-1),
+        ],
+        191: [
+            ()=>{
+                let x = player.quantum.neutrons**0.5
+
+                return x
+            },
+            x=>"+"+getFullExpansion(Math.round(x))+" later",
+        ],
     },
 ]
 
@@ -554,6 +625,11 @@ const TS_REQS = {
             (x) => `${x[0]} total EC modifiers, and ${shortenCosts(x[1])} Quarks Worth (${shortenDimensions(tmp.quarksWorth)}/${shortenCosts(x[1])})`,
             (x) => tmp.qc_total_modifiers >= x[0] && tmp.quarksWorth.gte(x[1]),
         ],
+        181: [
+            () => [40,1e60],
+            (x) => `${x[0]} total EC modifiers, and ${shortenCosts(x[1])} Quarks Worth (${shortenDimensions(tmp.quarksWorth)}/${shortenCosts(x[1])})`,
+            (x) => tmp.qc_total_modifiers >= x[0] && tmp.quarksWorth.gte(x[1]),
+        ],
     },
 }
 
@@ -589,7 +665,7 @@ const TS_UNLS = {
 
         if (hasTSTier(2,92)) s.push(101,102,103,111,121,122,123,131,132,133,141,142,151,152,161)
 
-        if (hasTSTier(2,161)) s.push(171,172,173)
+        if (hasTSTier(2,161)) s.push(171,172,173,181,182,183,184,185,191)
 
         return s
     },
@@ -674,8 +750,10 @@ function TSTierEffect(t,id,def=1) { return tmp.ts_tier.effect[t][id] || def }
 function canBuyTSTier(t,id) {
     if (!ts_unlocked[t].includes(id)) return false
 
-
-    if (t == 2 && id == 111 && !hasTSTier(2,101)) return false
+    if (t == 2 && id == 182 && !hasTSTier(2,171)) return false
+    else if (t == 2 && id == 184 && !hasTSTier(2,171)) return false
+    else if (t == 2 && id == 171 && !hasTSTier(2,151) && !hasTSTier(2,152)) return false
+    else if (t == 2 && id == 111 && !hasTSTier(2,101)) return false
     else if (t == 2 && id == 101 && !hasTSTier(2,81)) return false
     else if (t == 2 && id == 81 && !hasTSTier(2,63)) return false
     else if (t == 2 && id == 63 && !hasTSTier(2,61)) return false
@@ -726,6 +804,9 @@ function buyTSTier(t,id,update) {
         } else if (t == 2 && id == 161) {
             showTab("quantum")
             showQuantumTab('replicants_tab')
+        } else if (t == 2 && id == 181) {
+            showTab("dimensions")
+            showDimTab('emperordimensions')
         }
 
         updateTSTierCosts(t)

@@ -282,7 +282,7 @@ function hasInfinityMult(tier) {
             if (player.currentChallenge != "challenge5" && player.currentChallenge != "postc5") player[name + 'Cost'] = player[name + 'Cost'].times(getDimensionCostMultiplier(tier));
             else if (player.currentChallenge == "postc5") multiplyPC5Costs(player[name + 'Cost'], tier)
             else multiplySameCosts(cost);
-            if (player[name + 'Cost'].gte(Number.MAX_VALUE)) player.costMultipliers[tier-1] = player.costMultipliers[tier-1].times(player.dimensionMultDecrease)
+            if (player[name + 'Cost'].gte(Number.MAX_VALUE)) player.costMultipliers[tier-1] = player.costMultipliers[tier-1].times(tmp.dimMultDecrease)
             floatText(name+"D", "x" + shortenMoney(tmp.ndPower))
         }
     
@@ -341,7 +341,7 @@ function hasInfinityMult(tier) {
 
     function getDimensionCostMultiplierIncrease() {
         if (inQC(7)) return Number.MAX_VALUE
-        let ret = player.dimensionMultDecrease;
+        let ret = tmp.dimMultDecrease;
         return ret;
     }
     
@@ -449,7 +449,7 @@ function hasInfinityMult(tier) {
             let newCost = player[name + "Cost"].times(Decimal.pow(player.costMultipliers[tier - 1], toBuy - 1).times(Decimal.pow(mi, (toBuy - 1) * (toBuy - 2) / 2)))
             let newMult = player.costMultipliers[tier - 1].times(Decimal.pow(mi, toBuy - 1))
             if (player.money.gte(newCost)) player.money = player.money.sub(newCost)
-            else if (player.dimensionMultDecrease > 3) player.money = new Decimal(0)
+            else if (tmp.dimMultDecrease > 3) player.money = new Decimal(0)
             player[name + "Amount"] = player[name + "Amount"].add(toBuy * 10)
             recordBought(name, toBuy * 10)
             player[name + "Cost"] = newCost.times(newMult)
@@ -463,7 +463,7 @@ function hasInfinityMult(tier) {
     
     function canQuickBuyDim(tier) {
         if (((inNC(5) || player.currentChallenge == "postc5") && player.tickspeedBoosts == undefined) || inNC(9)) return false
-        return player.dimensionMultDecrease <= 3 || player.costMultipliers[tier-1].gt(Number.MAX_SAFE_INTEGER)
+        return tmp.dimMultDecrease <= 3 || player.costMultipliers[tier-1].gt(Number.MAX_SAFE_INTEGER)
     }
 
 function canAfford(cost) {

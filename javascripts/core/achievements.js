@@ -23,7 +23,7 @@ const allAchievements = {
   r36 : "Claustrophobic",
   r37 : "That's fast!",
   r38 : "I don't believe in Gods",
-  r41 : "Spreading Cancer",
+  r41 : "Rock, Paper, or Scissors?",
   r42 : "Supersanic",
   r43 : "Zero Deaths",
   r44 : "Over in 30 seconds",
@@ -38,7 +38,7 @@ const allAchievements = {
   r55 : "Forever isn't that long",
   r56 : "Many Deaths",
   r57 : "Gift from the Gods",
-  r58 : "Is this hell?",
+  r58 : "I’m telling god",
   r61 : "Bulked up",
   r62 : "Oh hey, you're still here",
   r63 : "A new beginning.",
@@ -50,12 +50,12 @@ const allAchievements = {
   r71 : "ERROR 909: Dimension not found",
   r72 : "Can't hold all these infinities",
   r73 : "This achievement doesn't exist",
-  r74 : "End me",
+  r74 : "DA ROOK!!!",
   r75 : "NEW DIMENSIONS???",
   r76 : "One for each dimension",
   r77 : "How the antitables have turned",
   r78 : "Blink of an eye",
-  r81 : "Hevipelle did nothing wrong",
+  r81 : "Two choices are same...",
   r82 : "Anti-antichallenged",
   r83 : "YOU CAN GET 50 GALAXIES!??",
   r84 : "I got a few to spare",
@@ -69,7 +69,7 @@ const allAchievements = {
   r94 : "Minute of infinity",
   r95 : "Is this safe?",
   r96 : "Time is relative",
-  r97 : "Yes. This is hell.",
+  r97 : "My dog stepped on a bee",
   r98 : "0 degrees from infinity",
   r101 : "Costco sells dimboosts now",
   r102 : "This mile took an Eternity",
@@ -156,14 +156,14 @@ const allAchievements = {
   r167 : `Exploration of Endless Time`,
   r168 : `Teach me how I get rid of you.`,
 
-  r171 : `INSERT MODIFIER OR SELECT PAYMENT TYPE`,
-
-
-
-  r175 : `I become death, the destroyer of quantum.`,
-
+  r171 : `Am I really, really wrong?`,
+  r172 : `one 🅱eplicanti`,
+  r173 : `free amount = free kitten`,
+  r174 : `Infinity isn’t greater than aleph null`,
+  r175 : `Death, the destroyer of quantum`,
+  r176 : `Dilation never enough`,
   r177 : `Society if dilation doesn’t exist`,
-
+  r178 : `Time wasting is useless…`,
 
   s41 : "That dimension doesn’t exist",
   // s42,
@@ -246,7 +246,7 @@ function giveAchievement(name,id=false) {
 
     $.notify(k, "success");
     player.achievements.push(id?name:allAchievementNums[name]);
-    document.getElementById(k).className = "achievementunlocked"
+    (document.getElementById(k) || document.getElementById("ach-"+name)).className = "achievementunlocked"
     kong.submitStats('Achievements', player.achievements.length);
     if (k == "All your IP are belong to us" || k == "MAXIMUM OVERDRIVE") {
         player.infMult = player.infMult.times(4);
@@ -260,8 +260,13 @@ function updateAchievementAria(domObj, isSecret=false) {
   var isLocked = domObj.classList.contains("achievementlocked") || domObj.classList.contains("achievementhidden");
   var label_text = (!isLocked) ? "(Completed) " : "";
   // Retrieve achievement row, trimming off the "r" or "s"
-  label_text += allAchievementNums[domObj.id].substring(1) + ", ";
-  label_text += domObj.id;
+  if (domObj.id.includes("ach-r")) {
+    label_text += domObj.id.substring(1) + ", ";
+    label_text += allAchievements[domObj.id];
+  } else {
+    label_text += allAchievementNums[domObj.id].substring(1) + ", ";
+    label_text += domObj.id;
+  }
   // We only update labels with differing tooltips, which means that secret achievements should only be updated if they're unlocked.
   if(!isSecret || isSecret && !isLocked) {
     // Add a slight pause for screen readers, if necessary
@@ -282,7 +287,7 @@ function updateAchievements() {
       for (var l=0; l<8; l++) {
           achNum += 1;
           var name = allAchievements["r"+achNum]
-            var domObj = el(name);
+            var domObj = el(name) || el("ach-r"+achNum);
             if (!domObj) continue
           let class_name = "achievement"
           if (player.achievements.includes("r"+achNum)) {
@@ -387,8 +392,13 @@ function updateAchievementsTooltip() {
   el(allAchievements.r166).setAttribute('ach-tooltip',`Purchase at least ${getFullExpansion(1e10)} first infinity dimensions.`)
   el(allAchievements.r167).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e100'))} Tachyon Particles. Reward: Further reduce free galaxy threshold.`)
   el(allAchievements.r168).setAttribute('ach-tooltip',`Big Crunch for ${shortenCosts(E('1e50'))} IP without having TS Tiers 1-2 in QC6 with EC15 modified. Reward: Time Theorems no longer get reset by Quantum.`)
-
-  el(allAchievements.r177).setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e2000000'))} replicanti without having Tachyon particles. Reward: Start with the same amount of Tachyon particles as the square root of your best TP on quantum.`)
+ 
+  el("ach-r172").setAttribute('ach-tooltip',`Reach ${shortenCosts(Decimal.pow(10,1e7))} replicanti. Reward: You will automatically get replicant.`)
+  el("ach-r173").setAttribute('ach-tooltip',
+    `Reach ${shortenCosts(Decimal.pow(10,36e9))} antimatter while dilated, not purchasing tickspeed, dimension boosts, nor antimatter galaxies before going quantum. Reward: Galaxies are 50% more effective if you have purchased at most one antimatter galaxy, and you gain x2 more free dimension boosts.`
+  )
+  el("ach-r176").setAttribute('ach-tooltip',`Reach ${shortenCosts(Decimal.pow(10,1e12))} antimatter while dilated.`)
+  el("ach-r177").setAttribute('ach-tooltip',`Reach ${shortenCosts(E('1e2000000'))} replicanti without having Tachyon particles. Reward: Start with the same amount of Tachyon particles as the square root of your best TP on quantum.`)
 }
 
 // CHECKING
@@ -420,7 +430,10 @@ function checkAchievements() {
   if (player.infinityDimension1.baseAmount/10>=1e10) giveAchievement('r166',true)
   if (player.dilation.totalTachyonParticles.gte(1e100)) giveAchievement('r167',true)
 
+  if (player.replicanti.amount.l>=1e7) giveAchievement('r172',true)
+  if (player.quantum.ach173allowed && player.dilation.active && player.money.gte(Decimal.pow(10,36e9))) giveAchievement('r173',true)
   if (tmp.qc_total_modifiers>=32) giveAchievement('r175',true)
+  if (player.dilation.active && player.money.gte(Decimal.pow(10,1e12))) giveAchievement('r176',true)
   if (player.replicanti.amount.l>=2e6 && player.dilation.totalTachyonParticles.lte(0)) giveAchievement('r177',true)
 
   // Secret

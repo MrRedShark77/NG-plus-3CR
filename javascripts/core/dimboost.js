@@ -87,6 +87,7 @@ if (player.currentChallenge == "postc2") {
   }
 
   updateTemp()
+  player.quantum.ach173allowed = false
 }
 
 function getSupersonicStart() {
@@ -173,4 +174,6 @@ document.getElementById("softReset").onclick = function () {
     var mult = tmp.dimBoostPower.pow(player.resets + 1 - tier)
     if (mult > 1) floatText(name + "D", "x" + shortenDimensions(mult))
   }
+
+  player.quantum.ach173allowed = false
 };

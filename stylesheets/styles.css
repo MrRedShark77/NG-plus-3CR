@@ -53,6 +53,10 @@ button {
     background-color: #88f2;
 }
 
+#emperor_parent > tr:nth-child(even) {
+    background-color: #3332;
+}
+
 #news {
     color: #000000;
     /*transition: transform 1s;*/

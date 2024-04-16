@@ -4,11 +4,13 @@ function updateAtomTemp() {
     ta.mult = 0.25
     if (QCCompleted(1)) ta.mult += tmp.qc_modifiers[1] * 0.05
 
-    let m = player.quantum.protons/10+1
+    let m = softcap(player.quantum.protons/10+1,5e5,0.5,0)
 
     ta.proton_eff = [m, m * 2e6]
 
-    m = player.quantum.electrons+1
+    m = player.quantum.electrons
+    if (hasTSTier(2,185)) m *= TSTierEffect(2,185)
+    m = Math.round(m+1)
 
     ta.electron_eff = [m, Decimal.pow(getDimensionPowerMultiplier(),m)]
 
